@@ -2,6 +2,6 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/
-    username: root
-    password:
+    url: jdbc:mysql://catchat-db.ch7ffuy9nyny.ap-northeast-2.rds.amazonaws.com:3306/catchat_schema
+    username: admin
+    password: catchat2023
