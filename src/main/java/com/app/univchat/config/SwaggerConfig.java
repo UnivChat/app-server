@@ -31,7 +31,8 @@ public class SwaggerConfig {
                 .securityContexts(Arrays.asList(securityContext()))
                 .securitySchemes(Arrays.asList(apiKey()))
                 .select()
-                .apis(RequestHandlerSelectors.withClassAnnotation(RestController.class))
+                //.apis(RequestHandlerSelectors.withClassAnnotation(RestController.class))
+                .apis(RequestHandlerSelectors.basePackage("com.app.univchat"))
                 .paths(PathSelectors.any())
                 .build().apiInfo(apiInfo());
     }
