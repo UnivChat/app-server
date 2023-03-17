@@ -23,3 +23,5 @@ spring:
       stack:
         auto: false
 
+  profiles:
+    active: local
