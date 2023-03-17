@@ -18,7 +18,7 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class AWSS3Uploader {
-    @Value("${cloud.aws.s3.bucket}")
+    @Value("${spring.cloud.aws.s3.bucket}")
     private String bucket;
     private final AmazonS3Client amazonS3Client;
 
