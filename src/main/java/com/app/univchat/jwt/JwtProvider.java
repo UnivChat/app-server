@@ -4,7 +4,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -12,7 +12,7 @@ import java.util.Date;
 
 @Slf4j
 @Component
-public class JwtProvider{
+public class JwtProvider {
 
     private static final String BEARER = "Bearer";
 
@@ -21,7 +21,9 @@ public class JwtProvider{
     private final Key key;
 
 
-    public JwtProvider(String secret, long ACCESS_TOKEN_EXPIRE_TIME, long REFRESH_TOKEN_EXPIRE_TIME) {
+    public JwtProvider(@Value("${jwt.secret}") String secret,
+                       @Value("${jwt.expire-time.access-token}") long ACCESS_TOKEN_EXPIRE_TIME,
+                       @Value("${jwt.expire-time.refresh-token}") long REFRESH_TOKEN_EXPIRE_TIME) {
         this.ACCESS_TOKEN_EXPIRE_TIME = ACCESS_TOKEN_EXPIRE_TIME;
         this.REFRESH_TOKEN_EXPIRE_TIME = REFRESH_TOKEN_EXPIRE_TIME;
 
@@ -64,10 +66,12 @@ public class JwtProvider{
 
 
     /**
-     * Token 복호화
+     * Token에서 email 추출
      */
-    public Authentication getAuthentication(String token){
-        return null;
+    public String getAuthentication(String token){
+        Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+
+        return claims.getSubject();
     }
 
     /**
@@ -88,4 +92,6 @@ public class JwtProvider{
         }
         return false;
     }
+
+
 }
