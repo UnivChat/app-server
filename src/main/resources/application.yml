@@ -5,6 +5,9 @@ spring:
     url: jdbc:mysql://catchat-db.ch7ffuy9nyny.ap-northeast-2.rds.amazonaws.com:3306/catchat_schema
     username: admin
     password: catchat2023
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
 jwt:
   header: Authorization
