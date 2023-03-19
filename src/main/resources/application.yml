@@ -2,6 +2,36 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://catchat-db.ch7ffuy9nyny.ap-northeast-2.rds.amazonaws.com:3306/catchat_schema
-    username: admin
-    password: catchat2023
+    url: ${{ DATASOURCE_URL }}
+    username: ${{ DATASOURCE_USERNAME }}
+    password: ${{ DATASOURCE_PASSWORD }}
+
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+  cloud:
+    aws:
+      s3:
+        bucket: ${{ AWS_S3_BUCKET_NAME }}
+      credentials:
+        access-key: ${{ AWS_S3_ACCESS_KEY }}
+        secret-key: ${{ AWS_S3_SECRET_KEY }}
+      region:
+        auto: false
+        static: ${{ AWS_S3_REGION }}
+      stack:
+        auto: false
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+
+jwt:
+  header: Authorization
+  secret: Y2F0aG9saWMtdW5pdmVyc2l0eS1jaGF0dGluZy1hcHAtcHJvamVjdC1zcHJpbmctc2VjdXJpdHktand0LWtleS1zdHJpbmctaXQtaXMtbmluZS1maWZ0eS10d28tbm93LWNhdGhvbGljLXVuaXZlcnNpdHktY2hhdHRpbmctYXBw
+  expire-time:
+    access-token: 31536000000 #1년, 테스트용
+    refresh-token: 604800000 #7일

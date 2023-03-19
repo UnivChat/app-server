@@ -1,66 +1,69 @@
 package com.app.univchat.config;
 
-import com.app.univchat.jwt.JwtAccessDeniedHandler;
-import com.app.univchat.jwt.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
 
-@Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
-public class SecurityConfig {
-    private final TokenProvider tokenProvider;
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+@Configuration
+@EnableWebSecurity  //SpringSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+
+
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/resource/**", "/css/**", "/js/**", "/img/**", "/lib/**");
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // atabase 테스트가 원활하도록 관련 API 들은 전부 무시
-//    @Bean
-//    public WebSecurityCustomizer webSecurityCustomizer() {
-//        return (web) -> web.ignoring()
-//                .antMatchers("/h2-console/**", "/favicon.ico");
-//    }
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .csrf().disable()
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // CSRF 설정 Disable
-        http.csrf().disable()
-
-                // exception handling jwt 관련 클래스를 추가
-                .exceptionHandling()
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                .accessDeniedHandler(jwtAccessDeniedHandler)
-
-                .and()
                 .headers()
                 .frameOptions()
                 .sameOrigin()
 
-                // security 세션을 사용하지 않기 때문에 세션 설정을 Stateless 로 설정
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
-                // 로그인, 회원가입 API 는 토큰이 없는 상태에서 요청이 들어오기 때문에 permitAll 설정
+                .and()
+                .exceptionHandling()
+//                .authenticationEntryPoint()
+//                .accessDeniedHandler()
+
                 .and()
                 .authorizeRequests()
-                .antMatchers("/auth/**").permitAll()
-                .anyRequest().authenticated()   // 나머지 API 는 전부 인증 필요
+                .antMatchers("/swagger-resources/**").permitAll()
+                .antMatchers("/swagger-ui/**").permitAll()
+                .antMatchers("/webjars/**").permitAll()
+                .antMatchers("/v3/api-docs").permitAll()
+                .antMatchers("/hello").permitAll()
 
-                // JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
+
+                .anyRequest().authenticated() //위의 api가 아닌 경로는 모두 jwt 토큰 인증을 해야 함
+
+
                 .and()
-                .apply(new JwtSecurityConfig(tokenProvider));
+//                .apply(new JwtSecurityConfig(tokenProvider))
 
-        return http.build();
+        ;
     }
 }
