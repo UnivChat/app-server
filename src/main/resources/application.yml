@@ -5,8 +5,13 @@ spring:
     url: jdbc:mysql://catchat-db.ch7ffuy9nyny.ap-northeast-2.rds.amazonaws.com:3306/catchat_schema
     username: admin
     password: catchat2023
-
-
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+
+jwt:
+  header: Authorization
+  secret: Y2F0aG9saWMtdW5pdmVyc2l0eS1jaGF0dGluZy1hcHAtcHJvamVjdC1zcHJpbmctc2VjdXJpdHktand0LWtleS1zdHJpbmctaXQtaXMtbmluZS1maWZ0eS10d28tbm93LWNhdGhvbGljLXVuaXZlcnNpdHktY2hhdHRpbmctYXBw
+  expire-time:
+    access-token: 31536000000 #1년, 테스트용
+    refresh-token: 604800000 #7일
