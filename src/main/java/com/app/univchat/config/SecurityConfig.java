@@ -1,5 +1,7 @@
 package com.app.univchat.config;
 
+import com.app.univchat.jwt.JwtAccessDeniedHandler;
+import com.app.univchat.jwt.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity  //SpringSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
 
     @Override
@@ -46,6 +49,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .accessDeniedHandler(jwtAccessDeniedHandler)
 //                .authenticationEntryPoint()
 //                .accessDeniedHandler()
 
