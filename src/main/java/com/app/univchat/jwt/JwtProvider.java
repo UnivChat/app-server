@@ -1,5 +1,6 @@
 package com.app.univchat.jwt;
 
+import com.app.univchat.dto.JwtDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -31,9 +32,7 @@ public class JwtProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    /**
-     * jwt 토큰 생성
-     */
+    // jwt 토큰 생성
     private String createToken(String email, long expireTime) {
         Claims claims = Jwts.claims().setSubject(email);
         Date now = new Date();
@@ -46,16 +45,12 @@ public class JwtProvider {
                 .compact();
     }
 
-    /**
-     * accessToken 발급
-     */
+     //accessToken 발급
     public String createAccessToken(String email){
         return createToken(email, ACCESS_TOKEN_EXPIRE_TIME);
     }
 
-    /**
-     * refreshToken 발급
-     */
+    //refreshToken 발급
     public String createRefreshToken(String email){
         return createToken(email, REFRESH_TOKEN_EXPIRE_TIME);
     }
@@ -63,7 +58,13 @@ public class JwtProvider {
     /**
      * Token 발급
      */
-
+    public JwtDto generateToken(String email){
+        return JwtDto.builder()
+                .grantType(BEARER)
+                .accessToken(createAccessToken(email))
+                .refreshToken(createRefreshToken(email))
+                .build();
+    }
 
     /**
      * Token에서 email 추출
