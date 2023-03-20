@@ -4,11 +4,22 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -19,6 +30,8 @@ public class JwtProvider {
     private final long ACCESS_TOKEN_EXPIRE_TIME;
     private final long REFRESH_TOKEN_EXPIRE_TIME;
     private final Key key;
+    @Autowired
+    private UserDetailsService userDetailsService;
 
 
     public JwtProvider(@Value("${jwt.secret}") String secret,
@@ -68,11 +81,19 @@ public class JwtProvider {
     /**
      * Token에서 email 추출
      */
-    public String getAuthentication(String token){
-        Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+    public Authentication getAuthentication(String token){
+//        Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();  // 기존 claim 생성 code
+        String username = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getSubject();
 
-        return claims.getSubject();
+        // user 객체 생성해 Authentication 객체 반환
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
+
+
+
+
 
     /**
      * jwt 유효성 검사
