@@ -2,7 +2,12 @@ package com.app.univchat.config;
 
 import com.app.univchat.jwt.JwtAccessDeniedHandler;
 import com.app.univchat.jwt.JwtAuthenticationEntryPoint;
+import com.app.univchat.jwt.JwtProvider;
+import com.app.univchat.repository.MemberRepository;
+import com.app.univchat.security.filter.LoginFilter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -22,7 +27,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final JwtProvider jwtProvider;
+    private final ObjectMapper objectMapper;
+    private final MemberRepository memberRepository;
 
+
+    //로그인 필터 추가
+    @Bean
+    public LoginFilter loginFilter() throws Exception {
+        LoginFilter loginFilter = new LoginFilter(jwtProvider, objectMapper, memberRepository);
+        loginFilter.setAuthenticationManager(authenticationManager()); //spring security에서 제공하는 manager 객체
+
+        return loginFilter;
+    }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
