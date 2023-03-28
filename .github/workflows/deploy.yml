@@ -5,7 +5,7 @@ on:
     branches: [main, develop]
 
 jobs:
-  build_N_deploy:
+  build:
     name: CI PipeLine
     runs-on: ubuntu-latest
 
@@ -39,22 +39,28 @@ jobs:
       run: ./gradlew clean build
       shell: bash
 
-    - name: Generate deployment package
-      run: |
-        mkdir -p deploy
-        cp build/libs/*.jar deploy/application.jar
-        cp Procfile deploy/Procfile
-        cp -r .ebextensions deploy/.ebextensions
-        cp -r .platform deploy/.platform
-        cd deploy && zip -r deploy.zip .
+    deploy:
+      needs: build
+      name: CD PipeLine
+      runs-on: ubuntu-latest
 
-    - name: Deploy to AWS Elastic Beanstalk
-      uses: einaregilsson/beanstalk-deploy@v14
-      with:
-        region: ${{ secrets.AWS_EB_REGION }}
-        aws_access_key: ${{ secrets.AWS_EB_ACCESS_KEY }}
-        aws_secret_key: ${{ secrets.AWS_EB_SECRET_KEY }}
-        application_name: ${{ secrets.AWS_EB_APPLICATION_NAME }}
-        environment_name: ${{ secrets.AWS_EB_ENVIRONMENT_NAME }}
-        version_label: ${{ github.sha }}
-        deployment_package: deploy/deploy.zip
+      steps:
+      - name: Generate deployment package
+        run: |
+          mkdir -p deploy
+          cp build/libs/*.jar deploy/application.jar
+          cp Procfile deploy/Procfile
+          cp -r .ebextensions deploy/.ebextensions
+          cp -r .platform deploy/.platform
+          cd deploy && zip -r deploy.zip .
+
+      - name: Deploy to AWS Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v14
+        with:
+          region: ${{ secrets.AWS_EB_REGION }}
+          aws_access_key: ${{ secrets.AWS_EB_ACCESS_KEY }}
+          aws_secret_key: ${{ secrets.AWS_EB_SECRET_KEY }}
+          application_name: ${{ secrets.AWS_EB_APPLICATION_NAME }}
+          environment_name: ${{ secrets.AWS_EB_ENVIRONMENT_NAME }}
+          version_label: ${{ github.sha }}
+          deployment_package: deploy/deploy.zip
