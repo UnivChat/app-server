@@ -44,6 +44,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Generate deployment package
+        run: |
+          mkdir -p deploy
+          cp build/libs/*.jar deploy/application.jar
+          cp Procfile deploy/Procfile
+          cp -r .ebextensions deploy/.ebextensions
+          cp -r .platform deploy/.platform
+          cd deploy && zip -r deploy.zip .
+
       - name: Deploy to AWS Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v14
         with:
@@ -53,4 +62,4 @@ jobs:
           application_name: ${{ secrets.AWS_EB_APPLICATION_NAME }}
           environment_name: ${{ secrets.AWS_EB_ENVIRONMENT_NAME }}
           version_label: ${{ github.sha }}
-          deployment_package: build/libs/*.jar
+          deployment_package: deploy/deploy.zip
