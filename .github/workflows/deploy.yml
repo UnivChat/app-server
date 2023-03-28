@@ -5,7 +5,7 @@ on:
     branches: [main, develop]
 
 jobs:
-  build & deploy:
+  build_N_deploy:
     name: CI PipeLine
     runs-on: ubuntu-latest
 
