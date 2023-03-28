@@ -39,8 +39,8 @@ jobs:
       run: ./gradlew build
       shell: bash
 
-  needs: build
   deploy:
+    needs: build
     name: CD PipeLine
     runs-on: ubuntu-latest
 
