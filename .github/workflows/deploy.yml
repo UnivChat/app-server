@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    name: CI PipeLine
+    name: CI_CD PipeLine
     runs-on: ubuntu-latest
 
     steps:
@@ -44,12 +44,6 @@ jobs:
       run: ./gradlew clean build
       shell: bash
 
-  deploy:
-    needs: build
-    name: CD PipeLine
-    runs-on: ubuntu-latest
-
-    steps:
     - name: Generate deployment package
       run: |
         mkdir -p deploy
