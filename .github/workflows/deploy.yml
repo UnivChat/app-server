@@ -44,6 +44,13 @@ jobs:
       run: ./gradlew clean build
       shell: bash
 
+    - name: Get current time
+      uses: 1466587594/get-current-time@v2
+      id: current-time
+      with:
+        format: YYYY-MM-DDTHH-mm-ss
+        utcOffset: "+09:00"
+
     - name: Generate deployment package
       run: |
         mkdir -p deploy
@@ -61,5 +68,5 @@ jobs:
         aws_secret_key: ${{ secrets.AWS_EB_SECRET_KEY }}
         application_name: ${{ secrets.AWS_EB_APPLICATION_NAME }}
         environment_name: ${{ secrets.AWS_EB_ENVIRONMENT_NAME }}
-        version_label: ${{ github.sha }}
+        version_label: catchat-${{steps.current-time.outputs.formattedTime}}
         deployment_package: deploy/deploy.zip
