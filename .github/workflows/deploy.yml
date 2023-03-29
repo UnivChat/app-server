@@ -19,7 +19,7 @@ jobs:
         distribution: 'temurin'
 
     - name: Set project from github secret
-      uses: microsoft/variable-substitution@v1
+      uses: microsoft/variable-substitution@v2
       with:
         files: ./src/main/resources/application.yml
       env:
