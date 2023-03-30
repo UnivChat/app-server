@@ -2,7 +2,7 @@ name: catchat server CI/CD
 
 on:
   pull_request:
-    branches: [main, develop]
+    branches: [main]
 
 jobs:
   build:
