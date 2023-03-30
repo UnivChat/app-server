@@ -20,6 +20,9 @@ public class MemberJoinService {
 //    }
 
 //    @Transactional
+    /*
+        join의 반환형 확정 필요 -> dto를 성공적으로 저장했을 때, entity로 반환할 것인지, true로 성공여부만 전달할 것인지
+     */
     public boolean join(MemberJoinDTO memberJoinDTO) {
         String rawPassword=memberJoinDTO.getPassword();
         // password 암호화 - BCryptPasswordEncoder 를 객체로 받아옴

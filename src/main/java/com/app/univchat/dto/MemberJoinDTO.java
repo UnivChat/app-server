@@ -18,15 +18,15 @@ public class MemberJoinDTO {
     private String nickname;
     @NotNull
     private String gender;
-    private String profile_image_url;
+    private String profileImgUrl;
 
     @Builder
-    public MemberJoinDTO(String email, String password, String nickname, String gender, String profile_image_url) {
+    public MemberJoinDTO(String email, String password, String nickname, String gender, String profileImgUrl) {
         this.email=email;
         this.password=password;
         this.nickname=nickname;
         this.gender=gender;
-        this.profile_image_url=profile_image_url;
+        this.profileImgUrl=profileImgUrl;
     }
 
     // Dto를 entity 객체로 만들어 return해주는 메서드
@@ -36,7 +36,7 @@ public class MemberJoinDTO {
                 .password(password)
                 .nickname(nickname)
                 .gender(gender)
-                .profile_image_url(profile_image_url)
+                .profile_image_url(profileImgUrl)
                 .build();
     }
 
