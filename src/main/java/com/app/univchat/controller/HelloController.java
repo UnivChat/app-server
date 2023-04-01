@@ -1,5 +1,7 @@
 package com.app.univchat.controller;
 
+import com.app.univchat.base.BaseResponse;
+import com.app.univchat.base.BaseResponseStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,9 +12,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/hello")
 public class HelloController {
 
-    @GetMapping("")
-    public ResponseEntity<String> hello() {
-        return ResponseEntity.ok("hello");
+    @GetMapping("/1")
+    public ResponseEntity<String> hello1() {
+        return ResponseEntity.ok("hello1");
     }
+
+    @GetMapping("/2")
+    public BaseResponse<String> hello2() {
+        return BaseResponse.ok(BaseResponseStatus.SUCCESS, "hello2");
+    }
+
 
 }
