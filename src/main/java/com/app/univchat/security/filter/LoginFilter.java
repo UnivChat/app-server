@@ -1,5 +1,7 @@
 package com.app.univchat.security.filter;
 
+import com.app.univchat.base.BaseResponse;
+import com.app.univchat.base.BaseResponseStatus;
 import com.app.univchat.domain.Member;
 import com.app.univchat.dto.JwtDto;
 import com.app.univchat.dto.LoginDto;
@@ -90,9 +92,9 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
         response.setCharacterEncoding("utf-8");
 
         //response Body 설정
-        //TODO: 응답 형식 baseDto로 변경
         LoginDto.Res loginResDto = new LoginDto.Res(member, jwtDto);
-        String result = objectMapper.writeValueAsString(loginResDto);
+        BaseResponse<LoginDto.Res> resDto = BaseResponse.ok(BaseResponseStatus.SUCCESS, loginResDto);
+        String result = objectMapper.writeValueAsString(resDto);
 
         response.getWriter().write(result);
 
