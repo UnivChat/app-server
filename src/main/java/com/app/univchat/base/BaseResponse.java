@@ -5,29 +5,31 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({"code", "message", "result"})
+@JsonPropertyOrder({"httpStatus", "code", "message", "result"})
 public class BaseResponse<T> {
 
     //API base응답
-
+    private HttpStatus httpStatus;
     private String code;
     private  String message;
     private T result;
 
 
-    public static <T> BaseResponse<T> ok(BaseResponseStatus baseResponseStatus) {
-        return new BaseResponse<>(baseResponseStatus.getCode(), baseResponseStatus.getMessage(), null);
-    }
-    public static <T> BaseResponse<T> ok(BaseResponseStatus baseResponseStatus, T result) {
-        return new BaseResponse<>(baseResponseStatus.getCode(), baseResponseStatus.getMessage(), result);
+
+    public static <T> BaseResponse<T> ok(HttpStatus httpStatus, BaseResponseStatus baseResponseStatus, T result) {
+        return new BaseResponse<>(httpStatus, baseResponseStatus.getCode(), baseResponseStatus.getMessage(), result);
     }
 
+    public static <T> BaseResponse<T> error(HttpStatus httpStatus, BaseResponseStatus baseResponseStatus) {
+        return new BaseResponse<>(httpStatus, baseResponseStatus.getCode(), baseResponseStatus.getMessage(), null);
+    }
 
 
 }

@@ -2,6 +2,7 @@ package com.app.univchat.controller;
 
 import com.app.univchat.base.BaseResponse;
 import com.app.univchat.base.BaseResponseStatus;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +20,7 @@ public class HelloController {
 
     @GetMapping("/2")
     public BaseResponse<String> hello2() {
-        return BaseResponse.ok(BaseResponseStatus.SUCCESS, "hello2");
+        return BaseResponse.ok(HttpStatus.OK, BaseResponseStatus.SUCCESS, "hello2");
     }
 
 
