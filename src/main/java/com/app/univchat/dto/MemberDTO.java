@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MemberJoinDTO {
+public class MemberDTO {
     private long id;
     @NotNull
     private String email;
@@ -20,8 +20,10 @@ public class MemberJoinDTO {
     private String gender;
     private String profileImgUrl;
 
+//    private final Member member;
+
     @Builder
-    public MemberJoinDTO(String email, String password, String nickname, String gender, String profileImgUrl) {
+    public MemberDTO(String email, String password, String nickname, String gender, String profileImgUrl) {
         this.email=email;
         this.password=password;
         this.nickname=nickname;
@@ -39,5 +41,7 @@ public class MemberJoinDTO {
                 .profile_image_url(profileImgUrl)
                 .build();
     }
+
+//    public static MemberDTO from
 
 }
