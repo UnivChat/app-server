@@ -2,7 +2,7 @@ package com.app.univchat.dto;
 
 import lombok.*;
 
-public class UserRes {
+public class MemberRes {
 
 
     @Builder
