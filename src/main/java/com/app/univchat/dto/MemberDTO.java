@@ -1,5 +1,6 @@
 package com.app.univchat.dto;
 
+import com.app.univchat.domain.Member;
 import com.sun.istack.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -18,17 +19,17 @@ public class MemberDTO {
     private String nickname;
     @NotNull
     private String gender;
-    private String profileImgUrl;
+    private String profileImageUrl;
 
 //    private final Member member;
 
     @Builder
-    public MemberDTO(String email, String password, String nickname, String gender, String profileImgUrl) {
+    public MemberDTO(String email, String password, String nickname, String gender, String profileImageUrl) {
         this.email=email;
         this.password=password;
         this.nickname=nickname;
         this.gender=gender;
-        this.profileImgUrl=profileImgUrl;
+        this.profileImageUrl=profileImageUrl;
     }
 
     // Dto를 entity 객체로 만들어 return해주는 메서드
@@ -38,7 +39,7 @@ public class MemberDTO {
                 .password(password)
                 .nickname(nickname)
                 .gender(gender)
-                .profile_image_url(profileImgUrl)
+                .profileImageUrl(profileImageUrl)
                 .build();
     }
 
