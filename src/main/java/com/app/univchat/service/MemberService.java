@@ -1,6 +1,8 @@
 package com.app.univchat.service;
 
+import com.app.univchat.base.BaseException;
 import com.app.univchat.dto.MemberDTO;
+import com.app.univchat.repository.MemberRepository;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 //@RequiredArgsConstructor
 public class MemberService {
-    private final MemberRepository memberRepository;
+    private MemberRepository memberRepository;
 //    private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -19,7 +21,7 @@ public class MemberService {
     }
 
 //    @Transactional
-    public MemberDTO signup(MemberDTO memberDTO) throws BaseException{
+    public String signup(MemberDTO memberDTO) throws BaseException {
 
         String rawPassword=memberDTO.getPassword();
         // password 암호화 - BCryptPasswordEncoder 를 객체로 받아옴
@@ -29,14 +31,14 @@ public class MemberService {
 
         // dto를 entitiy로 변환해 저장
         memberRepository.save(memberDTO.toEntity());
-        return memberDTO;
+        return null;
     }
 
     public boolean checkEmail(String email) {
-        return memberRepository.checkEmail(email);
+        return memberRepository.existsByEmail(email);
     }
 
     public boolean checkNickname(String nickname) {
-        return memberRepository.checkNickname(nickname);
+        return memberRepository.existsByNickname(nickname);
     }
 }
