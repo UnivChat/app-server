@@ -22,7 +22,7 @@ public class MemberController {
 
     // 회원가입
     @PostMapping("/signup")
-    public BaseResponse<MemberDTO> signup(MemberDTO memberDTO) throws BaseException {
+    public BaseResponse<String> signup(MemberDTO memberDTO) throws BaseException {
         try {
             // 이메일 중복 체크
             if(memberService.checkEmail(memberDTO.getEmail())) {
