@@ -1,6 +1,7 @@
 package com.app.univchat.aws;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ import java.util.UUID;
 public class AWSS3Uploader {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
-    private final AmazonS3 amazonS3;
+    private final AmazonS3Client amazonS3Client;
 
     // (로컬)파일 삭제
     private void removeFile(File file) {
@@ -32,9 +33,9 @@ public class AWSS3Uploader {
 
     // S3 업로드
     private String putS3(File file, String name) {
-        amazonS3.putObject(new PutObjectRequest(bucket, name, file).withCannedAcl(CannedAccessControlList.PublicRead));
+        amazonS3Client.putObject(new PutObjectRequest(bucket, name, file).withCannedAcl(CannedAccessControlList.PublicRead));
 
-        return amazonS3.getUrl(bucket, name).toString();
+        return amazonS3Client.getUrl(bucket, name).toString();
     }
 
     // 로컬에 파일 저장
