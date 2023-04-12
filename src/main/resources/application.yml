@@ -24,6 +24,18 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: yujinkwon.dev@gmail.com
+    password: ${{ GOOGLE_EMAIL_APP_PASSWORD }}
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+
 
 jwt:
   header: Authorization
@@ -44,3 +56,4 @@ cloud:
       static: ${{ AWS_S3_REGION }}
     stack:
       auto: false
+
