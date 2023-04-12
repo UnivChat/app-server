@@ -6,7 +6,6 @@ import com.app.univchat.dto.MemberRes;
 import com.app.univchat.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import static com.app.univchat.base.BaseResponseStatus.SUCCESS;
@@ -20,10 +19,10 @@ public class MemberController {
 
     @SneakyThrows
     @PostMapping("/email/verified")
-    public MemberRes.EmailAuthRes memberEmailVerified(@RequestBody MemberReq.EmailAuthReq emailAuthReq) {
+    public BaseResponse<MemberRes.EmailAuthRes> memberEmailVerified(@RequestBody MemberReq.EmailAuthReq emailAuthReq) {
         MemberRes.EmailAuthRes emailAuthRes = emailService.sendEmail(emailAuthReq.getEmail());
 
-        return emailAuthRes;
+        return BaseResponse.ok(SUCCESS, emailAuthRes);
     }
 
 }
