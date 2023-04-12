@@ -8,6 +8,7 @@ import com.app.univchat.base.BaseResponseStatus;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -16,15 +17,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/hello")
 public class HelloController {
 
     private final AWSS3Uploader awss3Uploader;
 
-    public HelloController(AWSS3Uploader awss3Uploader) {
-        this.awss3Uploader = awss3Uploader;
-    }
 
     @GetMapping("/1")
     public ResponseEntity<String> hello1() {
