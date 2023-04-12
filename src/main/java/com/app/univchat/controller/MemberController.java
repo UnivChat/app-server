@@ -7,7 +7,11 @@ import com.app.univchat.base.BaseResponseStatus;
 import com.app.univchat.dto.MemberDTO;
 import com.app.univchat.repository.MemberRepository;
 import com.app.univchat.service.MemberService;
+import com.app.univchat.dto.MemberReq;
+import com.app.univchat.dto.MemberRes;
+import com.app.univchat.service.EmailService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,17 +20,24 @@ import java.io.IOException;
 
 import static com.app.univchat.base.BaseResponseStatus.*;
 
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/member")
 public class MemberController {
-//    @Autowired
-    private final MemberService memberService;
-//    private final MemberRepository memberRepository;
 
-    public MemberController(MemberService memberService) {
-        this.memberService=memberService;
+    private final EmailService emailService;
+    private final MemberService memberService;
+
+    // 이메일 인증
+    @SneakyThrows
+    @PostMapping("/email/verified")
+    public BaseResponse<MemberRes.EmailAuthRes> memberEmailVerified(@RequestBody MemberReq.EmailAuthReq emailAuthReq) {
+        MemberRes.EmailAuthRes emailAuthRes = emailService.sendEmail(emailAuthReq.getEmail());
+
+        return BaseResponse.ok(SUCCESS, emailAuthRes);
     }
+
+
 
     // 회원가입
 
@@ -51,10 +62,5 @@ public class MemberController {
 
 
     }
-
-//    @GetMapping("/1")
-//    public ResponseEntity<String> memberTest() {
-//        return ResponseEntity.ok("memberTest");
-//    }
 
 }
