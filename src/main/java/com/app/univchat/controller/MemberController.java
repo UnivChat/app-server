@@ -7,6 +7,7 @@ import com.app.univchat.dto.MemberReq;
 import com.app.univchat.dto.MemberRes;
 import com.app.univchat.service.EmailService;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.web.bind.annotation.*;
@@ -16,12 +17,14 @@ import static com.app.univchat.base.BaseResponseStatus.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/member")
+@Tag(name = "member", description = "회원 관리 API")
 public class MemberController {
 
     private final EmailService emailService;
     private final MemberService memberService;
 
     // 이메일 인증
+    @Tag(name = "member", description = "회원 관리 API")
     @SneakyThrows
     @PostMapping("/email/verified")
     public BaseResponse<MemberRes.EmailAuthRes> memberEmailVerified(@RequestBody MemberReq.EmailAuthReq emailAuthReq) {
@@ -33,6 +36,7 @@ public class MemberController {
 
 
     // 회원가입
+    @Tag(name = "member", description = "회원 관리 API")
     @ApiOperation(value = "회원가입 API", notes = "이메일 형식을 보내주세요.")
     @PostMapping("/signup")
     public BaseResponse<String> signup(@RequestBody MemberReq.Signup memberDto){

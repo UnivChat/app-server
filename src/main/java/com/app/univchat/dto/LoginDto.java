@@ -4,6 +4,7 @@ import com.app.univchat.domain.Member;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 public class LoginDto {
 
@@ -20,6 +21,7 @@ public class LoginDto {
     }
 
     @Data
+    @NoArgsConstructor
     @ApiModel(value = "로그인 성공 반환 DTO")
     public static class Res{
 
