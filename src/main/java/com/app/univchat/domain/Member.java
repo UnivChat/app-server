@@ -28,4 +28,12 @@ public class Member {
 
     private String profileImageUrl;
 
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updateProfileImage(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+    }
+
 }

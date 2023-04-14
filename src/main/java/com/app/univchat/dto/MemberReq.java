@@ -2,7 +2,9 @@ package com.app.univchat.dto;
 
 import com.app.univchat.domain.Member;
 import com.sun.istack.NotNull;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 public class MemberReq {
 
@@ -39,5 +41,19 @@ public class MemberReq {
                     .gender(gender)
                     .build();
         }
+    }
+
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    public static class Update {
+        @NotNull
+        @ApiModelProperty(name = "닉네임", example = "닉네임")
+        private String nickname;
+
+        @ApiModelProperty(hidden = true)
+        private MultipartFile profileImage;
     }
 }
