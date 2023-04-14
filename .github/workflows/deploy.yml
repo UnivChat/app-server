@@ -31,6 +31,7 @@ jobs:
         cloud.aws.credentials.secret-key: ${{ secrets.AWS_S3_SECRET_KEY }}
         cloud.aws.region.static: ${{ secrets.AWS_S3_REGION }}
         jwt.secret: ${{ secrets.JWT_SECRET }}
+        spring.mail.password: ${{ secrets.GOOGLE_EMAIL_APP_PASSWORD }}
 
     - name: Run chmod to make gradlew executable
       run: chmod +x ./gradlew
