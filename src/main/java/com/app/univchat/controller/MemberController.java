@@ -7,7 +7,10 @@ import com.app.univchat.service.MemberService;
 import com.app.univchat.dto.MemberReq;
 import com.app.univchat.dto.MemberRes;
 import com.app.univchat.service.EmailService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -67,9 +70,13 @@ public class MemberController {
      */
     @Tag(name = "member", description = "회원 관리 API")
     @ApiOperation(value = "회원 수정 API",
-            notes = "Content-type: form-data \n\n Dto 데이터 Content-type: application/json")
+            notes = "form-data 형식으로 보내주세요.(다른 타입은 415 오류 발생) \n\n Dto - Content-type: application/json (명시하지 않을 시 오류 발생)" )
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "", response = MemberRes.Update.class),
+            @ApiResponse(code = 415, message = "Content type 'application/octet-stream' not supported")
+    })
     @PutMapping("/info")
-    public ResponseEntity<?> update(@RequestPart MemberReq.Update memberUpdateDto,
+    public ResponseEntity<BaseResponse<MemberRes.Update>> update(@RequestPart MemberReq.Update memberUpdateDto,
                                     @RequestPart(required = false) MultipartFile profileImage,
                                     @ApiIgnore @AuthenticationPrincipal PrincipalDetails member){
 
