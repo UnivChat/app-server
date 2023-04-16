@@ -2,6 +2,7 @@ package com.app.univchat.dto;
 
 import com.app.univchat.domain.Member;
 import com.sun.istack.NotNull;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,6 +49,7 @@ public class MemberReq {
     @AllArgsConstructor
     @Setter
     @Getter
+    @ApiModel(value = "memberUpdateDto - 회원 수정 api 요청 객체")
     public static class Update {
         @NotNull
         @ApiModelProperty(name = "닉네임", example = "닉네임")
