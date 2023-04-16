@@ -4,11 +4,13 @@ import com.app.univchat.aws.AWSS3Uploader;
 import com.app.univchat.base.BaseException;
 import com.app.univchat.domain.Member;
 import com.app.univchat.dto.MemberReq;
+import com.app.univchat.dto.MemberRes;
 import com.app.univchat.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.SneakyThrows;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
@@ -43,20 +45,22 @@ public class MemberService {
 
     /**
      * 회원 수정
+     *
+     * @return
      */
     @Transactional
-    public void update(MemberReq.Update memberUpdateDto, Member member) throws IOException {
+    public MemberRes.Update update(MemberReq.Update memberUpdateDto, Member member){
         //업데이트
         member.updateNickname(memberUpdateDto.getNickname());
 
-        //TODO: 기존의 프로필 사진 있을 경우 삭제 필요
         //프로필 사진 업데이트
         if (memberUpdateDto.getProfileImage() != null && !memberUpdateDto.getProfileImage().isEmpty()) {
-            String url = awss3Uploader.uploadFiles(memberUpdateDto.getProfileImage(), "member");
-            member.updateProfileImage(url);
+            updateProfileImage(memberUpdateDto.getProfileImage(), member);
         }
 
         memberRepository.save(member);
+
+        return new MemberRes.Update(member.getNickname(), member.getProfileImageUrl());
     }
 
     public boolean checkEmail(String email) {
@@ -65,5 +69,17 @@ public class MemberService {
 
     public boolean checkNickname(String nickname) {
         return memberRepository.existsByNickname(nickname);
+    }
+
+    @SneakyThrows(IOException.class)
+    public void updateProfileImage(MultipartFile image, Member member) {
+        //기존 프로필 이미지 있으면 삭제
+        if (member.getProfileImageUrl() != null) {
+            awss3Uploader.deleteByUrl(member.getProfileImageUrl());
+        }
+
+        //프로필 이미지 업로드
+        String url = awss3Uploader.uploadFiles(image, "profile");
+        member.updateProfileImage(url);
     }
 }

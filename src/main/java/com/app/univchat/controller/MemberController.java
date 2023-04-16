@@ -71,15 +71,15 @@ public class MemberController {
     @PutMapping("/info")
     public ResponseEntity<?> update(@RequestPart MemberReq.Update memberUpdateDto,
                                     @RequestPart(required = false) MultipartFile profileImage,
-                                    @ApiIgnore @AuthenticationPrincipal PrincipalDetails member) throws IOException {
+                                    @ApiIgnore @AuthenticationPrincipal PrincipalDetails member){
 
         if (profileImage != null && !profileImage.isEmpty()) {
             memberUpdateDto.setProfileImage(profileImage);
         }
 
-        memberService.update(memberUpdateDto, member.getMember());
+        MemberRes.Update result = memberService.update(memberUpdateDto, member.getMember());
 
-        return ResponseEntity.ok(BaseResponse.ok(BaseResponseStatus.SUCCESS));
+        return ResponseEntity.ok(BaseResponse.ok(BaseResponseStatus.SUCCESS, result));
     }
 
 }
