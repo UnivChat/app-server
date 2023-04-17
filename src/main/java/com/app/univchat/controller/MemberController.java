@@ -2,6 +2,8 @@ package com.app.univchat.controller;
 
 import com.app.univchat.base.BaseResponse;
 import com.app.univchat.base.BaseResponseStatus;
+import com.app.univchat.config.SecurityUtil;
+import com.app.univchat.domain.Member;
 import com.app.univchat.service.MemberService;
 import com.app.univchat.dto.MemberReq;
 import com.app.univchat.dto.MemberRes;
@@ -32,6 +34,8 @@ public class MemberController {
 
 
 
+
+
     // 회원가입
     @ApiOperation(value = "회원가입 API", notes = "이메일 형식을 보내주세요.")
     @PostMapping("/signup")
@@ -48,6 +52,21 @@ public class MemberController {
 
         return BaseResponse.ok(BaseResponseStatus.SUCCESS,memberService.signup(memberDto));
 
+    }
+
+    // 비밀번호 변경
+    @ApiOperation(value = "비밀번호 변경 API")
+    @PostMapping("/change/password")
+    public BaseResponse<String> updatePassword(@RequestBody MemberReq.UpdatePasswordReq updatePasswordReq){
+
+        String passwordRes=memberService.updatePassword(updatePasswordReq);
+
+        if(passwordRes!=null) {
+            return BaseResponse.ok(BaseResponseStatus.SUCCESS,passwordRes);
+        }
+        else {
+            return BaseResponse.ok(BaseResponseStatus.USER_NOT_EXIST_EMAIL_ERROR);
+        }
 
     }
 
