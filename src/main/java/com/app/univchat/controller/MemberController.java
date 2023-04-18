@@ -2,8 +2,9 @@ package com.app.univchat.controller;
 
 import com.app.univchat.base.BaseResponse;
 import com.app.univchat.base.BaseResponseStatus;
-import com.app.univchat.config.SecurityUtil;
+
 import com.app.univchat.domain.Member;
+import com.app.univchat.security.auth.PrincipalDetails;
 import com.app.univchat.service.MemberService;
 import com.app.univchat.dto.MemberReq;
 import com.app.univchat.dto.MemberRes;
@@ -11,7 +12,13 @@ import com.app.univchat.service.EmailService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.java.Log;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
+
+import java.io.IOException;
+import java.lang.reflect.InaccessibleObjectException;
 
 import static com.app.univchat.base.BaseResponseStatus.*;
 
@@ -31,9 +38,6 @@ public class MemberController {
 
         return BaseResponse.ok(SUCCESS, emailAuthRes);
     }
-
-
-
 
 
     // 회원가입
@@ -68,6 +72,15 @@ public class MemberController {
             return BaseResponse.ok(BaseResponseStatus.USER_NOT_EXIST_EMAIL_ERROR);
         }
 
+    }
+
+    @ApiOperation(value = "회원조회 API")
+    @GetMapping("/info")
+    public BaseResponse<MemberRes.InfoRes> viewInfo(@ApiIgnore @AuthenticationPrincipal PrincipalDetails member) throws IOException {
+
+        MemberRes.InfoRes infoRes=memberService.viewInfo(member.getMember());
+
+        return BaseResponse.ok(BaseResponseStatus.SUCCESS,infoRes);
     }
 
 }

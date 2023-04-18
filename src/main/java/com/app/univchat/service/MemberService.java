@@ -4,13 +4,17 @@ import com.app.univchat.base.BaseException;
 import com.app.univchat.config.SecurityUtil;
 import com.app.univchat.domain.Member;
 import com.app.univchat.dto.MemberReq;
+import com.app.univchat.dto.MemberRes;
 import com.app.univchat.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+
 @Service
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class MemberService {
     private MemberRepository memberRepository;
 
@@ -35,6 +39,21 @@ public class MemberService {
         // dto를 entitiy로 변환해 저장
         memberRepository.save(memberDto.toEntity());
         return null;
+    }
+
+    public MemberRes.InfoRes viewInfo(Member member) throws IOException{
+
+        MemberRes.InfoRes infoRes=new MemberRes.InfoRes();
+
+        infoRes.setEmail(member.getEmail());
+        infoRes.setNickname(member.getNickname());
+        infoRes.setGender(member.getGender());
+        if(member.getProfileImageUrl()==null) {
+            infoRes.setProfileImgUrl(" ");
+        }
+        else infoRes.setProfileImgUrl(member.getProfileImageUrl());
+
+        return infoRes;
     }
 
     public String updatePassword(MemberReq.UpdatePasswordReq updatePasswordReq) throws BaseException {
