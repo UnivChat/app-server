@@ -39,6 +39,7 @@ public class RedisService {
 
     //TODO 레디스에 저장 예시입니다!
     // redisService.saveToken(String.valueOf(userIdx),generateToken.getRefreshToken(), (System.currentTimeMillis()+ refreshTime*1000));
-
+    // redisService.deleteValues(String.valueOf(userId));
+    // String expiredAt= redisService.getValues(accessToken);
 
 }
