@@ -57,6 +57,7 @@ public class MemberReq {
 
         @ApiModelProperty(hidden = true)
         private MultipartFile profileImage;
+    }
 
     @Builder
     @NoArgsConstructor
