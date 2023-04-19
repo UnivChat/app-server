@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -81,13 +82,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/webjars/**").permitAll()
                 .antMatchers("/v3/api-docs").permitAll()
                 .antMatchers("/hello/**").permitAll()
-                .antMatchers("/member/**").permitAll()
+
+                .antMatchers("/member/signup" ,"/member/change/password", "/member/email/verified").permitAll()
+
+                // 채팅 테스트 시 주석 해제
+               //.antMatchers("/app.js").permitAll()
+               //.antMatchers("/main.css").permitAll()
+               //.antMatchers("/").permitAll()
 
                 .anyRequest().authenticated() //위의 api가 아닌 경로는 모두 jwt 토큰 인증을 해야 함
 
-
                 .and()
-//                .apply(new JwtSecurityConfig(tokenProvider))
+                .apply(new JwtSecurityConfig(jwtProvider))
 
         ;
     }
