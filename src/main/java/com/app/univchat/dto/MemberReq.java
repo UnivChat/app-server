@@ -57,5 +57,15 @@ public class MemberReq {
 
         @ApiModelProperty(hidden = true)
         private MultipartFile profileImage;
+
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    @ApiModel(value = "UpdatePasswordReq - 비밀번호 변경 요청 객체")
+    public static class UpdatePasswordReq {
+        private String email;
+        private String password;
     }
 }

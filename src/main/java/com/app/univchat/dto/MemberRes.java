@@ -33,5 +33,18 @@ public class MemberRes {
         private String profileImageUrl;
     }
 
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    @ApiModel(value = "회원 조회 api 응답 객체")
+    public static class InfoRes {
+        String email;
+        String nickname;
+        String gender;
+        String profileImgUrl;
+    }
+
 
 }
