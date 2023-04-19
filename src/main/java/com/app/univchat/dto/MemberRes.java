@@ -14,6 +14,18 @@ public class MemberRes {
         int checkCode;
     }
 
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    public static class InfoRes {
+        String email;
+        String nickname;
+        String gender;
+        String profileImgUrl;
+    }
+
 
 
 

@@ -28,4 +28,8 @@ public class Member {
 
     private String profileImageUrl;
 
+    public void updatePassword(String password) {
+        this.password=password;
+    }
+
 }

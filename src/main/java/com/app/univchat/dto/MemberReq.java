@@ -40,4 +40,21 @@ public class MemberReq {
                     .build();
         }
     }
+
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    public static class UpdatePasswordReq {
+        private String email;
+        private String password;
+
+//        // Dto를 entity 객체로 만들어 return해주는 메서드
+//        public Member toEntity() {
+//            return Member.builder()
+//                    .password(password)
+//                    .build();
+//        }
+    }
 }
