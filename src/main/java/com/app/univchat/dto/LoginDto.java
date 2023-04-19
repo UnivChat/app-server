@@ -4,11 +4,12 @@ import com.app.univchat.domain.Member;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 public class LoginDto {
 
     @Data
-    @ApiModel(value = "로그인 요청 DTO")
+    @ApiModel(value = "로그인 요청 Dto")
     public static class Req{
 
         @ApiModelProperty(name = "로그인 이메일", example = "aaa@catholic.ac.kr")
@@ -20,7 +21,8 @@ public class LoginDto {
     }
 
     @Data
-    @ApiModel(value = "로그인 성공 반환 DTO")
+    @NoArgsConstructor
+    @ApiModel(value = "로그인 성공 반환 Dto")
     public static class Res{
 
         @ApiModelProperty(name = "로그인 이메일", example = "aaa@catholic.ac.kr")
