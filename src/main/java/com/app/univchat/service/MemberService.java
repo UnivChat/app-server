@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -58,12 +59,13 @@ public class MemberService {
 
     public String updatePassword(MemberReq.UpdatePasswordReq updatePasswordReq) throws BaseException {
 
-        Member member=memberRepository.findByEmailEquals(updatePasswordReq.getEmail());
+        Optional<Member> foundMember=memberRepository.findByEmail(updatePasswordReq.getEmail());
 
-        if(member!=null) {
+        if(foundMember!=null) {
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             String encPassword=passwordEncoder.encode(updatePasswordReq.getPassword());
 
+            Member member=foundMember.get();
             member.updatePassword(encPassword);
             memberRepository.save(member);
             return "비밀번호가 변경되었습니다.";
