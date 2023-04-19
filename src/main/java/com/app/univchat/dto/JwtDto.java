@@ -13,10 +13,10 @@ public class JwtDto {
     @ApiModelProperty(name = "인증 타입", example = "Bearer")
     private String grantType;
 
-    @ApiModelProperty(name = "accessToken")
+    @ApiModelProperty(name = "accessToken", example = "eyJhdsfasdfafsda.sdafSDFsdf13SDFSDfsfSFSDF5sf")
     private String accessToken;
 
-    @ApiModelProperty(name = "refreshToken")
+    @ApiModelProperty(name = "refreshToken", example = "eyJhdsfasdfafsda.sdafSDFsdf13SDFSDfsfSFSDF5sf")
     private String refreshToken;
 
 }

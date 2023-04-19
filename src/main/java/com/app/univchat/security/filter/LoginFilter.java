@@ -98,7 +98,7 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
 
         response.getWriter().write(result);
 
-        super.successfulAuthentication(request, response, chain, authResult);
+//        super.successfulAuthentication(request, response, chain, authResult);
     }
 
     /**
@@ -113,11 +113,9 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
         response.setContentType("application/json;charset=utf-8");
 
         //response Body 설정
-        //TODO: 응답 형식 baseDto로 변경
-        String result = objectMapper.writeValueAsString("로그인 실패");
+        BaseResponse<Object> resDto = BaseResponse.ok(BaseResponseStatus.USER_FAILED_TO_LOG_IN_ERROR);
+        String result = objectMapper.writeValueAsString(resDto);
 
-        response.getWriter().write(result);
-
-        super.unsuccessfulAuthentication(request, response, failed);
+        response.getWriter().write(String.valueOf(result));
     }
 }
