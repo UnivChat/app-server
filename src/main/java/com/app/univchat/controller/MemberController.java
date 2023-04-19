@@ -69,6 +69,7 @@ public class MemberController {
     }
 
     // 비밀번호 변경
+    @Tag(name = "member", description = "회원 관리 API")
     @ApiOperation(value = "비밀번호 변경 API")
     @PostMapping("/change/password")
     public BaseResponse<String> updatePassword(@RequestBody MemberReq.UpdatePasswordReq updatePasswordReq){
@@ -84,6 +85,7 @@ public class MemberController {
 
     }
 
+    @Tag(name = "member", description = "회원 관리 API")
     @ApiOperation(value = "회원조회 API")
     @GetMapping("/info")
     public BaseResponse<MemberRes.InfoRes> viewInfo(@ApiIgnore @AuthenticationPrincipal PrincipalDetails member) throws IOException {
