@@ -40,6 +40,7 @@ public class MemberController {
 
     // 이메일 인증
     @Tag(name = "member", description = "회원 관리 API")
+    @ApiOperation(value = "이메일 인증 API", notes = "이메일을 보내주시면 랜덤 범호 6자리를 반환")
     @SneakyThrows
     @PostMapping("/email/verified")
     public BaseResponse<MemberRes.EmailAuthRes> memberEmailVerified(@RequestBody MemberReq.EmailAuthReq emailAuthReq) {
