@@ -88,6 +88,28 @@ public class MemberService {
     }
 
     /**
+     * 성별 조회
+     */
+    public MemberRes.GenderRes viewGender(Member member) throws IOException{
+
+        MemberRes.GenderRes genderRes=new MemberRes.GenderRes();
+        genderRes.setGender(member.getGender());
+
+        return genderRes;
+    }
+
+    /**
+     * 회원 탈퇴
+     */
+    public String memberDelete(Member member) throws IOException{
+
+        Long id=member.getId();
+        memberRepository.deleteById(id);
+
+        return "회원 탈퇴가 완료되었습니다.";
+    }
+
+    /**
      * 비밀번호 변경
      */
     public String updatePassword(MemberReq.UpdatePasswordReq updatePasswordReq) throws BaseException {

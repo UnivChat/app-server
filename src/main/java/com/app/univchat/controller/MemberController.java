@@ -96,6 +96,19 @@ public class MemberController {
     }
 
     /**
+     * 성별 조회 api
+     */
+    @Tag(name = "member", description = "회원 관리 API")
+    @ApiOperation(value = "성별조회 API")
+    @GetMapping("/gender")
+    public BaseResponse<MemberRes.GenderRes> viewGender(@ApiIgnore @AuthenticationPrincipal PrincipalDetails member) throws IOException {
+
+        MemberRes.GenderRes viewGender=memberService.viewGender(member.getMember());
+
+        return BaseResponse.ok(BaseResponseStatus.SUCCESS,viewGender);
+    }
+
+    /**
      * 회원 수정 api
      */
     @Tag(name = "member", description = "회원 관리 API")
@@ -117,6 +130,19 @@ public class MemberController {
         MemberRes.Update result = memberService.update(memberUpdateDto, member.getMember());
 
         return ResponseEntity.ok(BaseResponse.ok(BaseResponseStatus.SUCCESS, result));
+    }
+
+    /**
+     * 회원 탈퇴 api
+     */
+    @Tag(name = "member", description = "회원 관리 API")
+    @ApiOperation(value = "회원탈퇴 API")
+    @DeleteMapping("/delete")
+    public BaseResponse<String> memberDelete(@ApiIgnore @AuthenticationPrincipal PrincipalDetails member) throws IOException {
+
+        String deleteRes=memberService.memberDelete(member.getMember());
+
+        return BaseResponse.ok(BaseResponseStatus.SUCCESS,deleteRes);
     }
 
 }
