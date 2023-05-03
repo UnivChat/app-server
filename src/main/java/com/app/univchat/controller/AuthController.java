@@ -8,14 +8,22 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "member", description = "회원 관리 API")
 public class AuthController {
+
+
+
 
     @Tag(name = "member")
     @ApiOperation(value = "로그인 API")
@@ -27,4 +35,6 @@ public class AuthController {
 
         return ResponseEntity.ok(BaseResponse.ok(BaseResponseStatus.SUCCESS, new LoginDto.Res()));
     }
+
+
 }

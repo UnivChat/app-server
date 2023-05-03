@@ -69,4 +69,17 @@ public class MemberReq {
         private String email;
         private String password;
     }
+
+
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    @ApiModel(value = "PostReIssueReq - 리프레시토큰으로 액세스토큰 재발급")
+    public static class PostReIssueReq {
+        private String email;
+        private String refreshToken;
+    }
+
 }

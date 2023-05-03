@@ -4,18 +4,19 @@ import com.app.univchat.base.BaseResponse;
 import com.app.univchat.base.BaseResponseStatus;
 
 import com.app.univchat.domain.Member;
+import com.app.univchat.dto.JwtDto;
 import com.app.univchat.security.auth.PrincipalDetails;
 import com.app.univchat.service.MemberService;
 import com.app.univchat.dto.MemberReq;
 import com.app.univchat.dto.MemberRes;
 import com.app.univchat.service.EmailService;
+import com.app.univchat.service.RedisService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
+import lombok.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 import lombok.extern.java.Log;
@@ -38,8 +39,12 @@ public class MemberController {
     private final EmailService emailService;
     private final MemberService memberService;
 
+    private final RedisService redisService;
+
+
     // 이메일 인증
     @Tag(name = "member", description = "회원 관리 API")
+    @ApiOperation(value = "이메일 인증 API", notes = "이메일을 보내주시면 랜덤 범호 6자리를 반환")
     @SneakyThrows
     @PostMapping("/email/verified")
     public BaseResponse<MemberRes.EmailAuthRes> memberEmailVerified(@RequestBody MemberReq.EmailAuthReq emailAuthReq) {
@@ -132,6 +137,28 @@ public class MemberController {
         return ResponseEntity.ok(BaseResponse.ok(BaseResponseStatus.SUCCESS, result));
     }
 
+
+
+
+    @Tag(name = "member", description = "액세스토큰 재발급 API")
+    @ApiOperation(value = "액세스토큰 재발급 API")
+    @PostMapping("/re-token")
+    public BaseResponse<MemberRes.PostReIssueRes> reIssueToken(@RequestBody MemberReq.PostReIssueReq postReIssueReq){
+
+        //이메일(키)로 저장된 리프레시 토큰(밸류) 불러오기
+        String redisRT= redisService.getValues(String.valueOf(postReIssueReq.getEmail()));
+
+        if(redisRT==null){
+            return BaseResponse.ok(BaseResponseStatus.JWT_INVALID_REFRESH_TOKEN);
+        }
+        if(!redisRT.equals(postReIssueReq.getRefreshToken())){
+            return BaseResponse.ok(BaseResponseStatus.JWT_INVALID_USER_JWT);
+        }
+
+        MemberRes.PostReIssueRes postReIssueRes = memberService.reIssueToken(postReIssueReq.getEmail());
+
+        return BaseResponse.ok(SUCCESS, postReIssueRes);
+
     /**
      * 회원 탈퇴 api
      */
@@ -143,6 +170,7 @@ public class MemberController {
         String deleteRes=memberService.memberDelete(member.getMember());
 
         return BaseResponse.ok(BaseResponseStatus.SUCCESS,deleteRes);
+
     }
 
 }

@@ -74,7 +74,9 @@ public enum  BaseResponseStatus {
 
     JWT_WRONG_TOKEN("6006","JWT 토큰이 잘못되었습니다.", 400),
 
-    JWT_HIJACK_ACCESS_TOKEN("6007", "만료된(탈취된) 서명입니다.", 400)
+    JWT_HIJACK_ACCESS_TOKEN("6007", "만료된(탈취된) 서명입니다.", 400),
+    JWT_INVALID_REFRESH_TOKEN("6008", "유효하지 않은 리프레시 토큰입니다.", 400),
+    JWT_INVALID_USER_JWT("6008", "입력 RT와 사용자 RT가 일치하지 않습니다", 400),
 
     ;
 
