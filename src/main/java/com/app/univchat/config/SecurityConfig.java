@@ -85,7 +85,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/v3/api-docs").permitAll()
                 .antMatchers("/hello/**").permitAll()
 
-                .antMatchers("/member/signup" ,"/member/change/password", "/member/email/verified").permitAll()
+                .antMatchers("/member/signup" ,"/member/change/password", "/member/email/verified",
+                        "/member/re-token").permitAll()
 
                 // 채팅 테스트 시 주석 해제
                //.antMatchers("/app.js").permitAll()
