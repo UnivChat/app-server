@@ -46,5 +46,27 @@ public class MemberRes {
         String profileImgUrl;
     }
 
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    @ApiModel(value = "성별 조회 api 응답 객체")
+    public static class GenderRes {
+        String gender;
+    }
+
+
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    @ApiModel(value = "PostReIssueRes - 리프레시토큰으로 액세스토큰 재발급")
+    public static class PostReIssueRes {
+        private String email;
+        private JwtDto jwtDto;
+    }
+
 
 }

@@ -8,8 +8,10 @@ import com.app.univchat.dto.LoginDto;
 import com.app.univchat.jwt.JwtProvider;
 import com.app.univchat.repository.MemberRepository;
 import com.app.univchat.security.auth.PrincipalDetails;
+import com.app.univchat.service.RedisService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -39,11 +41,17 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
     private final ObjectMapper objectMapper;
     private final MemberRepository memberRepository;
 
-    public LoginFilter(JwtProvider jwtProvider, ObjectMapper objectMapper, MemberRepository memberRepository) {
+    private final RedisService redisService;
+
+    @Value("${jwt.expire-time.refresh-token}")
+    private int refreshTime;
+
+    public LoginFilter(JwtProvider jwtProvider, ObjectMapper objectMapper, MemberRepository memberRepository, RedisService redisService) {
         super(LOGIN_URI);
         this.jwtProvider = jwtProvider;
         this.objectMapper = objectMapper;
         this.memberRepository = memberRepository;
+        this.redisService = redisService;
     }
 
     /**
@@ -83,6 +91,7 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
         JwtDto jwtDto = jwtProvider.generateToken(member.getEmail());
 
         //TODO: redis에 refresh 토큰 저장
+        redisService.saveToken(String.valueOf(member.getEmail()),jwtDto.getRefreshToken(), refreshTime);
 
         //response Header 설정
         //TODO: accessToken 응답 헤더에? 쿠키에? -> 프론트와 논의

@@ -6,12 +6,15 @@ import com.app.univchat.base.BaseException;
 import com.app.univchat.config.SecurityUtil;
 
 import com.app.univchat.domain.Member;
+import com.app.univchat.dto.JwtDto;
 import com.app.univchat.dto.MemberReq;
 import com.app.univchat.dto.MemberRes;
+import com.app.univchat.jwt.JwtProvider;
 import com.app.univchat.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,7 +30,11 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final AWSS3Uploader awss3Uploader;
+    private final RedisService redisService;
+    private final JwtProvider jwtProvider;
 
+    @Value("${jwt.expire-time.refresh-token}")
+    private int refreshTime;
 
     // 현재 유저 반환
     public Member findNowUser() {
@@ -88,6 +95,28 @@ public class MemberService {
     }
 
     /**
+     * 성별 조회
+     */
+    public MemberRes.GenderRes viewGender(Member member) throws IOException{
+
+        MemberRes.GenderRes genderRes=new MemberRes.GenderRes();
+        genderRes.setGender(member.getGender());
+
+        return genderRes;
+    }
+
+    /**
+     * 회원 탈퇴
+     */
+    public String memberDelete(Member member) throws IOException{
+
+        Long id=member.getId();
+        memberRepository.deleteById(id);
+
+        return "회원 탈퇴가 완료되었습니다.";
+    }
+
+    /**
      * 비밀번호 변경
      */
     public String updatePassword(MemberReq.UpdatePasswordReq updatePasswordReq) throws BaseException {
@@ -127,4 +156,17 @@ public class MemberService {
         String url = awss3Uploader.uploadFiles(image, "profile");
         member.updateProfileImage(url);
     }
+
+    public MemberRes.PostReIssueRes reIssueToken(String email) {
+        Member member = memberRepository.findByEmail(email).get();
+        JwtDto jwtDto = jwtProvider.generateToken(member.getEmail());
+
+
+        //Redis 에 RefreshToken 저장
+        redisService.saveToken(String.valueOf(email), jwtDto.getRefreshToken(),refreshTime);
+
+        return new MemberRes.PostReIssueRes(member.getEmail(), jwtDto);
+    }
+
+
 }

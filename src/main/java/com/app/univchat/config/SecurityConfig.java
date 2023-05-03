@@ -5,6 +5,7 @@ import com.app.univchat.jwt.JwtAuthenticationEntryPoint;
 import com.app.univchat.jwt.JwtProvider;
 import com.app.univchat.repository.MemberRepository;
 import com.app.univchat.security.filter.LoginFilter;
+import com.app.univchat.service.RedisService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -33,11 +34,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final ObjectMapper objectMapper;
     private final MemberRepository memberRepository;
 
+    private final RedisService redisService;
 
     //로그인 필터 추가
     @Bean
     public LoginFilter loginFilter() throws Exception {
-        LoginFilter loginFilter = new LoginFilter(jwtProvider, objectMapper, memberRepository);
+        LoginFilter loginFilter = new LoginFilter(jwtProvider, objectMapper, memberRepository, redisService);
         loginFilter.setAuthenticationManager(authenticationManager()); //spring security에서 제공하는 manager 객체
 
         return loginFilter;
@@ -83,7 +85,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/v3/api-docs").permitAll()
                 .antMatchers("/hello/**").permitAll()
 
-                .antMatchers("/member/signup" ,"/member/change/password", "/member/email/verified").permitAll()
+                .antMatchers("/member/signup" ,"/member/change/password", "/member/email/verified",
+                        "/member/re-token").permitAll()
 
                 // 채팅 테스트 시 주석 해제
                //.antMatchers("/app.js").permitAll()
