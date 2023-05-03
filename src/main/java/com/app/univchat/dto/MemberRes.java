@@ -47,4 +47,16 @@ public class MemberRes {
     }
 
 
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    @ApiModel(value = "PostReIssueRes - 리프레시토큰으로 액세스토큰 재발급")
+    public static class PostReIssueRes {
+        private String email;
+        private JwtDto jwtDto;
+    }
+
+
 }
