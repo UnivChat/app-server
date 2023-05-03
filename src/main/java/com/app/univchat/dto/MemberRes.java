@@ -46,5 +46,15 @@ public class MemberRes {
         String profileImgUrl;
     }
 
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    @ApiModel(value = "성별 조회 api 응답 객체")
+    public static class GenderRes {
+        String gender;
+    }
+
 
 }
