@@ -14,4 +14,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     // 닉네임 존재 여부 확인
     boolean existsByNickname(String nickname);
+
+    // 회원 삭제
+    boolean deleteById(String id);
 }
