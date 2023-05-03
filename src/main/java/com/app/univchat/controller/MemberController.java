@@ -143,21 +143,22 @@ public class MemberController {
     @Tag(name = "member", description = "액세스토큰 재발급 API")
     @ApiOperation(value = "액세스토큰 재발급 API")
     @PostMapping("/re-token")
-    public BaseResponse<MemberRes.PostReIssueRes> reIssueToken(@RequestBody MemberReq.PostReIssueReq postReIssueReq){
+    public BaseResponse<MemberRes.PostReIssueRes> reIssueToken(@RequestBody MemberReq.PostReIssueReq postReIssueReq) {
 
         //이메일(키)로 저장된 리프레시 토큰(밸류) 불러오기
-        String redisRT= redisService.getValues(String.valueOf(postReIssueReq.getEmail()));
+        String redisRT = redisService.getValues(String.valueOf(postReIssueReq.getEmail()));
 
-        if(redisRT==null){
+        if (redisRT == null) {
             return BaseResponse.ok(BaseResponseStatus.JWT_INVALID_REFRESH_TOKEN);
         }
-        if(!redisRT.equals(postReIssueReq.getRefreshToken())){
+        if (!redisRT.equals(postReIssueReq.getRefreshToken())) {
             return BaseResponse.ok(BaseResponseStatus.JWT_INVALID_USER_JWT);
         }
 
         MemberRes.PostReIssueRes postReIssueRes = memberService.reIssueToken(postReIssueReq.getEmail());
 
         return BaseResponse.ok(SUCCESS, postReIssueRes);
+    }
 
     /**
      * 회원 탈퇴 api
