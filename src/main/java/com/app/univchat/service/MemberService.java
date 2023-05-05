@@ -95,6 +95,14 @@ public class MemberService {
     }
 
     /**
+     * nickname을 통한 member 조회
+     */
+    protected Optional<Member> getMember(String nickname) throws IOException{
+
+        return memberRepository.findByNickname(nickname);
+    }
+
+    /**
      * 성별 조회
      */
     public MemberRes.GenderRes viewGender(Member member) throws IOException{
