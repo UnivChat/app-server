@@ -1,0 +1,117 @@
+body {
+    font-family: Arial, sans-serif;
+    color: #183981;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.chat-title {
+    color: #183981;
+}
+
+.chat-box {
+    border: 1px solid #183981;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2);
+}
+
+.chat-message {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+input {
+    height: 42px;
+    font-size: 1.5rem;
+}
+
+.send-message-btn {
+    height: 42px;
+}
+
+.message-sender {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+
+.message-time {
+    font-size: 12px;
+    margin-right: 10px;
+    color: #666;
+}
+
+.message-content {
+    flex: 1;
+}
+
+.message-send {
+    background-color: #183981;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.message-send:hover {
+    background-color: #fff;
+    color: #183981;
+    border: 1px solid #183981;
+}
+
+.message-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    gap: 3vh;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    border: 3px #183981 solid;
+    box-sizing: border-box;
+    width: 90%;
+    height: 55vh;
+    margin-top: 3vh;
+    margin-left: 2.5vw;
+}
+
+.message-list tr td {
+    position: relative;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #e2e2e2;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+    width: 38vw;
+    font-size: 2rem;
+}
+
+.message-list tr td::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: -20px;
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-right: 20px solid #e2e2e2;
+    border-bottom: 10px solid transparent;
+}
+
+.message-list tr td::after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: -22px;
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-right: 20px solid #e2e2e2;
+    border-bottom: 10px solid transparent;
+}
