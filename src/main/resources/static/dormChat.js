@@ -1,13 +1,20 @@
 let stompClient = null;
-let roomId = Math.floor(Math.random() * 1 + 1)
+let roomId = Math.floor(Math.random() * 1 + 1);
+let jwtToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ3aGVoZGduMTAwMUBrb29rbWluLmFjLmtyIiwiaWF0IjoxNjgzNjEwNTQ0LCJleHAiOjE3MTUxNDY1NDR9.U6I3WKqv4tUuAiyBAODetQmxOtdpMJQO-VknA0_uZFhb6aFGFzMuCWCdM8hcOFALTjbqn-tNaahcjwbO2OuBRA';
+let header = {
+        // jwt 토큰을 인증 헤더의 Bearer에 담음
+        Authorization: `Bearer ${jwtToken}`
+    };
 
 // 기숙사 채팅
 const enterDormChattingRoom = () => {
     let socket = new SockJS(`/chat/`);
     stompClient = Stomp.over(socket);
     // 기숙사 채팅방 입장
-    stompClient.connect({}, (frame) => {
-        console.log('Connected: ' + frame);
+    stompClient.connect(header,
+        // 연결 성공 시 실행하는 함수
+        (res) => {
+        // console.log('Connected: ' + res);
         // 기숙사 채팅방을 구독 => 기숙사 채팅방으로 오는 메세지를 수신하겠다는 의미
         stompClient.subscribe(`/sub/dorm/${roomId}`, function (stompResponse) {
 
@@ -41,7 +48,17 @@ const enterDormChattingRoom = () => {
                         + message.messageContent + "</td></tr>");
                 })
             })
+
+        // 연결 실패 시 실행할 함수
+        ,(err) => {
+            alert("연결에 실패 했습니다!");
+        }
     });
+
+    // 아래 문장 실행 시 응답을 콘솔창에 보여주는
+    // 기본 설정을 제어할 수 있음.
+    // 아무 내용도 적지 않았으므로 콘솔창에 나오지 않음.
+    stompClient.debug = (res) => {};
 }
 
 // 메세지 송신을 위해 실행해야 하는 함수
@@ -54,8 +71,11 @@ function sendMessage() {
         messageContent: $("#message").val(),
     }
 
-    // 메시지를 보내기 위한 url
-    stompClient.send(`/pub/dorm/${roomId}`, {}, JSON.stringify(message));
+    // 첫 번째 인자: 메시지를 보내기 위한 url
+    // 두 번째 인자: 헤더
+    // 세 번쨰 인자: 보낼 메세지
+    // 메세지를 직렬화해서 보내야 함.
+    stompClient.send(`/pub/dorm/${roomId}`, header, JSON.stringify(message));
 }
 
 // 메세지 송신 성공하면, 메세지를 반환함.
