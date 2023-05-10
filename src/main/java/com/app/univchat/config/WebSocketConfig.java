@@ -28,7 +28,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.setErrorHandler(chatExceptionHandler); // 연결 시 예외 처리
         registry.addEndpoint("/chat") // websocket 엔드포인트
-                .setAllowedOrigins("http://localhost:8080/*")
+//                .setAllowedOrigins("http://localhost:8080/*")
+                .setAllowedOriginPatterns("*")
                 .withSockJS(); // websocket 방식으로 안 될 경우 sockJS를 사용하여 연결
     }
 
