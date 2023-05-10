@@ -107,6 +107,7 @@ public class JwtProvider {
         try{
             Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(tokenStr).getBody();
 
+            //토큰 블랙리스트 확인
             if (redisService.hasKeyBlackList(tokenStr)){
                 throw new RuntimeException("로그아웃된 토큰 입니다!");
             }
