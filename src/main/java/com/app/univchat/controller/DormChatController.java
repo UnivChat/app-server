@@ -4,7 +4,12 @@ import com.app.univchat.base.BaseResponse;
 import com.app.univchat.base.BaseResponseStatus;
 import com.app.univchat.dto.ChatReq;
 import com.app.univchat.dto.ChatRes;
+import com.app.univchat.dto.MemberRes;
 import com.app.univchat.service.DormChatService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -18,17 +23,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+@Tag(name = "chatting", description = "채팅 내역 조회 API")
 @Controller
 @RequiredArgsConstructor
-@MessageMapping("/dorm")
 @RequestMapping("/dorm")
 public class DormChatController {
 
     private final DormChatService dormChatService;
 
     // 기숙사 채팅 송신 및 저장을 위한 API(ws)
-    @MessageMapping("/{roomId}") // 기숙사 식별자
-    @SendTo("/sub/dorm/{roomId}")
+    @MessageMapping("/dorm")
+    @SendTo("/sub/dorm")
     public ChatRes.DormChatRes sendToDormChattingRoom(ChatReq.DormChatReq dormChatReq) {
 
         String messageSendingTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS").format(new Date());
@@ -42,10 +47,12 @@ public class DormChatController {
     }
 
     // 기숙사 채팅 내역을 불러오기 위한 API(http)
-    @GetMapping("/chat/{roomId}/{page}")
-    public ResponseEntity<BaseResponse<List<ChatRes.DormChatRes>>>loadDormChattingList(@PathVariable Long roomId, @PathVariable int page) {
+    @Tag(name = "chatting")
+    @ApiOperation(value = "기숙사 채팅 내역 API", notes = "채팅 내역 최신순으로 10개를 반환하며, 페이지 번호는 0부터 시작합니다.")
+    @GetMapping("/chat/{page}")
+    public ResponseEntity<BaseResponse<List<ChatRes.DormChatRes>>>loadDormChattingList(@PathVariable int page) {
 
-        List<ChatRes.DormChatRes> chattingList = dormChatService.getChattingList(roomId, page);
+        List<ChatRes.DormChatRes> chattingList = dormChatService.getChattingList(page);
 
         return ResponseEntity.ok(BaseResponse.ok(BaseResponseStatus.SUCCESS, chattingList));
     }

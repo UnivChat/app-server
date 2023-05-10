@@ -48,7 +48,7 @@ public class DormChatService {
     /**
      *  기숙사 채팅 내역 조회
      */
-    public List<ChatRes.DormChatRes> getChattingList(Long roomId, int page) {
+    public List<ChatRes.DormChatRes> getChattingList(int page) {
 
         // page는 요청하는 곳에 맞게, 한 번의 요청에는 10개의 채팅, 시간 내림차순으로 정렬.
         Pageable pageable = PageRequest.of(page, 10,
@@ -56,7 +56,7 @@ public class DormChatService {
         
         // pagenation 한 채팅 목록을 modleMapper로 변환하여 반환
         return dormChatRepository
-                        .findByRoomIdOrderByMessageSendingTimeDesc(roomId, pageable)
+                        .findAll(pageable)
                         .stream()
                         .map(chat -> modelMapper.map(chat, ChatRes.DormChatRes.class))
                         .collect(Collectors.toList());
