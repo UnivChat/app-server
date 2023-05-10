@@ -1,6 +1,7 @@
 package com.app.univchat.jwt;
 
 import com.app.univchat.dto.JwtDto;
+import com.app.univchat.service.RedisService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -33,6 +34,9 @@ public class JwtProvider {
     private final Key key;
     @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private RedisService redisService;
 
 
     public JwtProvider(@Value("${jwt.secret}") String secret,
@@ -102,6 +106,11 @@ public class JwtProvider {
     public boolean validateToken(String tokenStr){
         try{
             Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(tokenStr).getBody();
+
+            if (redisService.hasKeyBlackList(tokenStr)){
+                throw new RuntimeException("로그아웃된 토큰 입니다!");
+            }
+
             return true;
         }catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT Token"); // 유효하지 않은 jwt 토큰
