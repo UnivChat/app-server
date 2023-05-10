@@ -19,7 +19,7 @@ const enterDormChattingRoom = () => {
     // stomp.js 에서 제공하는 콘솔창 로그 설정을 제어할 수 있는 함수
     // 개발 시에는 로그를 보며, 이해하고
     // 배포 시 아래처럼 설정하여 콘솔창에 보이지 않게 설정한다.
-//    stompClient.debug = (res) => {};
+    stompClient.debug = (res) => {};
 
     // 기숙사 채팅방 입장(내부적으로 웹소켓 연결)
     stompClient.connect(header,
