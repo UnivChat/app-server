@@ -16,7 +16,11 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,7 +32,8 @@ import java.util.stream.Collectors;
 public class JwtProvider {
 
     private static final String BEARER = "Bearer";
-
+    public static final String AUTHORIZATION_HEADER = "Authorization";
+    public static final String BEARER_PREFIX = "Bearer ";
     private final long ACCESS_TOKEN_EXPIRE_TIME;
     private final long REFRESH_TOKEN_EXPIRE_TIME;
     private final Key key;
@@ -37,6 +42,17 @@ public class JwtProvider {
 
     @Autowired
     private RedisService redisService;
+
+    /**
+     * 요청 해더에서 액세스 토큰 반환
+     * */
+    public String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
 
 
     public JwtProvider(@Value("${jwt.secret}") String secret,
@@ -100,6 +116,7 @@ public class JwtProvider {
 
 
 
+
     /**
      * jwt 유효성 검사
      */
@@ -125,5 +142,10 @@ public class JwtProvider {
         return false;
     }
 
+    //헤더에서 jwt 꺼내오기
+    public String getJwt(){
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        return request.getHeader(AUTHORIZATION_HEADER).substring(7);
+    }
 
 }
