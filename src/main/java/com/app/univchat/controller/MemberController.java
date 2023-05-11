@@ -5,6 +5,7 @@ import com.app.univchat.base.BaseResponseStatus;
 
 import com.app.univchat.domain.Member;
 import com.app.univchat.dto.JwtDto;
+import com.app.univchat.jwt.JwtProvider;
 import com.app.univchat.security.auth.PrincipalDetails;
 import com.app.univchat.service.MemberService;
 import com.app.univchat.dto.MemberReq;
@@ -40,7 +41,6 @@ public class MemberController {
     private final MemberService memberService;
 
     private final RedisService redisService;
-
 
     // 이메일 인증
     @Tag(name = "member", description = "회원 관리 API")
@@ -94,7 +94,6 @@ public class MemberController {
     @ApiOperation(value = "회원조회 API")
     @GetMapping("/info")
     public BaseResponse<MemberRes.InfoRes> viewInfo(@ApiIgnore @AuthenticationPrincipal PrincipalDetails member) throws IOException {
-
         MemberRes.InfoRes infoRes=memberService.viewInfo(member.getMember());
 
         return BaseResponse.ok(BaseResponseStatus.SUCCESS,infoRes);
