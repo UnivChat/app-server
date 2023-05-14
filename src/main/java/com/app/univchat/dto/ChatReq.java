@@ -1,6 +1,7 @@
 package com.app.univchat.dto;
 
 import com.app.univchat.domain.DormChat;
+import com.app.univchat.domain.LiveChat;
 import com.app.univchat.domain.Member;
 import com.sun.istack.NotNull;
 import io.swagger.annotations.ApiModel;
@@ -44,5 +45,12 @@ public class ChatReq {
     @ApiModel(value = "LiveChatReq - 채팅 메시지 전송 객체")
     public static class LiveChatReq extends ChatReq {
 
+        public LiveChat toEntity(Member member, String messageSendingTime) {
+            return LiveChat.builder()
+                    .member(member)
+                    .messageContent(this.messageContent)
+                    .messageSendingTime(messageSendingTime)
+                    .build();
+        }
     }
 }
