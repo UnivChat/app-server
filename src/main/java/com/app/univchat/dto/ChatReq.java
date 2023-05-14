@@ -9,23 +9,24 @@ import lombok.*;
 
 import java.util.Optional;
 
+@Setter
+@Getter
 public class ChatReq {
 
-    @Builder
+    @ApiModelProperty(name = "송신자 닉네임", example = "닉네임1")
+    @NotNull
+    protected String memberNickname; // 송신자 식별자
+
+    @ApiModelProperty(name = "채팅 내용", example = "채팅내용~~~")
+    @NotNull
+    protected String messageContent;
+
+
     @NoArgsConstructor
-    @AllArgsConstructor
     @Getter
     @Setter
     @ApiModel(value = "DormChatReq - 채팅 메시지 전송 객체")
     public static class DormChatReq extends ChatReq {
-
-        @ApiModelProperty(name = "송신자 닉네임", example = "닉네임1")
-        @NotNull
-        protected String memberNickname; // 송신자 식별자
-
-        @ApiModelProperty(name = "채팅 내용", example = "채팅내용~~~")
-        @NotNull
-        protected String messageContent;
 
         public DormChat toEntity(Optional<Member> member, String messageSendingTime) throws Exception {
             return DormChat.builder()
@@ -34,5 +35,14 @@ public class ChatReq {
                     .messageSendingTime(messageSendingTime)
                     .build();
         }
+    }
+
+    @Builder
+    @NoArgsConstructor
+    @Getter
+    @Setter
+    @ApiModel(value = "LiveChatReq - 채팅 메시지 전송 객체")
+    public static class LiveChatReq extends ChatReq {
+
     }
 }
