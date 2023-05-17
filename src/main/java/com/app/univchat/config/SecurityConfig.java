@@ -85,17 +85,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/v3/api-docs").permitAll()
                 .antMatchers("/hello/**").permitAll()
 
-                .antMatchers("/member/signup", "/member/change/password", "/member/email/verified",
+                .antMatchers("/member/signup","/member/change/password", "/member/email/verified",
                         "/member/re-token").permitAll()
 
                 // 채팅 테스트 시 주석 해제
                 //.antMatchers("/app.js").permitAll()
                 //.antMatchers("/main.css").permitAll()
-                .antMatchers("/chattingList.html", "/chattingListStyle.css", "/dormChat.html", "/dormChat.js", "/dormChatStyle.css", "/liveChat.js", "/liveChat.html").permitAll()
+
+                .antMatchers("/chattingList.html", "/chattingListStyle.css", "/dormChat.html", "/dormChat.js", "/dormChatStyle.css", "/liveChat.js", "/liveChat.html",  "/loveChat.js", "/loveChat.html").permitAll()
 
                 // 채팅 엔드포인트, 기숙사 채팅 기록 조회 인증 x
                 .antMatchers("/chat/**").permitAll()
-                .antMatchers("/dorm/chat/**", "/live/chat/**").permitAll()
+                .antMatchers("/dorm/chat/**", "/live/chat/**", "/love/chat/**").permitAll()
 
                 .anyRequest().authenticated() //위의 api가 아닌 경로는 모두 jwt 토큰 인증을 해야 함
 
