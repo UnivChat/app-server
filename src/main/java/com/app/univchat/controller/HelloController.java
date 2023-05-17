@@ -5,6 +5,8 @@ import com.app.univchat.base.BaseEntity;
 import com.app.univchat.base.BaseException;
 import com.app.univchat.base.BaseResponse;
 import com.app.univchat.base.BaseResponseStatus;
+import com.app.univchat.domain.Member;
+import com.app.univchat.service.MemberService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -25,10 +27,12 @@ public class HelloController {
 
     private final AWSS3Uploader awss3Uploader;
 
+    private final MemberService memberService;
+
 
     @GetMapping("/1")
-    public ResponseEntity<String> hello1() {
-        return ResponseEntity.ok("hello1");
+    public BaseResponse<String> hello1() {
+        return BaseResponse.ok(BaseResponseStatus.SUCCESS, "hello1");
     }
 
     @GetMapping("/2")
