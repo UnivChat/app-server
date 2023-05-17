@@ -81,5 +81,4 @@ public class MemberReq {
         private String email;
         private String refreshToken;
     }
-
 }

@@ -11,9 +11,9 @@ import com.app.univchat.dto.MemberReq;
 import com.app.univchat.dto.MemberRes;
 import com.app.univchat.jwt.JwtProvider;
 import com.app.univchat.repository.MemberRepository;
+import com.app.univchat.security.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.IOException;
 
-import java.io.IOException;
 import java.util.Optional;
 
 @Service
@@ -177,4 +176,20 @@ public class MemberService {
     }
 
 
+    public String memberLogout(Member member) {
+
+        String accessToken = jwtProvider.getJwt();
+        System.out.println("현재 로그아웃 유저 액세스 토큰: " + accessToken);
+
+        //유저의 리프레시 토큰 삭제
+        String userRefreshToken = redisService.getValues(member.getEmail());
+        System.out.println("현재 로그아웃 유저 리프레시 토큰: "+ userRefreshToken);
+        redisService.deleteValues(member.getEmail());
+
+        //유저의 액세스 토큰 블랙리스트에 등록
+        //redisService.setBlackList(accessToken, "accessToken", 5);
+        redisService.setValues(accessToken, "blackList");
+
+        return "로그아웃 완료";
+    }
 }

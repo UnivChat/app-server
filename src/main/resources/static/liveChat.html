@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Chat Room</title>
+  <script src="/liveChat.js"></script>
+  <script src="/webjars/jquery/jquery.min.js"></script>
+  <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+  <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+  <link href="/dormChatStyle.css" rel="stylesheet">
+</head>
+<body>
+<div class="chat-room">
+  <h3 class="chat-title">Live Chatting</h3>
+
+  <div class="message-input">
+    <label for="sender">Sender:</label>
+    <input type="text" id="sender" class="sender-input">
+    <label for="message">Message:</label>
+    <input type="text" id="message" class="message-input">
+    <button id="send-message" class="send-message-btn" onclick="sendMessage()">Send Message</button>
+  </div>
+  <div id="message-list" class="message-list">
+    <!-- message tags will be added here -->
+  </div>
+</div>
+</body>
+</html>
