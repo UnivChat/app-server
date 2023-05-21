@@ -73,7 +73,7 @@ const enterDormChattingRoom = () => {
 }
 
 // 메세지 송신을 위해 실행해야 하는 함수
-function sendMessage() {
+function sendMessage_dorm() {
     const message = {
         memberNickname: $("#sender").val(),
         messageContent: $("#message").val(),
