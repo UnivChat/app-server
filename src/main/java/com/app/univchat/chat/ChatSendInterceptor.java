@@ -52,25 +52,32 @@ public class ChatSendInterceptor implements ChannelInterceptor {
         if(!(jwtProvider.validateToken(jwt))) {
             throw new MalformedJwtException("No valid Jwt.");
         }
+        String email = jwtProvider.getEmail(jwt);
 
-        // 닉네임 DB에 있는지 체크
-        checkNickname(message);
+        // 닉네임 DB에 있는지 체크 & jwt와 일치하는지 확인
+        checkNickname(message, email);
 
         return message;
     }
 
     /**
-     * 닉네임으로 DB 조회
+     * 닉네임 DB에 있는지 체크 & jwt와 일치하는지 확인
      */
-    public void checkNickname(Message<?> message) {
+    public void checkNickname(Message<?> message, String email) {
 
-        //message payload에서 닉네임 얻기
+        // message payload에서 닉네임 얻기
         String payload = new String((byte[])message.getPayload());
         ChatReq.LiveChatReq body = Jackson.fromJsonString(payload, ChatReq.LiveChatReq.class);
         System.out.println("sender nickname: " + body.getMemberNickname());
 
+        // DB에 닉네임 있는지 확인
         Member member = memberService.getMember(body.getMemberNickname()).orElseThrow(
                 () -> new BaseException(BaseResponseStatus.USER_NOT_EXIST_NICKNAME_ERROR)
         );
+
+        // jwt 토큰과 닉네임으로 찾은 member 객체 일치하는지 확인
+        if (!member.getNickname().equals(email)) {
+            throw new BaseException(BaseResponseStatus.JWT_AND_NICKNAME_DONT_MATCH);
+        }
     }
 }

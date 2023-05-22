@@ -104,16 +104,19 @@ public class JwtProvider {
      */
     public Authentication getAuthentication(String token){
 //        Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();  // 기존 claim 생성 code
-        String username = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getSubject();
+        String email = getEmail(token);
 
         // user 객체 생성해 Authentication 객체 반환
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
+    public String getEmail(String token) {
+        String username = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getSubject();
 
-
+        return username;
+    }
 
 
 
