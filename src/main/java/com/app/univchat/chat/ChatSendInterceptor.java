@@ -1,6 +1,12 @@
 package com.app.univchat.chat;
 
+import com.amazonaws.util.json.Jackson;
+import com.app.univchat.base.BaseException;
+import com.app.univchat.base.BaseResponseStatus;
+import com.app.univchat.domain.Member;
+import com.app.univchat.dto.ChatReq;
 import com.app.univchat.jwt.JwtProvider;
+import com.app.univchat.service.MemberService;
 import io.jsonwebtoken.MalformedJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,9 +20,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ChatJwtInterceptor implements ChannelInterceptor {
+public class ChatSendInterceptor implements ChannelInterceptor {
 
     private final JwtProvider jwtProvider;
+    private final MemberService memberService;
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -46,6 +53,24 @@ public class ChatJwtInterceptor implements ChannelInterceptor {
             throw new MalformedJwtException("No valid Jwt.");
         }
 
+        // 닉네임 DB에 있는지 체크
+        checkNickname(message);
+
         return message;
+    }
+
+    /**
+     * 닉네임으로 DB 조회
+     */
+    public void checkNickname(Message<?> message) {
+
+        //message payload에서 닉네임 얻기
+        String payload = new String((byte[])message.getPayload());
+        ChatReq.LiveChatReq body = Jackson.fromJsonString(payload, ChatReq.LiveChatReq.class);
+        System.out.println("sender nickname: " + body.getMemberNickname());
+
+        Member member = memberService.getMember(body.getMemberNickname()).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.USER_NOT_EXIST_NICKNAME_ERROR)
+        );
     }
 }
