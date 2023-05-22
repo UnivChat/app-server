@@ -34,7 +34,7 @@ public class OTOChatController {
     @Tag(name = "one_to_one_chat")
     @ApiOperation(value = "1:1 채팅방 개설 API")
     @PostMapping("/room")
-    public BaseResponse<String> createChatRoom(@RequestBody ChatReq.OTOChatRoomReq otoChatRoomReq){
+    public BaseResponse<ChatRes.OTOChatRoomRes> createChatRoom(@RequestBody ChatReq.OTOChatRoomReq otoChatRoomReq){
 
 //        ChatRes.OTOChatRoomRes otoChatRoomRes=otoChatService.createChatRoom(otoChatRoomReq);
         return BaseResponse.ok(BaseResponseStatus.SUCCESS,otoChatService.createChatRoom(otoChatRoomReq));

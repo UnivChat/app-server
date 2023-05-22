@@ -30,7 +30,7 @@ public class OTOChatService {
      */
     @SneakyThrows
     @Transactional
-    public String createChatRoom(ChatReq.OTOChatRoomReq otoChatRoomReq) {
+    public ChatRes.OTOChatRoomRes createChatRoom(ChatReq.OTOChatRoomReq otoChatRoomReq) {
 
         // nickname으로 송신자 member 객체 획득
         String senderNickname = otoChatRoomReq.getSenderNickname();
@@ -41,30 +41,23 @@ public class OTOChatService {
         Optional<Member> receive = memberService.getMember(receiveNickname);
 
         // 송신자 - 수신자 쌍이 이미 존재하면 채팅방 개설 불가
-//        ChatRes.OTOChatRoomRes otoChatRoomRes = new ChatRes.OTOChatRoomRes();
-//        Long id1=sender.get().getId();
-//        Long id2=receive.get().getId();
+        ChatRes.OTOChatRoomRes otoChatRoomRes = new ChatRes.OTOChatRoomRes();
 
         // 이미 채팅방 존재하면 해당 채팅방 id return
-//        if(otoChatRoomRepository.existsBySenderAndReceive(id1,id2)) {
-//            Optional<OTOChatRoom> foundRoom=otoChatRoomRepository.findBySenderAndReceive(id1,id2);
-//
-//            otoChatRoomRes.setRoomId(foundRoom.get().getRoomId());
-//        }
-//        else if(otoChatRoomRepository.existsBySenderAndReceive(id2,id1)) {
-//            Optional<OTOChatRoom> foundRoom=otoChatRoomRepository.findBySenderAndReceive(id2,id1);
-//
-//            otoChatRoomRes.setRoomId(foundRoom.get().getRoomId());
-//        }
-//        else {  // 채팅방 개설
+        Optional<OTOChatRoom> foundRoom;
+        if(otoChatRoomRepository.findBySenderAndReceive(sender.get(),receive.get())!=null) {
+            foundRoom=otoChatRoomRepository.findBySenderAndReceive(sender.get(),receive.get());
+            if(foundRoom.isEmpty()) {
+                foundRoom=otoChatRoomRepository.findBySenderAndReceive(receive.get(),sender.get());
+            }
+
+        }
+        else {  // 채팅방 개설
             otoChatRoomRepository.save(otoChatRoomReq.toEntity(sender,receive));
-//            Optional<OTOChatRoom> foundRoom=otoChatRoomRepository.findBySenderAndReceive(id1,id2);
-//
-////            if(foundRoom.isEmpty()) System.out.println("엠티//////////////////");
-//            otoChatRoomRes.setRoomId(foundRoom.get().getRoomId());
-//        otoChatRoomRes.setRoomId(id1);
-////        }
-        return "채팅방이 개설되었습니다.";
+            foundRoom=otoChatRoomRepository.findBySenderAndReceive(sender.get(),receive.get());
+        }
+        otoChatRoomRes.setRoomId(foundRoom.get().getRoomId());
+        return otoChatRoomRes;
 
     }
 
@@ -84,7 +77,7 @@ public class OTOChatService {
 //    }
 
     /**
-     *  연애상담 채팅 내역 조회
+     *  1:1 채팅 내역 조회
      */
 //    public List<ChatRes.LoveChatRes> getChattingList(int page) {
 //
