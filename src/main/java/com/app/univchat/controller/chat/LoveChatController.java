@@ -1,14 +1,11 @@
-package com.app.univchat.controller;
+package com.app.univchat.controller.chat;
 
 import com.app.univchat.base.BaseResponse;
 import com.app.univchat.base.BaseResponseStatus;
 import com.app.univchat.dto.ChatReq;
 import com.app.univchat.dto.ChatRes;
-import com.app.univchat.dto.MemberRes;
-import com.app.univchat.service.DormChatService;
+import com.app.univchat.service.LoveChatService;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,22 +23,22 @@ import java.util.List;
 @Tag(name = "chatting", description = "채팅 내역 조회 API")
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/dorm")
-public class DormChatController {
+@RequestMapping("/love")
+public class LoveChatController {
 
-    private final DormChatService dormChatService;
+    private final LoveChatService loveChatService;
 
-    // 기숙사 채팅 송신 및 저장을 위한 API(ws)
-    @MessageMapping("/dorm")
-    @SendTo("/sub/dorm")
-    public ChatRes.DormChatRes sendToDormChattingRoom(ChatReq.DormChatReq dormChatReq) {
+    // 연애상담 채팅 송신 및 저장을 위한 API(ws)
+    @MessageMapping("/love")
+    @SendTo("/sub/love")
+    public ChatRes.LoveChatRes sendToLoveChattingRoom(ChatReq.LoveChatReq loveChatReq) {
 
         String messageSendingTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS").format(new Date());
-        dormChatService.saveChat(dormChatReq, messageSendingTime);
+        loveChatService.saveChat(loveChatReq, messageSendingTime);
 
-        return new ChatRes.DormChatRes().builder()
-                .memberNickname(dormChatReq.getMemberNickname())
-                .messageContent(dormChatReq.getMessageContent())
+        return new ChatRes.LoveChatRes().builder()
+                .memberNickname(loveChatReq.getMemberNickname())
+                .messageContent(loveChatReq.getMessageContent())
                 .messageSendingTime(messageSendingTime)
                 .build();
     }
@@ -50,9 +47,9 @@ public class DormChatController {
     @Tag(name = "chatting")
     @ApiOperation(value = "기숙사 채팅 내역 API", notes = "채팅 내역 최신순으로 10개를 반환하며, 페이지 번호는 0부터 시작합니다.")
     @GetMapping("/chat/{page}")
-    public ResponseEntity<BaseResponse<List<ChatRes.DormChatRes>>>loadDormChattingList(@PathVariable int page) {
+    public ResponseEntity<BaseResponse<List<ChatRes.LoveChatRes>>>loadLoveChattingList(@PathVariable int page) {
 
-        List<ChatRes.DormChatRes> chattingList = dormChatService.getChattingList(page);
+        List<ChatRes.LoveChatRes> chattingList = loveChatService.getChattingList(page);
 
         return ResponseEntity.ok(BaseResponse.ok(BaseResponseStatus.SUCCESS, chattingList));
     }
