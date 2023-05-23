@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -36,34 +37,33 @@ public class OTOChatController {
     @PostMapping("/room")
     public BaseResponse<ChatRes.OTOChatRoomRes> createChatRoom(@RequestBody ChatReq.OTOChatRoomReq otoChatRoomReq){
 
-//        ChatRes.OTOChatRoomRes otoChatRoomRes=otoChatService.createChatRoom(otoChatRoomReq);
         return BaseResponse.ok(BaseResponseStatus.SUCCESS,otoChatService.createChatRoom(otoChatRoomReq));
 
     }
 
-    // 연애상담 채팅 송신 및 저장을 위한 API(ws)
-//    @MessageMapping("/love")
-//    @SendTo("/sub/love")
-//    public ChatRes.LoveChatRes sendToLoveChattingRoom(ChatReq.LoveChatReq loveChatReq) {
-//
-//        String messageSendingTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS").format(new Date());
-//        loveChatService.saveChat(loveChatReq, messageSendingTime);
-//
-//        return new ChatRes.LoveChatRes().builder()
-//                .memberNickname(loveChatReq.getMemberNickname())
-//                .messageContent(loveChatReq.getMessageContent())
-//                .messageSendingTime(messageSendingTime)
-//                .build();
-//    }
+//     1:1 채팅 송신 및 저장을 위한 API(ws)
+    @MessageMapping("/oto")
+    @SendTo("/sub/oto")
+    public ChatRes.OTOChatRes sendToOTOChattingRoom(ChatReq.OTOChatReq otoChatReq) {
 
-    // 1:1 채팅 내역을 불러오기 위한 API(http)
-//    @Tag(name = "chatting")
-//    @ApiOperation(value = "1:1 채팅 내역 API", notes = "채팅 내역 최신순으로 10개를 반환하며, 페이지 번호는 0부터 시작합니다.")
-//    @GetMapping("/chat/{page}")
-//    public ResponseEntity<BaseResponse<List<ChatRes.LoveChatRes>>>loadLoveChattingList(@PathVariable int page) {
-//
-//        List<ChatRes.LoveChatRes> chattingList = loveChatService.getChattingList(page);
-//
-//        return ResponseEntity.ok(BaseResponse.ok(BaseResponseStatus.SUCCESS, chattingList));
-//    }
+        String messageSendingTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS").format(new Date());
+        otoChatService.saveChat(otoChatReq, messageSendingTime);
+
+        return new ChatRes.OTOChatRes().builder()
+                .memberNickname(otoChatReq.getMemberNickname())
+                .messageContent(otoChatReq.getMessageContent())
+                .messageSendingTime(messageSendingTime)
+                .build();
+    }
+
+//     1:1 채팅 내역을 불러오기 위한 API(http)
+    @Tag(name = "chatting")
+    @ApiOperation(value = "1:1 채팅 내역 API", notes = "채팅 내역 최신순으로 10개를 반환하며, 페이지 번호는 0부터 시작합니다.")
+    @GetMapping("/chat/{roomId}/{page}")
+    public ResponseEntity<BaseResponse<List<ChatRes.OTOChatRes>>>loadOTOChattingList(@PathVariable Long roomId, @PathVariable int page) {
+
+        List<ChatRes.OTOChatRes> chattingList = otoChatService.getChattingList(roomId,page);
+
+        return ResponseEntity.ok(BaseResponse.ok(BaseResponseStatus.SUCCESS, chattingList));
+    }
 }

@@ -65,9 +65,36 @@ public class ChatReq {
         }
     }
 
-    /*
-        1:1 채팅방 개설 req
-     */
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    @ApiModel(value = "OTOChatReq - 1:1 채팅 메시지 전송 객체")
+    public static class OTOChatReq extends ChatReq {
+
+        @ApiModelProperty(name = "채팅방 번호")
+        @NotNull
+        protected Long roomId; // 채팅방 id
+
+        @ApiModelProperty(name = "송신자 닉네임", example = "닉네임1")
+        @NotNull
+        protected String memberNickname; // 송신자 식별자
+
+        @ApiModelProperty(name = "채팅 내용", example = "채팅내용~~~")
+        @NotNull
+        protected String messageContent;
+
+        public OTOChat toEntity(Optional<OTOChatRoom> room,Optional<Member> member, String messageSendingTime) throws Exception {
+            return OTOChat.builder()
+                    .room(room.orElseThrow(() -> new Exception("존재하지 않는 회원입니다.")))
+                    .member(member.orElseThrow(() -> new Exception("존재하지 않는 회원입니다.")))
+                    .messageContent(messageContent)
+                    .messageSendingTime(messageSendingTime)
+                    .build();
+        }
+    }
+
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -83,9 +110,6 @@ public class ChatReq {
         @ApiModelProperty(name = "수신자 닉네임", example = "닉네임2")
         @NotNull
         protected String receiveNickname; // 수신자 식별자
-
-//        @ApiModelProperty(name = "볼 수 있는 상태 설정", notes = "0(모두 볼 수 있음), {나가지 않은 사람 id 개수}(나가지 않은 사람만 볼 수 있음), -1(모두 나간 경우 - 모두 볼 수 없음)")
-//        protected int visible; // 볼 수 있는 상태 설정
 
         public OTOChatRoom toEntity(Optional<Member> sender,Optional<Member> receive) throws Exception {
             return OTOChatRoom.builder()
