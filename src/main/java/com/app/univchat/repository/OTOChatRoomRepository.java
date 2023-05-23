@@ -20,6 +20,8 @@ public interface OTOChatRoomRepository extends JpaRepository<OTOChatRoom, Long> 
     // 송신자, 수신자로 채팅방 찾기
     Optional<OTOChatRoom> findBySenderAndReceive(Member sender, Member receive);
 
+    boolean existsBySenderAndReceive(Member sender, Member receive);
+
     // roomId로 채팅방 찾기
     Optional<OTOChatRoom> findByRoomId(Long roomId);
 

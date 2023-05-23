@@ -59,7 +59,6 @@ public class OTOChatService {
             if(foundRoom.isEmpty()) {
                 foundRoom=otoChatRoomRepository.findBySenderAndReceive(receive.get(),sender.get());
             }
-
         }
         else {  // 채팅방 개설
             otoChatRoomRepository.save(otoChatRoomReq.toEntity(sender,receive));
@@ -100,10 +99,11 @@ public class OTOChatService {
         Pageable pageable = PageRequest.of(page, 10,
                                     Sort.by("messageSendingTime").descending());
 
+        Optional<OTOChatRoom> room=otoChatRoomRepository.findByRoomId(roomId);
 
         // pagenation 한 채팅 목록을 modleMapper로 변환하여 반환
         return otoChatRepository
-                        .findByRoom(roomId,pageable)
+                        .findByRoom(room,pageable)
                         .stream()
                         .map(chat -> modelMapper.map(chat, ChatRes.OTOChatRes.class))
                         .collect(Collectors.toList());
