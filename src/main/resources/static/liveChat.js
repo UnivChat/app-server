@@ -3,10 +3,6 @@
 //// jwt 토큰을 인증 헤더의 Bearer에 담음
 //let header = { Authorization: `Bearer ${jwtToken}`};
 
-
-let isLoading = false; // 데이터 로딩 상태를 나타내는 변수
-let page = 0; // 로드할 페이지 번호
-
 // 기숙사 채팅
 const enterLiveChattingRoom = () => {
     let socket = new SockJS(`/chat/`);
@@ -39,20 +35,8 @@ const enterLiveChattingRoom = () => {
                     content.innerHTML = html;
                 })
                 .catch(err => console.error(err));
-
-
             // 초기 채팅 메세지 로드
-            loadChatMessages(page);
-
-            // 스크롤 이벤트 리스너 추가
-            window.addEventListener('scroll', () => {
-                // 페이지 끝에 도달하고 로딩 중이 아닌 경우 데이터 로드 실행
-                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight && !isLoading) {
-                    page++; // 페이지 번호 증가
-                    loadChatMessages(page);
-                }
-            });
-
+            loadChatMessages(0);
 
         }
 
@@ -69,8 +53,6 @@ const enterLiveChattingRoom = () => {
 
 // 채팅 메세지를 로드하는 함수
 function loadChatMessages(page) {
-    isLoading = true; // 로딩 상태 설정
-
     fetch(`http://localhost:8080/live/chat/${page}`)
         .then((res) => res.json())
         .then((data) => {
@@ -85,11 +67,8 @@ function loadChatMessages(page) {
                     "</td></tr>"
                 );
             });
-
-            isLoading = false; // 로딩 상태 해제
         });
 }
-
 
 // 메세지 송신을 위해 실행해야 하는 함수
 function sendMessage_live() {
