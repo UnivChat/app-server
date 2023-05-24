@@ -41,4 +41,26 @@ public class ChatRes {
         private String messageContent;
         private String messageSendingTime;
     }
+
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    // 1:1 채팅 메시지 객체
+    public static class OTOChatRes {
+        private String memberNickname; // 송신자 식별자
+        private String messageContent;
+        private String messageSendingTime;
+    }
+
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    // 라이브 채팅 메시지 객체
+    public static class OTOChatRoomRes {
+        private Long roomId; // 채팅방 id
+    }
 }
