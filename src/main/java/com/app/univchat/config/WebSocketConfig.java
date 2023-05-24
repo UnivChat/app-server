@@ -1,7 +1,7 @@
 package com.app.univchat.config;
 
 import com.app.univchat.chat.ChatExceptionHandler;
-import com.app.univchat.chat.ChatJwtInterceptor;
+import com.app.univchat.chat.ChatSendInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
@@ -13,7 +13,7 @@ import org.springframework.web.socket.config.annotation.*;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    private final ChatJwtInterceptor chatInterceptor;
+    private final ChatSendInterceptor chatInterceptor;
     private final ChatExceptionHandler chatExceptionHandler;
 
     // 메시지 송수신을 위한 url prefix 설정 및 메시지 브로커 설정
