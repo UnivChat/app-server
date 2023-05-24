@@ -3,6 +3,10 @@
 //// jwt 토큰을 인증 헤더의 Bearer에 담음
 //let header = { Authorization: `Bearer ${jwtToken}`};
 
+
+let isLoading = false; // 데이터 로딩 상태를 나타내는 변수
+let page = 0; // 로드할 페이지 번호
+
 // 기숙사 채팅
 const enterLiveChattingRoom = () => {
     let socket = new SockJS(`/chat/`);
@@ -36,21 +40,19 @@ const enterLiveChattingRoom = () => {
                 })
                 .catch(err => console.error(err));
 
-            let page = 0;
+
             // 초기 채팅 메세지 로드
             loadChatMessages(page);
 
             // 스크롤 이벤트 리스너 추가
-            const messageList = document.getElementById("message-list");
-            messageList.addEventListener("scroll", () => {
-                const scrollPosition = messageList.scrollTop;
-                if (scrollPosition === 0) {
-                    //const page = Math.ceil(messageList.children.length / 10); // 페이지당 10개의 메세지를 가정
-                    page += 1;
-                    console.log('무한 스크롤 실행됨');
+            window.addEventListener('scroll', () => {
+                // 페이지 끝에 도달하고 로딩 중이 아닌 경우 데이터 로드 실행
+                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight && !isLoading) {
+                    page++; // 페이지 번호 증가
                     loadChatMessages(page);
                 }
             });
+
 
         }
 
@@ -67,6 +69,8 @@ const enterLiveChattingRoom = () => {
 
 // 채팅 메세지를 로드하는 함수
 function loadChatMessages(page) {
+    isLoading = true; // 로딩 상태 설정
+
     fetch(`http://localhost:8080/live/chat/${page}`)
         .then((res) => res.json())
         .then((data) => {
@@ -81,8 +85,11 @@ function loadChatMessages(page) {
                     "</td></tr>"
                 );
             });
+
+            isLoading = false; // 로딩 상태 해제
         });
 }
+
 
 // 메세지 송신을 위해 실행해야 하는 함수
 function sendMessage_live() {
