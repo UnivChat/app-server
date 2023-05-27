@@ -53,14 +53,14 @@ public class OTOChatService {
         ChatRes.OTOChatRoomRes otoChatRoomRes = new ChatRes.OTOChatRoomRes();
 
         // 이미 채팅방 존재하면 해당 채팅방 id return
-        Optional<OTOChatRoom> foundRoom;
+        Optional<OTOChatRoom> foundRoom=null;
         if(otoChatRoomRepository.findBySenderAndReceive(sender.get(),receive.get())!=null) {
             foundRoom=otoChatRoomRepository.findBySenderAndReceive(sender.get(),receive.get());
             if(foundRoom.isEmpty()) {
                 foundRoom=otoChatRoomRepository.findBySenderAndReceive(receive.get(),sender.get());
             }
         }
-        else {  // 채팅방 개설
+        if(foundRoom.isEmpty()) {  // 채팅방 개설
             otoChatRoomRepository.save(otoChatRoomReq.toEntity(sender,receive));
             foundRoom=otoChatRoomRepository.findBySenderAndReceive(sender.get(),receive.get());
         }

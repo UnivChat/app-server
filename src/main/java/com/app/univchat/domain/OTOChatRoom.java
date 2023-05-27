@@ -1,5 +1,6 @@
 package com.app.univchat.domain;
 
+import com.app.univchat.chat.OTOChatVisible;
 import lombok.*;
 
 import javax.persistence.*;
@@ -24,8 +25,9 @@ public class OTOChatRoom {
     @JoinColumn(name = "receive_id", nullable = false)
     public Member receive; // 메시지 송신자 식별자
 
-    @Column(nullable = false)
-    private int visible;
+    @Column(columnDefinition="ENUM('ALL','SENDER','RECEIVER')" ,nullable = false )
+    @Enumerated(EnumType.STRING)
+    private OTOChatVisible visible;
 
 //    @Column(nullable = false)
     private Long lastMessageId;

@@ -1,5 +1,6 @@
 package com.app.univchat.dto;
 
+import com.app.univchat.chat.OTOChatVisible;
 import com.app.univchat.domain.*;
 import com.sun.istack.NotNull;
 import io.swagger.annotations.ApiModel;
@@ -111,11 +112,13 @@ public class ChatReq {
         @NotNull
         protected String receiveNickname; // 수신자 식별자
 
+//        protected OTOChatVisible='ALL';
+
         public OTOChatRoom toEntity(Optional<Member> sender,Optional<Member> receive) throws Exception {
             return OTOChatRoom.builder()
                     .sender(sender.orElseThrow(() -> new Exception("존재하지 않는 회원입니다.")))
-                    .receive(receive.orElseThrow(() -> new Exception("존재하지 않는 회원입니다.")))
-                    .visible(0)
+                    .receive(receive.orElseThrow(() -> new Exception("존재하지 않는 회원니다.")))
+                    .visible(OTOChatVisible.ALL)
                     .lastMessageId(null)
                     .build();
         }
