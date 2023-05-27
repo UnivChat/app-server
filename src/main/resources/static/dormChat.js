@@ -45,22 +45,9 @@ const enterDormChattingRoom = () => {
                 })
                 .catch(err => console.error(err));
 
-            // 최근 채팅 내역을 불러 오는 부분
-            // 임의로 페이지를 설정함(가장 최근 10개 -> 페이지 0)
-            // 무한 스크롤 등을 구현하여, page 별로 요청하면 됨.
-            const page = 0;
-            fetch(`http://localhost:8080/dorm/chat/${page}`)
-                .then(res => res.json())
-                .then(data => {
-                    data.result.reverse().forEach((message) => {
-                        $("#message-list").append("<tr><td>"
-                            + message.messageSendingTime + " / "
-                            + message.memberNickname + " / "
-                            + message.messageContent + "</td></tr>");
-                    })
-                })
-            }
-
+            // 초기 채팅 메세지 로드
+            loadDormChatMessages(0);
+        }
         // 연결 실패(ERROR) 시 실행할 함수
         ,(err) => {
             alert("연결에 실패 했습니다!");
@@ -71,6 +58,26 @@ const enterDormChattingRoom = () => {
         console.log("웹소켓 연결이 종료되었습니다.");
     }
 }
+
+// 채팅 메세지를 로드하는 함수
+function loadDormChatMessages(page) {
+    fetch(`http://localhost:8080/live/chat/${page}`)
+        .then((res) => res.json())
+        .then((data) => {
+            data.result.forEach((message) => {  //.reverse()제거
+                $("#message-list").prepend(
+                    "<tr><td>" +
+                    message.messageSendingTime +
+                    " / " +
+                    message.memberNickname +
+                    " / " +
+                    message.messageContent +
+                    "</td></tr>"
+                );
+            });
+        });
+}
+
 
 // 메세지 송신을 위해 실행해야 하는 함수
 function sendMessage_dorm() {

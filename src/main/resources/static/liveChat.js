@@ -35,8 +35,10 @@ const enterLiveChattingRoom = () => {
                     content.innerHTML = html;
                 })
                 .catch(err => console.error(err));
+
+
             // 초기 채팅 메세지 로드
-            loadChatMessages(0);
+            loadLiveChatMessages(0);
 
         }
 
@@ -52,7 +54,7 @@ const enterLiveChattingRoom = () => {
 }
 
 // 채팅 메세지를 로드하는 함수
-function loadChatMessages(page) {
+function loadLiveChatMessages(page) {
     fetch(`http://localhost:8080/live/chat/${page}`)
         .then((res) => res.json())
         .then((data) => {
