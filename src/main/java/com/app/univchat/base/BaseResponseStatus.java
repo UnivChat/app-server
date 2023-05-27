@@ -56,7 +56,10 @@ public enum  BaseResponseStatus {
     USER_FAILED_TO_WITHDRAWAL("2014", "회원 탈퇴에 실패하였습니다", 400),
 
 
-
+    /**
+     * 5000 : Chatting 오류
+     */
+    CHAT_OVERFLOW_THE_RANGE("5001", "요청 범위가 넘쳤습니다", 400),
 
 
     /**

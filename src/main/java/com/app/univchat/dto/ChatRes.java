@@ -2,6 +2,8 @@ package com.app.univchat.dto;
 
 import lombok.*;
 
+import java.util.List;
+
 public class ChatRes {
 
     @Builder
@@ -41,4 +43,17 @@ public class ChatRes {
         private String messageContent;
         private String messageSendingTime;
     }
+
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    // 라이브 채팅 메시지 객체
+    public static class LiveChatListRes {
+        private int totalPage;
+        private int nowPage;
+        private List<LiveChatRes> liveChatRes;
+    }
+
 }

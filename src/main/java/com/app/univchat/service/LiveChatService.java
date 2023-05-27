@@ -47,16 +47,46 @@ public class LiveChatService {
     /**
      * 라이브 채팅 내역 리스트 조회
      */
-    public List<ChatRes.LiveChatRes> getChattingList(int page, int size) {
-        
+
+    //오래된 순으로 정렬 후
+    //마지막 페이지를 계산 후
+    //마지막 페이지를 가져옴
+    //요청 자체를 -1로 받고 반환에 페이지 마지막 번호 추가
+    //지금 82페이지니까
+    //총 9페이지
+    //실제 9페이지는 9로 요청
+
+    public ChatRes.LiveChatListRes getChattingList(int page, int size) {
+        int all = liveChatRepository.findAll().size();
+        //총 페이지수 0~lastPage, 0이 최신
+        int lastPage = all / 10;
+
+        if(page > lastPage) return null;
+
+        if(page == -1){ //최신 페이지 요청
+
+            //pageable 객체 생성
+            PageRequest pageable = PageRequest.of(0, size,
+                    Sort.by("messageSendingTime").descending());
+
+            // ChatRes.LiveChatRes으로 변환하여 반환
+            return new ChatRes.LiveChatListRes(lastPage, 0,
+                    liveChatRepository.findAll(pageable)
+                    .stream()
+                    .map(chat -> modelMapper.map(chat, ChatRes.LiveChatRes.class))
+                    .collect(Collectors.toList()));
+
+        }
+
         //pageable 객체 생성
         PageRequest pageable = PageRequest.of(page, size,
                 Sort.by("messageSendingTime").descending());
 
         // ChatRes.LiveChatRes으로 변환하여 반환
-        return liveChatRepository.findAll(pageable)
-                .stream()
-                .map(chat -> modelMapper.map(chat, ChatRes.LiveChatRes.class))
-                .collect(Collectors.toList());
+        return new ChatRes.LiveChatListRes(lastPage, page,
+                liveChatRepository.findAll(pageable)
+                        .stream()
+                        .map(chat -> modelMapper.map(chat, ChatRes.LiveChatRes.class))
+                        .collect(Collectors.toList()));
     }
 }
