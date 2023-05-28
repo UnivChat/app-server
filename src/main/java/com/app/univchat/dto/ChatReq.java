@@ -115,7 +115,7 @@ public class ChatReq {
             return OTOChatRoom.builder()
                     .sender(sender.orElseThrow(() -> new Exception("존재하지 않는 회원입니다.")))
                     .receive(receive.orElseThrow(() -> new Exception("존재하지 않는 회원입니다.")))
-                    .visible(0)
+//                    .visible(0)
                     .lastMessageId(null)
                     .build();
         }

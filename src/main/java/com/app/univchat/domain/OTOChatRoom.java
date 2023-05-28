@@ -24,8 +24,8 @@ public class OTOChatRoom {
     @JoinColumn(name = "receive_id", nullable = false)
     public Member receive; // 메시지 송신자 식별자
 
-    @Column(nullable = false)
-    private int visible;
+//    @Column(nullable = false)
+//    private int visible;
 
 //    @Column(nullable = false)
     private Long lastMessageId;
