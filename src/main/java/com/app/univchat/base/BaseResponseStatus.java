@@ -56,7 +56,10 @@ public enum  BaseResponseStatus {
     USER_FAILED_TO_WITHDRAWAL("2014", "회원 탈퇴에 실패하였습니다", 400),
 
 
-
+    /**
+     * 3000 : websocket 오류
+     */
+    UNSUPPORTED_SUBSCRIBE_URI("3001", "지원하지 않는 구독경로입니다.", 400),
 
 
     /**
