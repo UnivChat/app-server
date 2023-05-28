@@ -34,7 +34,15 @@ spring:
         smtp:
           starttls:
             enable: true
+          ssl:
+            trust: smtp.gmail.com
+            protocols: TLSv1.2
           auth: true
+        transport:
+          protocol: smtp
+        debug: true
+
+
 
   redis:
     host: ${{ REDIS_HOST }}
