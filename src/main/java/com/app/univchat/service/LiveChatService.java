@@ -58,10 +58,10 @@ public class LiveChatService {
 
     public ChatRes.LiveChatListRes getChattingList(int page, int size) {
         int all = liveChatRepository.findAll().size();
-        //총 페이지수 0~lastPage, 0이 최신
-        int lastPage = all / 10;
+        //총 페이지수 0~maxPage, 0이 최신
+        int maxPage = all / 10;
 
-        if(page > lastPage) return null;
+        if(page > maxPage) return null;
 
         if(page == -1){ //최신 페이지 요청
 
@@ -70,7 +70,7 @@ public class LiveChatService {
                     Sort.by("messageSendingTime").descending());
 
             // ChatRes.LiveChatRes으로 변환하여 반환
-            return new ChatRes.LiveChatListRes(lastPage, 0,
+            return new ChatRes.LiveChatListRes(maxPage, 0,
                     liveChatRepository.findAll(pageable)
                     .stream()
                     .map(chat -> modelMapper.map(chat, ChatRes.LiveChatRes.class))
@@ -83,7 +83,7 @@ public class LiveChatService {
                 Sort.by("messageSendingTime").descending());
 
         // ChatRes.LiveChatRes으로 변환하여 반환
-        return new ChatRes.LiveChatListRes(lastPage, page,
+        return new ChatRes.LiveChatListRes(maxPage, page,
                 liveChatRepository.findAll(pageable)
                         .stream()
                         .map(chat -> modelMapper.map(chat, ChatRes.LiveChatRes.class))

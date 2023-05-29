@@ -51,7 +51,7 @@ public class ChatRes {
     @Getter
     // 라이브 채팅 메시지 객체
     public static class LiveChatListRes {
-        private int totalPage;
+        private int maxPage;
         private int nowPage;
         private List<LiveChatRes> liveChatRes;
     }
