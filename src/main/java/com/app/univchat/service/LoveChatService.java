@@ -46,17 +46,39 @@ public class LoveChatService {
     /**
      *  연애상담 채팅 내역 조회
      */
-    public List<ChatRes.LoveChatRes> getChattingList(int page) {
+    public ChatRes.LoveChatListRes getChattingList(int page, int size) {
+
+        int all = loveChatRepository.findAll().size();
+        //총 페이지수 0~maxPage, 0이 최신
+        int maxPage = all / 10;
+
+        if(page > maxPage) return null;
+
+        if(page == -1){
+            // page는 요청하는 곳에 맞게, 한 번의 요청에는 10개의 채팅, 시간 내림차순으로 정렬.
+            Pageable pageable = PageRequest.of(0, size,
+                    Sort.by("messageSendingTime").descending());
+
+            // pagenation 한 채팅 목록을 modleMapper로 변환하여 반환
+            return new ChatRes.LoveChatListRes(maxPage, 0,
+                    loveChatRepository.findAll(pageable)
+                            .stream()
+                            .map(chat -> modelMapper.map(chat, ChatRes.LoveChatRes.class))
+                            .collect(Collectors.toList()));
+
+
+        }
 
         // page는 요청하는 곳에 맞게, 한 번의 요청에는 10개의 채팅, 시간 내림차순으로 정렬.
-        Pageable pageable = PageRequest.of(page, 10,
-                                    Sort.by("messageSendingTime").descending());
-        
+        Pageable pageable = PageRequest.of(page, size,
+                Sort.by("messageSendingTime").descending());
+
         // pagenation 한 채팅 목록을 modleMapper로 변환하여 반환
-        return loveChatRepository
-                        .findAll(pageable)
+        return new ChatRes.LoveChatListRes(maxPage, page,
+                loveChatRepository.findAll(pageable)
                         .stream()
                         .map(chat -> modelMapper.map(chat, ChatRes.LoveChatRes.class))
-                        .collect(Collectors.toList());
+                        .collect(Collectors.toList()));
+
     }
 }

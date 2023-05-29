@@ -20,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import static com.app.univchat.base.BaseResponseStatus.CHAT_OVERFLOW_THE_RANGE;
+
 @Tag(name = "chatting", description = "채팅 내역 조회 API")
 @Controller
 @RequiredArgsConstructor
@@ -45,11 +47,15 @@ public class LoveChatController {
 
     // 기숙사 채팅 내역을 불러오기 위한 API(http)
     @Tag(name = "chatting")
-    @ApiOperation(value = "기숙사 채팅 내역 API", notes = "채팅 내역 최신순으로 10개를 반환하며, 페이지 번호는 0부터 시작합니다.")
+    @ApiOperation(value = "연애 상담 채팅 내역 API", notes = "채팅 내역 최신순으로 10개를 반환하며, 페이지 번호는 0부터 시작합니다.")
     @GetMapping("/chat/{page}")
-    public ResponseEntity<BaseResponse<List<ChatRes.LoveChatRes>>>loadLoveChattingList(@PathVariable int page) {
+    public ResponseEntity<BaseResponse<ChatRes.LoveChatListRes>>loadLoveChattingList(@PathVariable int page) {
 
-        List<ChatRes.LoveChatRes> chattingList = loveChatService.getChattingList(page);
+        ChatRes.LoveChatListRes chattingList = loveChatService.getChattingList(page, 10);
+
+        if(chattingList == null)
+            return ResponseEntity.ok(BaseResponse.ok(CHAT_OVERFLOW_THE_RANGE));
+
 
         return ResponseEntity.ok(BaseResponse.ok(BaseResponseStatus.SUCCESS, chattingList));
     }
