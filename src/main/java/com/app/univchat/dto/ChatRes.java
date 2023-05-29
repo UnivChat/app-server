@@ -13,11 +13,26 @@ public class ChatRes {
     @Getter
     // 기숙사 채팅 메시지 객체
     public static class DormChatRes {
-
         private String memberNickname; // 송신자 식별자
         private String messageContent;
         private String messageSendingTime;
     }
+
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    // 기숙사 채팅 메시지 객체
+    public static class DormChatListRes {
+        private int maxPage;
+        private int nowPage;
+        private List<DormChatRes> dormChatRes;
+    }
+
+
+
+
 
     @Builder
     @NoArgsConstructor
@@ -30,6 +45,22 @@ public class ChatRes {
         private String messageContent;
         private String messageSendingTime;
     }
+
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    // 연애상담 채팅 메시지 객체
+    public static class LoveChatListRes {
+        private int maxPage;
+        private int nowPage;
+        private List<LoveChatRes> loveChatRes;
+    }
+
+
+
+
 
 
     @Builder
