@@ -25,7 +25,7 @@ public enum  BaseResponseStatus {
     /**
      * 2000 : User 오류
      */
-    USER_EXISTS_NICKNAME_ERROR("2001","중복된 닉네임입니다.", 409),
+    USER_EXISTS_NICKNAME_ERROR("2001","중복된 닉네임입니다.", 400),
 
     USER_FAILED_TO_LOG_IN_ERROR("2002", "로그인에 실패하였습니다.", 400),
 
