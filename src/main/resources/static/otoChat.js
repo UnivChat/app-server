@@ -66,7 +66,7 @@ const enterOTOChattingRoom = () => {
 // 메세지 송신을 위해 실행해야 하는 함수
 function sendMessage_oto() {
     const message = {
-        roomId: $("#room_id").val(),
+//        roomId: $("#room_id").val(),
         memberNickname: $("#sender").val(),
         messageContent: $("#message").val(),
     }
@@ -75,7 +75,10 @@ function sendMessage_oto() {
     // 두 번째 인자: 헤더
     // 세 번쨰 인자: 보낼 메세지
     // 메세지를 직렬화해서 보내야 함.
-    stompClient.send(`/pub/oto`, header, JSON.stringify(message));
+
+    const room= parseInt($("#room_id").val())
+    console.log(room)
+    stompClient.send(`/pub/${room}`, header, JSON.stringify(message));
 }
 
 // 메세지 송신 성공하면, 메세지를 반환함.
@@ -132,7 +135,7 @@ function sendId() {
     //            // 무한 스크롤 등을 구현하여, page 별로 요청하면 됨.
                 const page = 0;
                 const room= parseInt($("#room_id").val())
-                fetch(`http://localhost:8080/oto/chat/${room}/${page}`)
+                fetch(`http://localhost:8080/chatting/oto/${room}/${page}`)
                     .then(res => res.json())
                     .then(data => {
                         data.result.reverse().forEach((message) => {

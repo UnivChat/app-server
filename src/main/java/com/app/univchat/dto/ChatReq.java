@@ -74,9 +74,9 @@ public class ChatReq {
     @ApiModel(value = "OTOChatReq - 1:1 채팅 메시지 전송 객체")
     public static class OTOChatReq extends ChatReq {
 
-        @ApiModelProperty(name = "채팅방 번호")
-        @NotNull
-        protected Long roomId; // 채팅방 id
+//        @ApiModelProperty(name = "채팅방 번호")
+//        @NotNull
+//        protected Long roomId; // 채팅방 id
 
         @ApiModelProperty(name = "송신자 닉네임", example = "닉네임1")
         @NotNull

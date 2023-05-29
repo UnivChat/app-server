@@ -76,14 +76,14 @@ public class OTOChatService {
      */
     @SneakyThrows
     @Transactional
-    public void saveChat(ChatReq.OTOChatReq otoChatReq, String messageSendingTime) {
+    public void saveChat(Long roomId, ChatReq.OTOChatReq otoChatReq, String messageSendingTime) {
 
         // nickname으로 송신자 member 객체 획득
         String senderNickname = otoChatReq.getMemberNickname();
         Optional<Member> sender = memberService.getMember(senderNickname);
 
         // roomId로 채팅방 객체 획득
-        Long roomId=otoChatReq.getRoomId();
+//        Long roomId=otoChatReq.getRoomId();
         Optional<OTOChatRoom> room=otoChatRoomRepository.findByRoomId(roomId);
 
         // 채팅 내역 저장
