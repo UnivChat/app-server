@@ -88,7 +88,7 @@ public class ChatReq {
 
         public OTOChat toEntity(Optional<OTOChatRoom> room,Optional<Member> member, String messageSendingTime) throws Exception {
             return OTOChat.builder()
-                    .room(room.orElseThrow(() -> new Exception("존재하지 않는 회원입니다.")))
+                    .room(room.orElseThrow(() -> new Exception("존재하지 않는 채팅방입니다.")))
                     .member(member.orElseThrow(() -> new Exception("존재하지 않는 회원입니다.")))
                     .messageContent(messageContent)
                     .messageSendingTime(messageSendingTime)
