@@ -97,7 +97,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 채팅 엔드포인트, 기숙사 채팅 기록 조회 인증 x
                 .antMatchers("/chat/**").permitAll()
                 .antMatchers("/oto/**").permitAll()
-                .antMatchers("/dorm/chat/**", "/live/chat/**", "/love/chat/**").permitAll()
+                .antMatchers("/chatting/**").permitAll()
 
                 .anyRequest().authenticated() //위의 api가 아닌 경로는 모두 jwt 토큰 인증을 해야 함
 

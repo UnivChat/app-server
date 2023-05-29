@@ -23,7 +23,7 @@ import java.util.List;
 @Tag(name = "chatting", description = "채팅 내역 조회 API")
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/love")
+@RequestMapping("/chatting/love")
 public class LoveChatController {
 
     private final LoveChatService loveChatService;
@@ -46,7 +46,7 @@ public class LoveChatController {
     // 연애상담 채팅 내역을 불러오기 위한 API(http)
     @Tag(name = "chatting")
     @ApiOperation(value = "기숙사 채팅 내역 API", notes = "채팅 내역 최신순으로 10개를 반환하며, 페이지 번호는 0부터 시작합니다.")
-    @GetMapping("/chat/{page}")
+    @GetMapping("/{page}")
     public ResponseEntity<BaseResponse<List<ChatRes.LoveChatRes>>>loadLoveChattingList(@PathVariable int page) {
 
         List<ChatRes.LoveChatRes> chattingList = loveChatService.getChattingList(page);

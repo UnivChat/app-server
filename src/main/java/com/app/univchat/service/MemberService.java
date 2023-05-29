@@ -3,6 +3,7 @@ package com.app.univchat.service;
 import com.app.univchat.aws.AWSS3Uploader;
 import com.app.univchat.base.BaseException;
 
+import com.app.univchat.base.BaseResponseStatus;
 import com.app.univchat.config.SecurityUtil;
 
 import com.app.univchat.domain.Member;
@@ -80,7 +81,7 @@ public class MemberService {
      */
     public MemberRes.InfoRes viewInfo(Member member) throws IOException{
 
-        MemberRes.InfoRes infoRes=new MemberRes.InfoRes();
+        MemberRes.InfoRes infoRes = new MemberRes.InfoRes();
 
         infoRes.setEmail(member.getEmail());
         infoRes.setNickname(member.getNickname());
@@ -126,22 +127,16 @@ public class MemberService {
     /**
      * 비밀번호 변경
      */
-    public String updatePassword(MemberReq.UpdatePasswordReq updatePasswordReq) throws BaseException {
+    public void updatePassword(MemberReq.UpdatePasswordReq updatePasswordReq) throws BaseException {
 
         Optional<Member> foundMember=memberRepository.findByEmail(updatePasswordReq.getEmail());
+        Member member = foundMember.orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_EXIST_EMAIL_ERROR));
 
-        if(foundMember!=null) {
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            String encPassword=passwordEncoder.encode(updatePasswordReq.getPassword());
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encPassword=passwordEncoder.encode(updatePasswordReq.getPassword());
+        member.updatePassword(encPassword);
+        memberRepository.save(member);
 
-            Member member=foundMember.get();
-            member.updatePassword(encPassword);
-            memberRepository.save(member);
-            return "비밀번호가 변경되었습니다.";
-        }
-        else{
-            return null;
-        }
     }
 
     public boolean checkEmail(String email) {
