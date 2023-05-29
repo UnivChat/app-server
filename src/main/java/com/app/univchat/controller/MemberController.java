@@ -1,5 +1,6 @@
 package com.app.univchat.controller;
 
+import com.app.univchat.base.BaseException;
 import com.app.univchat.base.BaseResponse;
 import com.app.univchat.base.BaseResponseStatus;
 
@@ -62,11 +63,11 @@ public class MemberController {
 
         // 이메일 중복 체크
         if(memberService.checkEmail(memberDto.getEmail())) {
-            return BaseResponse.ok(BaseResponseStatus.USER_ALREADY_EXIST_USERNAME);
+            throw new BaseException(BaseResponseStatus.USER_ALREADY_EXIST_USERNAME);
         }
         // 닉네임 중복 체크
         if(memberService.checkNickname(memberDto.getNickname())) {
-            return BaseResponse.ok(BaseResponseStatus.USER_EXISTS_NICKNAME_ERROR);
+            throw new BaseException(BaseResponseStatus.USER_EXISTS_NICKNAME_ERROR);
         }
 
         return BaseResponse.ok(BaseResponseStatus.SUCCESS,memberService.signup(memberDto));
@@ -79,14 +80,9 @@ public class MemberController {
     @PostMapping("/change/password")
     public BaseResponse<String> updatePassword(@RequestBody MemberReq.UpdatePasswordReq updatePasswordReq){
 
-        String passwordRes=memberService.updatePassword(updatePasswordReq);
+        memberService.updatePassword(updatePasswordReq);
 
-        if(passwordRes!=null) {
-            return BaseResponse.ok(BaseResponseStatus.SUCCESS,passwordRes);
-        }
-        else {
-            return BaseResponse.ok(BaseResponseStatus.USER_NOT_EXIST_EMAIL_ERROR);
-        }
+        return BaseResponse.ok(BaseResponseStatus.SUCCESS);
 
     }
 
@@ -94,9 +90,9 @@ public class MemberController {
     @ApiOperation(value = "회원조회 API")
     @GetMapping("/info")
     public BaseResponse<MemberRes.InfoRes> viewInfo(@ApiIgnore @AuthenticationPrincipal PrincipalDetails member) throws IOException {
-        MemberRes.InfoRes infoRes=memberService.viewInfo(member.getMember());
+        MemberRes.InfoRes infoRes = memberService.viewInfo(member.getMember());
 
-        return BaseResponse.ok(BaseResponseStatus.SUCCESS,infoRes);
+        return BaseResponse.ok(BaseResponseStatus.SUCCESS, infoRes);
     }
 
     /**
@@ -123,7 +119,7 @@ public class MemberController {
             @ApiResponse(code = 415, message = "Content type 'application/octet-stream' not supported")
     })
     @PutMapping("/info")
-    public ResponseEntity<BaseResponse<MemberRes.Update>> update(@RequestPart MemberReq.Update memberUpdateDto,
+    public BaseResponse<MemberRes.Update> update(@RequestPart MemberReq.Update memberUpdateDto,
                                     @RequestPart(required = false) MultipartFile profileImage,
                                     @ApiIgnore @AuthenticationPrincipal PrincipalDetails member){
 
@@ -133,7 +129,7 @@ public class MemberController {
 
         MemberRes.Update result = memberService.update(memberUpdateDto, member.getMember());
 
-        return ResponseEntity.ok(BaseResponse.ok(BaseResponseStatus.SUCCESS, result));
+        return BaseResponse.ok(BaseResponseStatus.SUCCESS, result);
     }
 
 
@@ -148,10 +144,10 @@ public class MemberController {
         String redisRT = redisService.getValues(String.valueOf(postReIssueReq.getEmail()));
 
         if (redisRT == null) {
-            return BaseResponse.ok(BaseResponseStatus.JWT_INVALID_REFRESH_TOKEN);
+            throw new BaseException(BaseResponseStatus.JWT_INVALID_REFRESH_TOKEN);
         }
         if (!redisRT.equals(postReIssueReq.getRefreshToken())) {
-            return BaseResponse.ok(BaseResponseStatus.JWT_INVALID_USER_JWT);
+            throw new BaseException(BaseResponseStatus.JWT_INVALID_USER_JWT);
         }
 
         MemberRes.PostReIssueRes postReIssueRes = memberService.reIssueToken(postReIssueReq.getEmail());

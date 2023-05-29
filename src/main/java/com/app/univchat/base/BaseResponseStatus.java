@@ -25,7 +25,7 @@ public enum  BaseResponseStatus {
     /**
      * 2000 : User 오류
      */
-    USER_EXISTS_NICKNAME_ERROR("2001","중복된 닉네임입니다.", 409),
+    USER_EXISTS_NICKNAME_ERROR("2001","중복된 닉네임입니다.", 400),
 
     USER_FAILED_TO_LOG_IN_ERROR("2002", "로그인에 실패하였습니다.", 400),
 
@@ -77,7 +77,7 @@ public enum  BaseResponseStatus {
     JWT_HIJACK_ACCESS_TOKEN("6007", "만료된(탈취된) 서명입니다.", 400),
     JWT_INVALID_REFRESH_TOKEN("6008", "유효하지 않은 리프레시 토큰입니다.", 400),
     JWT_INVALID_USER_JWT("6008", "입력 RT와 사용자 RT가 일치하지 않습니다", 400),
-
+    JWT_AND_NICKNAME_DONT_MATCH("6009", "JWT와 닉네임이 일치하지 않습니다.", 400),
     ;
 
     private final String code;

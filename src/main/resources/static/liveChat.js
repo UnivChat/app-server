@@ -37,10 +37,9 @@ const enterLiveChattingRoom = () => {
                 })
                 .catch(err => console.error(err));
 
-            //TODO: 라이브 채팅 api 작성 후 경로 변경
             // 최근 채팅 내역을 불러 오는 부분
             const page = 0;
-            fetch(`http://localhost:8080/live/chat/${page}`)
+            fetch(`http://localhost:8080/chatting/live/${page}`)
                 .then(res => res.json())
                 .then(data => {
                     data.result.reverse().forEach((message) => {
@@ -65,7 +64,7 @@ const enterLiveChattingRoom = () => {
 
 
 // 메세지 송신을 위해 실행해야 하는 함수
-function sendMessage() {
+function sendMessage_live() {
     const message = {
         memberNickname: $("#sender").val(),
         messageContent: $("#message").val(),

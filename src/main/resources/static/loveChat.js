@@ -39,7 +39,7 @@ const enterLoveChattingRoom = () => {
             // 임의로 페이지를 설정함(가장 최근 10개 -> 페이지 0)
             // 무한 스크롤 등을 구현하여, page 별로 요청하면 됨.
             const page = 0;
-            fetch(`http://localhost:8080/love/chat/${page}`)
+            fetch(`http://localhost:8080/chatting/love/${page}`)
                 .then(res => res.json())
                 .then(data => {
                     data.result.reverse().forEach((message) => {
@@ -63,7 +63,7 @@ const enterLoveChattingRoom = () => {
 }
 
 // 메세지 송신을 위해 실행해야 하는 함수
-function sendMessage() {
+function sendMessage_love() {
     const message = {
         memberNickname: $("#sender").val(),
         messageContent: $("#message").val(),

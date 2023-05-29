@@ -90,11 +90,9 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
         //토큰 발급
         JwtDto jwtDto = jwtProvider.generateToken(member.getEmail());
 
-        //TODO: redis에 refresh 토큰 저장
         redisService.saveToken(String.valueOf(member.getEmail()),jwtDto.getRefreshToken(), refreshTime);
 
         //response Header 설정
-        //TODO: accessToken 응답 헤더에? 쿠키에? -> 프론트와 논의
         response.setHeader("Authorization", jwtDto.getAccessToken());
 
         response.setContentType("application/json");
