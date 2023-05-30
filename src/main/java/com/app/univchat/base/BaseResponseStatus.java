@@ -56,10 +56,10 @@ public enum  BaseResponseStatus {
     USER_FAILED_TO_WITHDRAWAL("2014", "회원 탈퇴에 실패하였습니다", 400),
 
     /**
-     * 3000 : Chatting 오류
+     * 4000 : Chatting 오류
      */
-    CHATTING_NOT_EXIST_OTO_CHAT_ERROR("3001", "해당하는 채팅 내역이 존재하지 않습니다.", 404),
-    CHATTING_NOT_EXIST_OTO_ROOM_ERROR("3002", "해당하는 채팅방이 존재하지 않습니다.", 404),
+    CHATTING_NOT_EXIST_OTO_CHAT_ERROR("4001", "해당하는 채팅 내역이 존재하지 않습니다.", 404),
+    CHATTING_NOT_EXIST_OTO_ROOM_ERROR("4002", "해당하는 채팅방이 존재하지 않습니다.", 404),
     
     /**
      * 6000 : Jwt 오류
