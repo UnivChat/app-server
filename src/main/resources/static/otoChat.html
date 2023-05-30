@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8">
     <title>Chat Room</title>
-    <script src="/otoChat.js"></script>
+<!--    <script src="/otoChat.js"></script>-->
+    <script src="/otoChatRoom.js"></script>
     <script src="/webjars/jquery/jquery.min.js"></script>
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
@@ -16,16 +17,16 @@
     <div class="message-input">
       <label for="room_id">Room ID:</label>
       <input type="text" id="room_id" class="room_id-input">
-      <button id="send-id" class="send-id-btn" onclick="sendId()">Enter Chatting Room</button>
-      <label for="sender">Sender:</label>
-      <input type="text" id="sender" class="sender-input">
-      <label for="message">Message:</label>
-      <input type="text" id="message" class="message-input">
-      <button id="send-message" class="send-message-btn" onclick="sendMessage_oto()">Send Message</button>
+      <button id="send-id" class="send-id-btn" onclick="enterOTOChattingRoom()">Enter Chatting Room</button>
+<!--      <label for="sender">Sender:</label>-->
+<!--      <input type="text" id="sender" class="sender-input">-->
+<!--      <label for="message">Message:</label>-->
+<!--      <input type="text" id="message" class="message-input">-->
+<!--      <button id="send-message" class="send-message-btn" onclick="sendMessage_oto()">Send Message</button>-->
     </div>
-    <div id="message-list" class="message-list">
-      <!-- message tags will be added here -->
-    </div>
+<!--    <div id="message-list" class="message-list">-->
+<!--      &lt;!&ndash; message tags will be added here &ndash;&gt;-->
+<!--    </div>-->
   </div>
 </body>
 </html>
