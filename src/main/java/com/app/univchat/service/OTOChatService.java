@@ -1,5 +1,7 @@
 package com.app.univchat.service;
 
+import com.app.univchat.base.BaseException;
+import com.app.univchat.base.BaseResponseStatus;
 import com.app.univchat.domain.Member;
 import com.app.univchat.domain.OTOChat;
 import com.app.univchat.domain.OTOChatRoom;
@@ -19,6 +21,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -88,12 +92,14 @@ public class OTOChatService {
 
         // 채팅 내역 저장
         otoChatRepository.save(otoChatReq.toEntity(room, sender ,messageSendingTime));
+
+        // TODO: 채팅방의 lastMessageId 값 저장? OR lastMessageId 필드 삭제?
     }
 
     /**
      *  1:1 채팅 내역 조회
      */
-    public List<ChatRes.OTOChatRes> getChattingList(Long roomId,int page) {
+    public List<ChatRes.OTOChatRes> getChattingList(Long roomId, int page) {
 
         // page는 요청하는 곳에 맞게, 한 번의 요청에는 10개의 채팅, 시간 내림차순으로 정렬.
         Pageable pageable = PageRequest.of(page, 10,
@@ -108,4 +114,64 @@ public class OTOChatService {
                         .map(chat -> modelMapper.map(chat, ChatRes.OTOChatRes.class))
                         .collect(Collectors.toList());
     }
+
+    /**
+     * 1:1 채팅방 ID를 통해 가장 최근 메세지 조회
+     */
+    public OTOChat getLastMessage(OTOChatRoom room) {
+
+        OTOChat lastMessage = otoChatRepository.findTop1ByRoomOrderByMessageSendingTimeDesc(room);
+
+        return lastMessage;
+    }
+
+    /**
+     *  사용자별 1:1 채팅방 목록 조회
+     */
+    public List<ChatRes.OTOChatRoomRes> getChattingRoomList(Member member) {
+
+        // 사용자 ID를 통해 송신자 혹은 수신자의 ID와 같다면 해당 1:1 채팅방 조회
+        // 참여하고 있는 1:1 채팅방이 없을 시, 응답 코드 404와 함께 에러 반환
+        List<OTOChatRoom> result = otoChatRoomRepository.findBySenderOrReceive(member, member);
+        
+        // 조회한 1:1 채팅방 목록을 이용하여 응답 객체와 매핑
+        List<ChatRes.OTOChatRoomRes> chattingRoomList = result.stream()
+                // 채팅방별 매핑
+                .map(chattingRoom -> {
+                    // 상대방 닉네임 추출
+                    Member sender = chattingRoom.getSender();
+                    Member receiver = chattingRoom.getReceive();
+                    String opponentNickname = member.getId() != sender.getId()? sender.getNickname(): receiver.getNickname();
+                    System.out.println(chattingRoom);
+                    System.out.println(opponentNickname);
+                    System.out.println(chattingRoom.getRoomId());
+
+                    // 마지막 메세지 추출
+                    OTOChat lastMessage = getLastMessage(chattingRoom);
+                    System.out.println(lastMessage);
+
+                    // 빌더 패턴으로 응답 객체 반환
+                    if(lastMessage != null) {
+                        return(ChatRes.OTOChatRoomRes.builder()
+                                .roomId(chattingRoom.getRoomId())
+                                .opponentNickname(opponentNickname)
+                                .lastMessageContent(lastMessage.getMessageContent())
+                                .lastMessageSendingTime(lastMessage.getMessageSendingTime()).build());
+                    } else {
+                        return(ChatRes.OTOChatRoomRes.builder()
+                                .roomId(chattingRoom.getRoomId())
+                                .opponentNickname(opponentNickname)
+                                .lastMessageContent("")
+                                .lastMessageSendingTime("").build());
+                    }
+
+                })
+                // 마지막 메세지를 기준으로 최신순 정렬
+                .sorted(Comparator.comparing(ChatRes.OTOChatRoomRes::getLastMessageSendingTime).reversed())
+                // 매핑한 결과를 리스트로 반환
+                .collect(Collectors.toList());
+
+        return chattingRoomList;
+    }
+
 }
