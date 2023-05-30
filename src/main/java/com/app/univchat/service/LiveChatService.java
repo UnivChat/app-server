@@ -63,20 +63,12 @@ public class LiveChatService {
 
         if(page > maxPage) return null;
 
-        if(page == -1){ //최신 페이지 요청
-
-            //pageable 객체 생성
-            PageRequest pageable = PageRequest.of(0, size,
-                    Sort.by("messageSendingTime").descending());
-
-            // ChatRes.LiveChatRes으로 변환하여 반환
-            return new ChatRes.LiveChatListRes(maxPage, 0,
-                    liveChatRepository.findAll(pageable)
-                    .stream()
-                    .map(chat -> modelMapper.map(chat, ChatRes.LiveChatRes.class))
-                    .collect(Collectors.toList()));
-
+        if(page == -1){
+            //초기에 채팅 리스트 불러올 때
+            //-1로 접근하면 무조건 최신 10개
+            page = 0;
         }
+
 
         //pageable 객체 생성
         PageRequest pageable = PageRequest.of(page, size,

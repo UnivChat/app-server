@@ -55,18 +55,9 @@ public class LoveChatService {
         if(page > maxPage) return null;
 
         if(page == -1){
-            // page는 요청하는 곳에 맞게, 한 번의 요청에는 10개의 채팅, 시간 내림차순으로 정렬.
-            Pageable pageable = PageRequest.of(0, size,
-                    Sort.by("messageSendingTime").descending());
-
-            // pagenation 한 채팅 목록을 modleMapper로 변환하여 반환
-            return new ChatRes.LoveChatListRes(maxPage, 0,
-                    loveChatRepository.findAll(pageable)
-                            .stream()
-                            .map(chat -> modelMapper.map(chat, ChatRes.LoveChatRes.class))
-                            .collect(Collectors.toList()));
-
-
+            //초기에 채팅 리스트 불러올 때
+            //-1로 접근하면 무조건 최신 10개
+            page = 0;
         }
 
         // page는 요청하는 곳에 맞게, 한 번의 요청에는 10개의 채팅, 시간 내림차순으로 정렬.
