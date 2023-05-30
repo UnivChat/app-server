@@ -1,5 +1,6 @@
 package com.app.univchat.service;
 
+import com.app.univchat.chat.OTOChatVisible;
 import com.app.univchat.base.BaseException;
 import com.app.univchat.base.BaseResponseStatus;
 import com.app.univchat.domain.Member;
@@ -131,9 +132,17 @@ public class OTOChatService {
     public List<ChatRes.OTOChatRoomRes> getChattingRoomList(Member member) {
 
         // 사용자 ID를 통해 송신자 혹은 수신자의 ID와 같다면 해당 1:1 채팅방 조회
-        // 참여하고 있는 1:1 채팅방이 없을 시, 응답 코드 404와 함께 에러 반환
         List<OTOChatRoom> result = otoChatRoomRepository.findBySenderOrReceive(member, member);
-        
+
+        // visible에 따른 필터링
+        if(result != null) {
+            result = result.stream().filter(chattingRoom ->
+                            chattingRoom.getVisible() == OTOChatVisible.ALL
+                      ||   (chattingRoom.getVisible() == OTOChatVisible.SENDER && chattingRoom.getSender().getId() == member.getId())
+                      ||   (chattingRoom.getVisible() == OTOChatVisible.RECEIVER && chattingRoom.getReceive().getId() == member.getId()))
+                           .collect(Collectors.toList());
+        }
+
         // 조회한 1:1 채팅방 목록을 이용하여 응답 객체와 매핑
         List<ChatRes.OTOChatRoomRes> chattingRoomList = result.stream()
                 // 채팅방별 매핑
@@ -142,13 +151,9 @@ public class OTOChatService {
                     Member sender = chattingRoom.getSender();
                     Member receiver = chattingRoom.getReceive();
                     String opponentNickname = member.getId() != sender.getId()? sender.getNickname(): receiver.getNickname();
-                    System.out.println(chattingRoom);
-                    System.out.println(opponentNickname);
-                    System.out.println(chattingRoom.getRoomId());
 
                     // 마지막 메세지 추출
                     OTOChat lastMessage = getLastMessage(chattingRoom);
-                    System.out.println(lastMessage);
 
                     // 빌더 패턴으로 응답 객체 반환
                     if(lastMessage != null) {
