@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface OTOChatRepository extends JpaRepository<OTOChat, Long> {
     Page<OTOChat> findAll(Pageable pageable);
     Page<OTOChat> findByRoom(Optional<OTOChatRoom> room, Pageable pageable);
+
+    OTOChat findTop1ByRoomOrderByMessageSendingTimeDesc(OTOChatRoom room);
 }
