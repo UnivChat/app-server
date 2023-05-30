@@ -1,9 +1,10 @@
-package com.app.univchat.service;
+package com.app.univchat.service.chat;
 
 import com.app.univchat.domain.Member;
 import com.app.univchat.dto.ChatReq;
 import com.app.univchat.dto.ChatRes;
 import com.app.univchat.repository.LoveChatRepository;
+import com.app.univchat.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;

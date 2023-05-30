@@ -96,7 +96,7 @@ public class MemberService {
     /**
      * nickname을 통한 member 조회
      */
-    protected Optional<Member> getMember(String nickname) throws IOException{
+    public Optional<Member> getMember(String nickname) throws IOException{
 
         return memberRepository.findByNickname(nickname);
     }
