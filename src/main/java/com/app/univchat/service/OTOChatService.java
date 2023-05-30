@@ -1,5 +1,6 @@
 package com.app.univchat.service;
 
+import com.app.univchat.chat.OTOChatVisible;
 import com.app.univchat.domain.Member;
 import com.app.univchat.domain.OTOChat;
 import com.app.univchat.domain.OTOChatRoom;
@@ -107,5 +108,60 @@ public class OTOChatService {
                         .stream()
                         .map(chat -> modelMapper.map(chat, ChatRes.OTOChatRes.class))
                         .collect(Collectors.toList());
+    }
+
+    public boolean checkVisible(Long roomId) {
+        // 현재 참여 채팅방 객체
+        Optional<OTOChatRoom> room=otoChatRoomRepository.findByRoomId(roomId);
+
+        // 모든 유저가 채팅방에 남아있을 경우 true
+        if(room.get().getVisible()== OTOChatVisible.ALL) return true;
+        else return false;
+    }
+
+    /**
+     *  1:1 채팅방 나가기
+     */
+    public String exitChatRoom(Long roomId, Member member) {
+        // 채팅방 나가는 회원 id
+        Long id=member.getId();
+
+        // 현재 참여 채팅방 객체
+        Optional<OTOChatRoom> room=otoChatRoomRepository.findByRoomId(roomId);
+        OTOChatRoom chatRoom=room.get();
+
+        // 채팅방 sender id
+        Long sid=chatRoom.getSender().getId();   // sender id
+
+        // sender 가 나갈 경우
+        if(sid==id) {
+            chatRoom.updateVisible(OTOChatVisible.RECEIVER);  // receiver만 볼 수 있음
+        }
+        // receiver 가 나갈 경우
+        else {
+            chatRoom.updateVisible(OTOChatVisible.SENDER);  // sender만 볼 수 있음
+        }
+
+        otoChatRoomRepository.save(chatRoom);
+
+        return "채팅방을 나갔습니다.";
+    }
+
+    /**
+     *  1:1 채팅방 삭제
+     */
+    public String deleteChatRoom(Long roomId, Member member) {
+        // 채팅방 나가는 회원 id
+        Long id=member.getId();
+
+        // 현재 참여 채팅방 객체
+        Optional<OTOChatRoom> room=otoChatRoomRepository.findByRoomId(roomId);
+        OTOChatRoom chatRoom=room.get();
+
+        // 채팅 내역 삭제하기
+        otoChatRepository.deleteByRoom(room);
+        otoChatRoomRepository.deleteByRoomId(roomId);
+
+        return "채팅방이 삭제되었습니다.";
     }
 }

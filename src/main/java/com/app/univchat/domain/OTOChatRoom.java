@@ -32,4 +32,8 @@ public class OTOChatRoom {
 //    @Column(nullable = false)
     private Long lastMessageId;
 
+    public void updateVisible(OTOChatVisible visible) {
+        this.visible = visible;
+    }
+
 }

@@ -3,6 +3,7 @@ package com.app.univchat.controller;
 import com.app.univchat.base.BaseResponse;
 import com.app.univchat.base.BaseResponseStatus;
 import com.app.univchat.dto.*;
+import com.app.univchat.security.auth.PrincipalDetails;
 import com.app.univchat.service.LoveChatService;
 import com.app.univchat.service.OTOChatService;
 import io.swagger.annotations.ApiOperation;
@@ -12,9 +13,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -64,6 +68,32 @@ public class OTOChatController {
         List<ChatRes.OTOChatRes> chattingList = otoChatService.getChattingList(roomId,page);
 
         return ResponseEntity.ok(BaseResponse.ok(BaseResponseStatus.SUCCESS, chattingList));
+    }
+
+    @ApiOperation(value = "채팅방 나가기 API")
+    @PutMapping("/exit/{roomId}")
+    public BaseResponse<String> exitChatRoom(@PathVariable Long roomId, @ApiIgnore @AuthenticationPrincipal PrincipalDetails member) throws IOException {
+
+        boolean isVisible= otoChatService.checkVisible(roomId);
+
+        String exitRes="채팅방 나가기 권한이 없습니다.";
+        if(isVisible) exitRes=otoChatService.exitChatRoom(roomId, member.getMember());
+
+        return BaseResponse.ok(BaseResponseStatus.SUCCESS,exitRes);
+
+    }
+
+    @ApiOperation(value = "채팅방 삭제 API")
+    @DeleteMapping("/delete/{roomId}")
+    public BaseResponse<String> deleteChatRoom(@PathVariable Long roomId, @ApiIgnore @AuthenticationPrincipal PrincipalDetails member) throws IOException {
+
+        boolean isVisible= otoChatService.checkVisible(roomId);
+
+        String deleteRes="채팅방 삭제 권한이 없습니다.";
+        if(!isVisible) deleteRes=otoChatService.deleteChatRoom(roomId, member.getMember());
+
+        return BaseResponse.ok(BaseResponseStatus.SUCCESS,deleteRes);
+
     }
 
 
