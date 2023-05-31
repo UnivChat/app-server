@@ -28,6 +28,6 @@ public class OTOChatRoom {
 //    private int visible;
 
 //    @Column(nullable = false)
-    private Long lastMessageId;
+//    private Long lastMessageId;
 
 }

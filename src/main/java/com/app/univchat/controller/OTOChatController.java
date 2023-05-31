@@ -1,10 +1,12 @@
 package com.app.univchat.controller;
 
+import com.app.univchat.base.BaseException;
 import com.app.univchat.base.BaseResponse;
 import com.app.univchat.base.BaseResponseStatus;
 import com.app.univchat.dto.ChatReq;
 import com.app.univchat.dto.ChatRes;
 import com.app.univchat.dto.MemberReq;
+import com.app.univchat.security.auth.PrincipalDetails;
 import com.app.univchat.service.LoveChatService;
 import com.app.univchat.service.OTOChatService;
 import io.swagger.annotations.ApiOperation;
@@ -14,8 +16,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,7 +28,7 @@ import java.util.List;
 @Tag(name = "one_to_one_chat", description = "1:1 채팅 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/oto")
+@RequestMapping("/chatting/oto")
 public class OTOChatController {
 
     private final OTOChatService otoChatService;
@@ -65,5 +69,21 @@ public class OTOChatController {
         List<ChatRes.OTOChatRes> chattingList = otoChatService.getChattingList(roomId,page);
 
         return ResponseEntity.ok(BaseResponse.ok(BaseResponseStatus.SUCCESS, chattingList));
+    }
+
+//     사용자별 참여하고 있는 1:1 채팅방 목록 조회를 위한 API
+
+    @Tag(name = "chatting")
+    @ApiOperation(value = "사용자별 1:1 채팅방 목록 API", notes = "사용자가 참여하고 있는 1:1 채팅방 목록을 반환합니다.")
+    @GetMapping("/rooms")
+    public BaseResponse<List<ChatRes.OTOChatRoomRes>> loadOTOChattingRoomList(@ApiIgnore @AuthenticationPrincipal PrincipalDetails member) {
+
+        List<ChatRes.OTOChatRoomRes> chattingRoomList = otoChatService.getChattingRoomList(member.getMember());
+
+        if(chattingRoomList.isEmpty()) {
+            return BaseResponse.ok(BaseResponseStatus.CHATTING_NOT_EXIST_OTO_ROOM_ERROR);
+        }
+
+        return BaseResponse.ok(BaseResponseStatus.SUCCESS, chattingRoomList);
     }
 }

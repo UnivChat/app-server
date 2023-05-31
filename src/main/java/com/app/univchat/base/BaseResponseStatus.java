@@ -56,11 +56,13 @@ public enum  BaseResponseStatus {
     USER_FAILED_TO_WITHDRAWAL("2014", "회원 탈퇴에 실패하였습니다", 400),
 
 
-    /**
-     * 3000 : websocket 오류
-     */
-    UNSUPPORTED_SUBSCRIBE_URI("3001", "지원하지 않는 구독경로입니다.", 400),
 
+    /**
+     * 5000 : Chatting 오류
+     */
+    CHATTING_NOT_EXIST_OTO_CHAT_ERROR("5002", "해당하는 채팅 내역이 존재하지 않습니다.", 404),
+    CHATTING_NOT_EXIST_OTO_ROOM_ERROR("5003", "해당하는 채팅방이 존재하지 않습니다.", 404),
+    UNSUPPORTED_SUBSCRIBE_URI("5004", "지원하지 않는 구독경로입니다.", 400),
 
     /**
      * 6000 : Jwt 오류
@@ -82,7 +84,7 @@ public enum  BaseResponseStatus {
     JWT_INVALID_USER_JWT("6008", "입력 RT와 사용자 RT가 일치하지 않습니다", 400),
     JWT_AND_NICKNAME_DONT_MATCH("6009", "JWT와 닉네임이 일치하지 않습니다.", 400),
     ;
-
+    
     private final String code;
     private final String message;
     private final int status;
