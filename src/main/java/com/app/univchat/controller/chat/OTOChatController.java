@@ -58,7 +58,7 @@ public class OTOChatController {
                 .build();
     }
 
-    //     1:1 채팅 내역을 불러오기 위한 API(http)
+//     1:1 채팅 내역을 불러오기 위한 API(http)
     @Tag(name = "chatting")
     @ApiOperation(value = "1:1 채팅 내역 API", notes = "채팅 내역 최신순으로 10개를 반환하며, 페이지 번호는 0부터 시작합니다.")
     @GetMapping("/{roomId}/{page}")

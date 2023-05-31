@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface OTOChatRoomRepository extends JpaRepository<OTOChatRoom, Long> {
+
     // 송신자, 수신자로 채팅방 찾기
     Optional<OTOChatRoom> findBySenderAndReceive(Member sender, Member receive);
 
