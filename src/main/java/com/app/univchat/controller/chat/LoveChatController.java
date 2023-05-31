@@ -1,4 +1,4 @@
-package com.app.univchat.controller;
+package com.app.univchat.controller.chat;
 
 import com.app.univchat.base.BaseResponse;
 import com.app.univchat.base.BaseResponseStatus;
