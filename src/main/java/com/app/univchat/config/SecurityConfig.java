@@ -92,7 +92,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //.antMatchers("/app.js").permitAll()
                 //.antMatchers("/main.css").permitAll()
 
-                .antMatchers("/chattingList.html", "/chattingListStyle.css", "/dormChat.html", "/dormChat.js", "/dormChatStyle.css", "/liveChat.js", "/liveChat.html",  "/loveChat.js", "/loveChat.html", "/otoChat.js", "/otoChat.html").permitAll()
+                .antMatchers("/chattingList.html", "/chattingListStyle.css", "/dormChat.html", "/dormChat.js", "/dormChatStyle.css", "/liveChat.js", "/liveChat.html",  "/loveChat.js", "/loveChat.html", "/otoChat.js", "/otoChat.html", "/otoChatRoom.js", "/otoChatRoom.html").permitAll()
 
                 // 채팅 엔드포인트, 기숙사 채팅 기록 조회 인증 x
                 .antMatchers("/chat/**").permitAll()
