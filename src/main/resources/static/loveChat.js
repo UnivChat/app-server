@@ -53,7 +53,7 @@ const enterLoveChattingRoom = () => {
 
 // 채팅 메세지를 로드하는 함수
 function loadLoveChatMessages(page) {
-    fetch(`http://localhost:8080/live/chat/${page}`)
+    fetch(`http://localhost:8080/chatting/love/${page}`)
         .then((res) => res.json())
         .then((data) => {
             data.result.forEach((message) => {  //.reverse()제거
