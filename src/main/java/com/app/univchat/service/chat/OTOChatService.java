@@ -1,4 +1,4 @@
-package com.app.univchat.service;
+package com.app.univchat.service.chat;
 
 import com.app.univchat.chat.OTOChatVisible;
 import com.app.univchat.base.BaseException;
@@ -11,6 +11,7 @@ import com.app.univchat.dto.ChatRes;
 import com.app.univchat.dto.MemberRes;
 import com.app.univchat.repository.OTOChatRepository;
 import com.app.univchat.repository.OTOChatRoomRepository;
+import com.app.univchat.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
@@ -58,14 +59,14 @@ public class OTOChatService {
         ChatRes.OTOChatRoomRes otoChatRoomRes = new ChatRes.OTOChatRoomRes();
 
         // 이미 채팅방 존재하면 해당 채팅방 id return
-        Optional<OTOChatRoom> foundRoom;
+        Optional<OTOChatRoom> foundRoom=null;
         if(otoChatRoomRepository.findBySenderAndReceive(sender.get(),receive.get())!=null) {
             foundRoom=otoChatRoomRepository.findBySenderAndReceive(sender.get(),receive.get());
             if(foundRoom.isEmpty()) {
                 foundRoom=otoChatRoomRepository.findBySenderAndReceive(receive.get(),sender.get());
             }
         }
-        else {  // 채팅방 개설
+        if(foundRoom.isEmpty()) {  // 채팅방 개설
             otoChatRoomRepository.save(otoChatRoomReq.toEntity(sender,receive));
             foundRoom=otoChatRoomRepository.findBySenderAndReceive(sender.get(),receive.get());
         }
@@ -81,14 +82,14 @@ public class OTOChatService {
      */
     @SneakyThrows
     @Transactional
-    public void saveChat(ChatReq.OTOChatReq otoChatReq, String messageSendingTime) {
+    public void saveChat(Long roomId, ChatReq.OTOChatReq otoChatReq, String messageSendingTime) {
 
         // nickname으로 송신자 member 객체 획득
         String senderNickname = otoChatReq.getMemberNickname();
         Optional<Member> sender = memberService.getMember(senderNickname);
 
         // roomId로 채팅방 객체 획득
-        Long roomId=otoChatReq.getRoomId();
+//        Long roomId=otoChatReq.getRoomId();
         Optional<OTOChatRoom> room=otoChatRoomRepository.findByRoomId(roomId);
 
         // 채팅 내역 저장
@@ -104,16 +105,71 @@ public class OTOChatService {
 
         // page는 요청하는 곳에 맞게, 한 번의 요청에는 10개의 채팅, 시간 내림차순으로 정렬.
         Pageable pageable = PageRequest.of(page, 10,
-                                    Sort.by("messageSendingTime").descending());
+                Sort.by("messageSendingTime").descending());
 
         Optional<OTOChatRoom> room=otoChatRoomRepository.findByRoomId(roomId);
 
         // pagenation 한 채팅 목록을 modleMapper로 변환하여 반환
         return otoChatRepository
-                        .findByRoom(room,pageable)
-                        .stream()
-                        .map(chat -> modelMapper.map(chat, ChatRes.OTOChatRes.class))
-                        .collect(Collectors.toList());
+                .findByRoom(room,pageable)
+                .stream()
+                .map(chat -> modelMapper.map(chat, ChatRes.OTOChatRes.class))
+                .collect(Collectors.toList());
+    }
+
+    public boolean checkVisible(Long roomId) {
+        // 현재 참여 채팅방 객체
+        Optional<OTOChatRoom> room=otoChatRoomRepository.findByRoomId(roomId);
+
+        // 모든 유저가 채팅방에 남아있을 경우 true
+        if(room.get().getVisible()== OTOChatVisible.ALL) return true;
+        else return false;
+    }
+
+    /**
+     *  1:1 채팅방 나가기
+     */
+    public String exitChatRoom(Long roomId, Member member) {
+        // 채팅방 나가는 회원 id
+        Long id=member.getId();
+
+        // 현재 참여 채팅방 객체
+        Optional<OTOChatRoom> room=otoChatRoomRepository.findByRoomId(roomId);
+        OTOChatRoom chatRoom=room.get();
+
+        // 채팅방 sender id
+        Long sid=chatRoom.getSender().getId();   // sender id
+
+        // sender 가 나갈 경우
+        if(sid==id) {
+            chatRoom.updateVisible(OTOChatVisible.RECEIVER);  // receiver만 볼 수 있음
+        }
+        // receiver 가 나갈 경우
+        else {
+            chatRoom.updateVisible(OTOChatVisible.SENDER);  // sender만 볼 수 있음
+        }
+
+        otoChatRoomRepository.save(chatRoom);
+
+        return "채팅방을 나갔습니다.";
+    }
+
+    /**
+     *  1:1 채팅방 삭제
+     */
+    public String deleteChatRoom(Long roomId, Member member) {
+        // 채팅방 나가는 회원 id
+        Long id=member.getId();
+
+        // 현재 참여 채팅방 객체
+        Optional<OTOChatRoom> room=otoChatRoomRepository.findByRoomId(roomId);
+        OTOChatRoom chatRoom=room.get();
+
+        // 채팅 내역 삭제하기
+        otoChatRepository.deleteByRoom(room);
+        otoChatRoomRepository.deleteByRoomId(roomId);
+
+        return "채팅방이 삭제되었습니다.";
     }
 
     /**
@@ -138,9 +194,9 @@ public class OTOChatService {
         if(result != null) {
             result = result.stream().filter(chattingRoom ->
                             chattingRoom.getVisible() == OTOChatVisible.ALL
-                      ||   (chattingRoom.getVisible() == OTOChatVisible.SENDER && chattingRoom.getSender().getId() == member.getId())
-                      ||   (chattingRoom.getVisible() == OTOChatVisible.RECEIVER && chattingRoom.getReceive().getId() == member.getId()))
-                           .collect(Collectors.toList());
+                                    ||   (chattingRoom.getVisible() == OTOChatVisible.SENDER && chattingRoom.getSender().getId() == member.getId())
+                                    ||   (chattingRoom.getVisible() == OTOChatVisible.RECEIVER && chattingRoom.getReceive().getId() == member.getId()))
+                    .collect(Collectors.toList());
         }
 
         // 조회한 1:1 채팅방 목록을 이용하여 응답 객체와 매핑
