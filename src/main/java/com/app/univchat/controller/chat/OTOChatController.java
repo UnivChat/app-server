@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-@Tag(name = "one_to_one_chat", description = "1:1 채팅 API")
+@Tag(name = "chatting", description = "채팅 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/chatting/oto")
@@ -33,7 +33,7 @@ public class OTOChatController {
     /*
         1:1 채팅방 개설 api
      */
-    @Tag(name = "one_to_one_chat")
+    @Tag(name = "chatting")
     @ApiOperation(value = "1:1 채팅방 개설 API")
     @PostMapping("/room")
     public BaseResponse<ChatRes.OTOChatRoomRes> createChatRoom(@RequestBody ChatReq.OTOChatRoomReq otoChatRoomReq){
@@ -69,6 +69,7 @@ public class OTOChatController {
         return ResponseEntity.ok(BaseResponse.ok(BaseResponseStatus.SUCCESS, chattingList));
     }
 
+    @Tag(name = "chatting")
     @ApiOperation(value = "채팅방 나가기 API")
     @PutMapping("/exit/{roomId}")
     public BaseResponse<String> exitChatRoom(@PathVariable Long roomId, @ApiIgnore @AuthenticationPrincipal PrincipalDetails member) throws IOException {
@@ -82,6 +83,7 @@ public class OTOChatController {
 
     }
 
+    @Tag(name = "chatting")
     @ApiOperation(value = "채팅방 삭제 API")
     @DeleteMapping("/delete/{roomId}")
     public BaseResponse<String> deleteChatRoom(@PathVariable Long roomId, @ApiIgnore @AuthenticationPrincipal PrincipalDetails member) throws IOException {

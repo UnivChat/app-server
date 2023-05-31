@@ -22,7 +22,7 @@ import java.util.List;
 
 import static com.app.univchat.base.BaseResponseStatus.CHAT_OVERFLOW_THE_RANGE;
 
-@Tag(name = "chatting", description = "채팅 내역 조회 API")
+@Tag(name = "chatting", description = "채팅 관련 API")
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/chatting/live")
