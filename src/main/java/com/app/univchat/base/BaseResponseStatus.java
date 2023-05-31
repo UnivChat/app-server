@@ -60,7 +60,9 @@ public enum  BaseResponseStatus {
      * 5000 : Chatting 오류
      */
     CHAT_OVERFLOW_THE_RANGE("5001", "요청 범위가 넘쳤습니다", 400),
-
+    CHATTING_NOT_EXIST_OTO_CHAT_ERROR("5002", "해당하는 채팅 내역이 존재하지 않습니다.", 404),
+    CHATTING_NOT_EXIST_OTO_ROOM_ERROR("5003", "해당하는 채팅방이 존재하지 않습니다.", 404),
+    UNSUPPORTED_SUBSCRIBE_URI("5004", "지원하지 않는 구독경로입니다.", 400),
 
     /**
      * 6000 : Jwt 오류

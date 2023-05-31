@@ -18,13 +18,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import static com.app.univchat.base.BaseResponseStatus.CHAT_OVERFLOW_THE_RANGE;
+import java.util.List;
 
 @Tag(name = "chatting", description = "채팅 내역 조회 API")
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/live")
+@RequestMapping("/chatting/live")
 public class LiveChatController {
 
     private final LiveChatService liveChatService;

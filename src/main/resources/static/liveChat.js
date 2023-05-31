@@ -11,7 +11,7 @@ const enterLiveChattingRoom = () => {
     stompClient = Stomp.over(socket);
 
     // stomp.js 에서 제공하는 콘솔창 로그 설정을 제어할 수 있는 함수
-    //stompClient.debug = (res) => {};
+//    stompClient.debug = (res) => {};
 
     // 기숙사 채팅방 입장(내부적으로 웹소켓 연결)
     stompClient.connect(header,

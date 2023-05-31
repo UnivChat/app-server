@@ -1,11 +1,15 @@
-package com.app.univchat.controller.chat;
+package com.app.univchat.controller;
 
 import com.app.univchat.base.BaseResponse;
 import com.app.univchat.base.BaseResponseStatus;
 import com.app.univchat.dto.ChatReq;
 import com.app.univchat.dto.ChatRes;
+import com.app.univchat.dto.MemberRes;
+import com.app.univchat.service.DormChatService;
 import com.app.univchat.service.chat.DormChatService;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +28,7 @@ import static com.app.univchat.base.BaseResponseStatus.CHAT_OVERFLOW_THE_RANGE;
 @Tag(name = "chatting", description = "채팅 내역 조회 API")
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/dorm")
+@RequestMapping("/chatting/dorm")
 public class DormChatController {
 
     private final DormChatService dormChatService;
@@ -47,7 +51,7 @@ public class DormChatController {
     // 기숙사 채팅 내역을 불러오기 위한 API(http)
     @Tag(name = "chatting")
     @ApiOperation(value = "기숙사 채팅 내역 API", notes = "채팅 내역 최신순으로 10개를 반환하며, 페이지 번호는 0부터 시작합니다.")
-    @GetMapping("/chat/{page}")
+    @GetMapping("/{page}")
     public ResponseEntity<BaseResponse<ChatRes.DormChatListRes>>loadDormChattingList(@PathVariable int page) {
 
         ChatRes.DormChatListRes chattingList = dormChatService.getChattingList(page, 10);
