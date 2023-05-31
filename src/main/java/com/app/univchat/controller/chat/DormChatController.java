@@ -1,11 +1,10 @@
-package com.app.univchat.controller;
+package com.app.univchat.controller.chat;
 
 import com.app.univchat.base.BaseResponse;
 import com.app.univchat.base.BaseResponseStatus;
 import com.app.univchat.dto.ChatReq;
 import com.app.univchat.dto.ChatRes;
 import com.app.univchat.dto.MemberRes;
-import com.app.univchat.service.DormChatService;
 import com.app.univchat.service.chat.DormChatService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
