@@ -1,5 +1,6 @@
 package com.app.univchat.dto;
 
+import com.app.univchat.chat.OTOChatVisible;
 import com.app.univchat.domain.*;
 import com.sun.istack.NotNull;
 import io.swagger.annotations.ApiModel;
@@ -63,9 +64,9 @@ public class ChatReq {
     @ApiModel(value = "OTOChatReq - 1:1 채팅 메시지 전송 객체")
     public static class OTOChatReq extends ChatReq {
 
-        @ApiModelProperty(name = "채팅방 번호")
-        @NotNull
-        protected Long roomId; // 채팅방 id
+//        @ApiModelProperty(name = "채팅방 번호")
+//        @NotNull
+//        protected Long roomId; // 채팅방 id
 
         @ApiModelProperty(name = "송신자 닉네임", example = "닉네임1")
         @NotNull
@@ -77,7 +78,7 @@ public class ChatReq {
 
         public OTOChat toEntity(Optional<OTOChatRoom> room,Optional<Member> member, String messageSendingTime) throws Exception {
             return OTOChat.builder()
-                    .room(room.orElseThrow(() -> new Exception("존재하지 않는 회원입니다.")))
+                    .room(room.orElseThrow(() -> new Exception("존재하지 않는 채팅방입니다.")))
                     .member(member.orElseThrow(() -> new Exception("존재하지 않는 회원입니다.")))
                     .messageContent(messageContent)
                     .messageSendingTime(messageSendingTime)
@@ -101,11 +102,13 @@ public class ChatReq {
         @NotNull
         protected String receiveNickname; // 수신자 식별자
 
+//        protected OTOChatVisible='ALL';
+
         public OTOChatRoom toEntity(Optional<Member> sender,Optional<Member> receive) throws Exception {
             return OTOChatRoom.builder()
                     .sender(sender.orElseThrow(() -> new Exception("존재하지 않는 회원입니다.")))
-                    .receive(receive.orElseThrow(() -> new Exception("존재하지 않는 회원입니다.")))
-//                    .visible(0)
+                    .receive(receive.orElseThrow(() -> new Exception("존재하지 않는 회원니다.")))
+                    .visible(OTOChatVisible.ALL)
 //                    .lastMessageId(null)
                     .build();
         }
