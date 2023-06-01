@@ -1,4 +1,4 @@
-package com.app.univchat.service;
+package com.app.univchat.service.chat;
 
 import com.app.univchat.chat.OTOChatVisible;
 import com.app.univchat.base.BaseException;
@@ -11,6 +11,7 @@ import com.app.univchat.dto.ChatRes;
 import com.app.univchat.dto.MemberRes;
 import com.app.univchat.repository.OTOChatRepository;
 import com.app.univchat.repository.OTOChatRoomRepository;
+import com.app.univchat.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
@@ -104,16 +105,16 @@ public class OTOChatService {
 
         // page는 요청하는 곳에 맞게, 한 번의 요청에는 10개의 채팅, 시간 내림차순으로 정렬.
         Pageable pageable = PageRequest.of(page, 10,
-                                    Sort.by("messageSendingTime").descending());
+                Sort.by("messageSendingTime").descending());
 
         Optional<OTOChatRoom> room=otoChatRoomRepository.findByRoomId(roomId);
 
         // pagenation 한 채팅 목록을 modleMapper로 변환하여 반환
         return otoChatRepository
-                        .findByRoom(room,pageable)
-                        .stream()
-                        .map(chat -> modelMapper.map(chat, ChatRes.OTOChatRes.class))
-                        .collect(Collectors.toList());
+                .findByRoom(room,pageable)
+                .stream()
+                .map(chat -> modelMapper.map(chat, ChatRes.OTOChatRes.class))
+                .collect(Collectors.toList());
     }
 
     public boolean checkVisible(Long roomId) {
@@ -193,9 +194,9 @@ public class OTOChatService {
         if(result != null) {
             result = result.stream().filter(chattingRoom ->
                             chattingRoom.getVisible() == OTOChatVisible.ALL
-                      ||   (chattingRoom.getVisible() == OTOChatVisible.SENDER && chattingRoom.getSender().getId() == member.getId())
-                      ||   (chattingRoom.getVisible() == OTOChatVisible.RECEIVER && chattingRoom.getReceive().getId() == member.getId()))
-                           .collect(Collectors.toList());
+                                    ||   (chattingRoom.getVisible() == OTOChatVisible.SENDER && chattingRoom.getSender().getId() == member.getId())
+                                    ||   (chattingRoom.getVisible() == OTOChatVisible.RECEIVER && chattingRoom.getReceive().getId() == member.getId()))
+                    .collect(Collectors.toList());
         }
 
         // 조회한 1:1 채팅방 목록을 이용하여 응답 객체와 매핑

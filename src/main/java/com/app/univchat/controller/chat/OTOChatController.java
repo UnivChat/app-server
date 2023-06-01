@@ -1,12 +1,10 @@
-package com.app.univchat.controller;
+package com.app.univchat.controller.chat;
 
-import com.app.univchat.base.BaseException;
 import com.app.univchat.base.BaseResponse;
 import com.app.univchat.base.BaseResponseStatus;
 import com.app.univchat.dto.*;
 import com.app.univchat.security.auth.PrincipalDetails;
-import com.app.univchat.service.LoveChatService;
-import com.app.univchat.service.OTOChatService;
+import com.app.univchat.service.chat.OTOChatService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +22,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-@Tag(name = "one_to_one_chat", description = "1:1 채팅 API")
+@Tag(name = "chatting", description = "채팅 관련 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("chatting/oto")
+@RequestMapping("/chatting/oto")
 public class OTOChatController {
 
     private final OTOChatService otoChatService;
@@ -35,7 +33,7 @@ public class OTOChatController {
     /*
         1:1 채팅방 개설 api
      */
-    @Tag(name = "one_to_one_chat")
+    @Tag(name = "chatting")
     @ApiOperation(value = "1:1 채팅방 개설 API")
     @PostMapping("/room")
     public BaseResponse<ChatRes.OTOChatRoomRes> createChatRoom(@RequestBody ChatReq.OTOChatRoomReq otoChatRoomReq){
@@ -71,6 +69,7 @@ public class OTOChatController {
         return ResponseEntity.ok(BaseResponse.ok(BaseResponseStatus.SUCCESS, chattingList));
     }
 
+    @Tag(name = "chatting")
     @ApiOperation(value = "채팅방 나가기 API")
     @PutMapping("/exit/{roomId}")
     public BaseResponse<String> exitChatRoom(@PathVariable Long roomId, @ApiIgnore @AuthenticationPrincipal PrincipalDetails member) throws IOException {
@@ -84,6 +83,7 @@ public class OTOChatController {
 
     }
 
+    @Tag(name = "chatting")
     @ApiOperation(value = "채팅방 삭제 API")
     @DeleteMapping("/delete/{roomId}")
     public BaseResponse<String> deleteChatRoom(@PathVariable Long roomId, @ApiIgnore @AuthenticationPrincipal PrincipalDetails member) throws IOException {
@@ -99,7 +99,7 @@ public class OTOChatController {
 
 
 
-//     사용자별 참여하고 있는 1:1 채팅방 목록 조회를 위한 API
+    //     사용자별 참여하고 있는 1:1 채팅방 목록 조회를 위한 API
     @Tag(name = "chatting")
     @ApiOperation(value = "사용자별 1:1 채팅방 목록 API", notes = "사용자가 참여하고 있는 1:1 채팅방 목록을 반환합니다.")
     @GetMapping("/rooms")
