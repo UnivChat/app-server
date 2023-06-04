@@ -46,7 +46,7 @@ const enterDormChattingRoom = () => {
                 .catch(err => console.error(err));
 
             // 초기 채팅 메세지 로드
-            loadDormChatMessages(0);
+            loadDormChatMessages(-1);
         }
         // 연결 실패(ERROR) 시 실행할 함수
         ,(err) => {

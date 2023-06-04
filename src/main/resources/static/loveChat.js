@@ -36,7 +36,7 @@ const enterLoveChattingRoom = () => {
                 .catch(err => console.error(err));
 
             // 초기 채팅 메세지 로드
-            loadLoveChatMessages(0);
+            loadLoveChatMessages(-1);
 
         }
 
