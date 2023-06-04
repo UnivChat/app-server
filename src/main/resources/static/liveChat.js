@@ -38,7 +38,7 @@ const enterLiveChattingRoom = () => {
 
 
             // 초기 채팅 메세지 로드
-            loadLiveChatMessages(0);
+            loadLiveChatMessages(-1);
 
         }
 
