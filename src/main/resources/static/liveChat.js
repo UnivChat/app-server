@@ -58,7 +58,7 @@ function loadLiveChatMessages(page) {
     fetch(`http://localhost:8080/chatting/live/${page}`)
         .then((res) => res.json())
         .then((data) => {
-            data.result.forEach((message) => {  //.reverse()제거
+            data.result.liveChatRes.forEach(message => {  //.reverse()제거
                 $("#message-list").prepend(
                     "<tr><td>" +
                     message.messageSendingTime +

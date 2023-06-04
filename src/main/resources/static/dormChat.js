@@ -64,7 +64,7 @@ function loadDormChatMessages(page) {
     fetch(`http://localhost:8080/chatting/dorm/${page}`)
         .then((res) => res.json())
         .then((data) => {
-            data.result.forEach((message) => {  //.reverse()제거
+            data.result.dormChatRes.forEach((message) => {  //.reverse()제거
                 $("#message-list").prepend(
                     "<tr><td>" +
                     message.messageSendingTime +
