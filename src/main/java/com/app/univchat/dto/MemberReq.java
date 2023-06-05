@@ -70,6 +70,18 @@ public class MemberReq {
         private String password;
     }
 
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    @ApiModel(value = "CheckNicknameReq - 닉네임 중복 확인 요청 객체")
+    public static class CheckNicknameReq {
+        @NotNull
+        @ApiModelProperty(name = "닉네임", example = "닉네임")
+        private String nickname;
+    }
+
 
     @Builder
     @NoArgsConstructor

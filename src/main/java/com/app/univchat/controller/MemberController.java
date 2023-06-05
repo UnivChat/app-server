@@ -65,15 +65,26 @@ public class MemberController {
             throw new BaseException(BaseResponseStatus.USER_ALREADY_EXIST_USERNAME);
         }
         // 닉네임 중복 체크
-        if(memberService.checkNickname(memberDto.getNickname())) {
-            throw new BaseException(BaseResponseStatus.USER_EXISTS_NICKNAME_ERROR);
-        }
+//        if(memberService.checkNickname(memberDto.getNickname())) {
+//            throw new BaseException(BaseResponseStatus.USER_EXISTS_NICKNAME_ERROR);
+//        }
 
         return BaseResponse.ok(BaseResponseStatus.SUCCESS,memberService.signup(memberDto));
 
     }
 
-    // 비밀번호 변경
+    @Tag(name = "member", description = "회원 관리 API")
+    @ApiOperation(value = "닉네임 중복 확인 API")
+    @GetMapping("/check/nickname")
+    public BaseResponse<String> checkNickname(@RequestBody MemberReq.CheckNicknameReq checkNicknameReq){
+
+        String checkRes=memberService.checkNickname(checkNicknameReq);
+
+        return BaseResponse.ok(BaseResponseStatus.SUCCESS, checkRes);
+
+    }
+
+
     @Tag(name = "member", description = "회원 관리 API")
     @ApiOperation(value = "비밀번호 변경 API")
     @PostMapping("/change/password")
