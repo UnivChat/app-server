@@ -68,3 +68,10 @@ cloud:
     stack:
       auto: false
 
+cipher:
+  type: ${{ CIPHER_TYPE }}
+  mode: ${{ CIPHER_MODE }}
+
+hash:
+  type: ${{ HASH_TYPE }}
+  mode: ${{ HASH_MODE }}
