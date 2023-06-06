@@ -36,6 +36,7 @@ public class OTOChatService {
     @Autowired
     private final ModelMapper modelMapper;
     private final MemberService memberService;
+    private final CipherService cipherService;
     private final OTOChatRoomRepository otoChatRoomRepository;
     private final OTOChatRepository otoChatRepository;
 
@@ -92,9 +93,8 @@ public class OTOChatService {
         Optional<OTOChatRoom> room=otoChatRoomRepository.findByRoomId(roomId);
 
         // 채팅 내역 저장
-        otoChatRepository.save(otoChatReq.toEntity(room, sender ,messageSendingTime));
+        otoChatRepository.save(((ChatReq.OTOChatReq)cipherService.encryptChat(otoChatReq)).toEntity(room, sender ,messageSendingTime));
 
-        // TODO: 채팅방의 lastMessageId 값 저장? OR lastMessageId 필드 삭제?
     }
 
     /**
@@ -109,11 +109,17 @@ public class OTOChatService {
         Optional<OTOChatRoom> room=otoChatRoomRepository.findByRoomId(roomId);
 
         // pagenation 한 채팅 목록을 modleMapper로 변환하여 반환
-        return otoChatRepository
+        List<ChatRes.OTOChatRes> chattingList =  otoChatRepository
                         .findByRoom(room,pageable)
                         .stream()
                         .map(chat -> modelMapper.map(chat, ChatRes.OTOChatRes.class))
                         .collect(Collectors.toList());
+
+        for(ChatRes.OTOChatRes chatting : chattingList) {
+            chatting.setMessageContent(cipherService.decryptChat(chatting).getMessageContent());
+        }
+
+        return chattingList;
     }
 
     public boolean checkVisible(Long roomId) {
@@ -174,11 +180,11 @@ public class OTOChatService {
     /**
      * 1:1 채팅방 ID를 통해 가장 최근 메세지 조회
      */
-    public OTOChat getLastMessage(OTOChatRoom room) {
+    public ChatRes.OTOChatRes getLastMessage(OTOChatRoom room) {
 
-        OTOChat lastMessage = otoChatRepository.findTop1ByRoomOrderByMessageSendingTimeDesc(room);
+        ChatRes.OTOChatRes lastMessage = modelMapper.map(otoChatRepository.findTop1ByRoomOrderByMessageSendingTimeDesc(room), ChatRes.OTOChatRes.class);
 
-        return lastMessage;
+        return (ChatRes.OTOChatRes)cipherService.decryptChat(lastMessage);
     }
 
     /**
@@ -208,7 +214,7 @@ public class OTOChatService {
                     String opponentNickname = member.getId() != sender.getId()? sender.getNickname(): receiver.getNickname();
 
                     // 마지막 메세지 추출
-                    OTOChat lastMessage = getLastMessage(chattingRoom);
+                    ChatRes.OTOChatRes lastMessage = getLastMessage(chattingRoom);
 
                     // 빌더 패턴으로 응답 객체 반환
                     if(lastMessage != null) {

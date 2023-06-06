@@ -28,6 +28,7 @@ public class DormChatService {
     @Autowired
     private final ModelMapper modelMapper;
     private final MemberService memberService;
+    private final CipherService cipherService;
     private final DormChatRepository dormChatRepository;
 
     /**
@@ -42,7 +43,8 @@ public class DormChatService {
         Optional<Member> sender = memberService.getMember(senderNickname);
         
         // 채팅 내역 저장
-        dormChatRepository.save(dormChatReq.toEntity(sender, messageSendingTime));
+        dormChatRepository.save(((ChatReq.DormChatReq)(cipherService.encryptChat(dormChatReq)))
+                          .toEntity(sender, messageSendingTime));
     }
 
     /**
@@ -55,10 +57,16 @@ public class DormChatService {
                                     Sort.by("messageSendingTime").descending());
         
         // pagenation 한 채팅 목록을 modleMapper로 변환하여 반환
-        return dormChatRepository
-                        .findAll(pageable)
-                        .stream()
-                        .map(chat -> modelMapper.map(chat, ChatRes.DormChatRes.class))
-                        .collect(Collectors.toList());
+        List<ChatRes.DormChatRes> chattingList = dormChatRepository
+            .findAll(pageable)
+            .stream()
+            .map(chat -> modelMapper.map(chat, ChatRes.DormChatRes.class))
+            .collect(Collectors.toList());
+
+        for(ChatRes.DormChatRes chatting : chattingList) {
+            chatting.setMessageContent(cipherService.decryptChat(chatting).getMessageContent());
+        }
+
+        return chattingList;
     }
 }

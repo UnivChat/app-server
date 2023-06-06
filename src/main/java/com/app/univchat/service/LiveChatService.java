@@ -25,6 +25,7 @@ public class LiveChatService {
     @Autowired
     private final ModelMapper modelMapper;
     private final MemberService memberService;
+    private final CipherService cipherService;
     private final LiveChatRepository liveChatRepository;
 
     /**
@@ -41,7 +42,7 @@ public class LiveChatService {
         );
 
         // 채팅 내역 저장
-        liveChatRepository.save(liveChatReq.toEntity(sender, messageSendTime));
+        liveChatRepository.save(((ChatReq.LiveChatReq)(cipherService.encryptChat(liveChatReq))).toEntity(sender, messageSendTime));
     }
 
     /**
@@ -54,9 +55,15 @@ public class LiveChatService {
                 Sort.by("messageSendingTime").descending());
 
         // ChatRes.LiveChatRes으로 변환하여 반환
-        return liveChatRepository.findAll(pageable)
+        List<ChatRes.LiveChatRes> chattingList = liveChatRepository.findAll(pageable)
                 .stream()
                 .map(chat -> modelMapper.map(chat, ChatRes.LiveChatRes.class))
                 .collect(Collectors.toList());
+
+        for(ChatRes.LiveChatRes chatting : chattingList) {
+            chatting.setMessageContent(cipherService.decryptChat(chatting).getMessageContent());
+        }
+
+        return chattingList;
     }
 }

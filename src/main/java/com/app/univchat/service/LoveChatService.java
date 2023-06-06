@@ -26,6 +26,7 @@ public class LoveChatService {
     @Autowired
     private final ModelMapper modelMapper;
     private final MemberService memberService;
+    private final CipherService cipherService;
     private final LoveChatRepository loveChatRepository;
 
     /**
@@ -40,7 +41,7 @@ public class LoveChatService {
         Optional<Member> sender = memberService.getMember(senderNickname);
         
         // 채팅 내역 저장
-        loveChatRepository.save(loveChatReq.toEntity(sender, messageSendingTime));
+        loveChatRepository.save(((ChatReq.LoveChatReq)cipherService.encryptChat(loveChatReq)).toEntity(sender, messageSendingTime));
     }
 
     /**
@@ -53,10 +54,16 @@ public class LoveChatService {
                                     Sort.by("messageSendingTime").descending());
         
         // pagenation 한 채팅 목록을 modleMapper로 변환하여 반환
-        return loveChatRepository
+        List<ChatRes.LoveChatRes> chattingList = loveChatRepository
                         .findAll(pageable)
                         .stream()
                         .map(chat -> modelMapper.map(chat, ChatRes.LoveChatRes.class))
                         .collect(Collectors.toList());
+
+        for(ChatRes.LoveChatRes chatting : chattingList) {
+            chatting.setMessageContent(cipherService.decryptChat(chatting).getMessageContent());
+        }
+
+        return chattingList;
     }
 }
