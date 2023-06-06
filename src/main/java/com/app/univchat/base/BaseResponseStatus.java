@@ -55,14 +55,16 @@ public enum  BaseResponseStatus {
 
     USER_FAILED_TO_WITHDRAWAL("2014", "회원 탈퇴에 실패하였습니다", 400),
 
-
+    USER_NOT_EXIST_ERROR("2015", "존재하지 않는 회원입니다.", 404),
 
     /**
      * 5000 : Chatting 오류
      */
-    CHATTING_NOT_EXIST_OTO_CHAT_ERROR("5002", "해당하는 채팅 내역이 존재하지 않습니다.", 404),
-    CHATTING_NOT_EXIST_OTO_ROOM_ERROR("5003", "해당하는 채팅방이 존재하지 않습니다.", 404),
+    CHATTING_NOT_EXIST_CHAT_ERROR("5002", "해당하는 채팅 내역이 존재하지 않습니다.", 404),
+    CHATTING_NOT_EXIST_ROOM_ERROR("5003", "해당하는 채팅방이 존재하지 않습니다.", 404),
     UNSUPPORTED_SUBSCRIBE_URI("5004", "지원하지 않는 구독경로입니다.", 400),
+    CHATTING_ENCRYPTION_FAIL_ERROR("5005", "채팅 암호화에 실패했습니다.", 400),
+    CHATTING_DECRYPTION_FAIL_ERROR("5006", "채팅 복호화에 실패했습니다.", 400),
 
     /**
      * 6000 : Jwt 오류
