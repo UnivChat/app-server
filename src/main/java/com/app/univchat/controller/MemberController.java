@@ -159,7 +159,7 @@ public class MemberController {
      */
     @Tag(name = "member", description = "회원 관리 API")
     @ApiOperation(value = "회원탈퇴 API")
-    @DeleteMapping("/delete")
+    @DeleteMapping("")
     public BaseResponse<String> memberDelete(@ApiIgnore @AuthenticationPrincipal PrincipalDetails member) throws IOException {
 
         String deleteRes=memberService.memberDelete(member.getMember());
