@@ -40,7 +40,6 @@ public class MemberController {
 
     private final EmailService emailService;
     private final MemberService memberService;
-
     private final RedisService redisService;
 
     // 이메일 인증

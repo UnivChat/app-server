@@ -1,4 +1,4 @@
-package com.app.univchat.service;
+package com.app.univchat.service.chat;
 
 import com.app.univchat.base.BaseException;
 import com.app.univchat.base.BaseResponseStatus;
@@ -6,6 +6,8 @@ import com.app.univchat.domain.Member;
 import com.app.univchat.dto.ChatReq;
 import com.app.univchat.dto.ChatRes;
 import com.app.univchat.repository.LiveChatRepository;
+import com.app.univchat.service.CipherService;
+import com.app.univchat.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
@@ -48,8 +50,29 @@ public class LiveChatService {
     /**
      * 라이브 채팅 내역 리스트 조회
      */
-    public List<ChatRes.LiveChatRes> getChattingList(int page, int size) {
-        
+
+    //오래된 순으로 정렬 후
+    //마지막 페이지를 계산 후
+    //마지막 페이지를 가져옴
+    //요청 자체를 -1로 받고 반환에 페이지 마지막 번호 추가
+    //지금 82페이지니까
+    //총 9페이지
+    //실제 9페이지는 9로 요청
+
+    public ChatRes.LiveChatListRes getChattingList(int page, int size) {
+        int all = liveChatRepository.findAll().size();
+        //총 페이지수 0~maxPage, 0이 최신
+        int maxPage = all / 10;
+
+        if(page > maxPage) return null;
+
+        if(page == -1){
+            //초기에 채팅 리스트 불러올 때
+            //-1로 접근하면 무조건 최신 10개
+            page = 0;
+        }
+
+
         //pageable 객체 생성
         PageRequest pageable = PageRequest.of(page, size,
                 Sort.by("messageSendingTime").descending());
@@ -64,6 +87,7 @@ public class LiveChatService {
             chatting.setMessageContent(cipherService.decryptChat(chatting).getMessageContent());
         }
 
-        return chattingList;
+        return new ChatRes.LiveChatListRes(maxPage, page, chattingList);
+
     }
 }

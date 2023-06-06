@@ -1,9 +1,11 @@
-package com.app.univchat.service;
+package com.app.univchat.service.chat;
 
 import com.app.univchat.domain.Member;
 import com.app.univchat.dto.ChatReq;
 import com.app.univchat.dto.ChatRes;
 import com.app.univchat.repository.LoveChatRepository;
+import com.app.univchat.service.CipherService;
+import com.app.univchat.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
@@ -47,12 +49,24 @@ public class LoveChatService {
     /**
      *  연애상담 채팅 내역 조회
      */
-    public List<ChatRes.LoveChatRes> getChattingList(int page) {
+    public ChatRes.LoveChatListRes getChattingList(int page, int size) {
+
+        int all = loveChatRepository.findAll().size();
+        //총 페이지수 0~maxPage, 0이 최신
+        int maxPage = all / 10;
+
+        if(page > maxPage) return null;
+
+        if(page == -1){
+            //초기에 채팅 리스트 불러올 때
+            //-1로 접근하면 무조건 최신 10개
+            page = 0;
+        }
 
         // page는 요청하는 곳에 맞게, 한 번의 요청에는 10개의 채팅, 시간 내림차순으로 정렬.
-        Pageable pageable = PageRequest.of(page, 10,
-                                    Sort.by("messageSendingTime").descending());
-        
+        Pageable pageable = PageRequest.of(page, size,
+                Sort.by("messageSendingTime").descending());
+
         // pagenation 한 채팅 목록을 modleMapper로 변환하여 반환
         List<ChatRes.LoveChatRes> chattingList = loveChatRepository
                         .findAll(pageable)
@@ -64,6 +78,7 @@ public class LoveChatService {
             chatting.setMessageContent(cipherService.decryptChat(chatting).getMessageContent());
         }
 
-        return chattingList;
+        return new ChatRes.LoveChatListRes(maxPage, page, chattingList);
+
     }
 }

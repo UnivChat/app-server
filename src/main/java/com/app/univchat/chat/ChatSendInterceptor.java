@@ -6,12 +6,11 @@ import com.app.univchat.base.BaseResponseStatus;
 import com.app.univchat.domain.Member;
 import com.app.univchat.dto.ChatReq;
 import com.app.univchat.jwt.JwtProvider;
-import com.app.univchat.repository.OTOChatRepository;
 import com.app.univchat.repository.OTOChatRoomRepository;
 import com.app.univchat.service.MemberService;
-import com.app.univchat.service.OTOChatService;
 import io.jsonwebtoken.MalformedJwtException;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -74,6 +73,7 @@ public class ChatSendInterceptor implements ChannelInterceptor {
     /**
      * 닉네임 DB에 있는지 체크 & jwt와 일치하는지 확인
      */
+    @SneakyThrows
     public void checkNickname(Message<?> message, String email) {
 
         // message payload에서 닉네임 얻기
@@ -87,7 +87,7 @@ public class ChatSendInterceptor implements ChannelInterceptor {
         );
 
         // jwt 토큰과 닉네임으로 찾은 member 객체 일치하는지 확인
-        if (!member.getNickname().equals(email)) {
+        if (!member.getEmail().equals(email)) {
             throw new BaseException(BaseResponseStatus.JWT_AND_NICKNAME_DONT_MATCH);
         }
     }

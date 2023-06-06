@@ -35,21 +35,10 @@ const enterLoveChattingRoom = () => {
                 })
                 .catch(err => console.error(err));
 
-            // 최근 채팅 내역을 불러 오는 부분
-            // 임의로 페이지를 설정함(가장 최근 10개 -> 페이지 0)
-            // 무한 스크롤 등을 구현하여, page 별로 요청하면 됨.
-            const page = 0;
-            fetch(`http://localhost:8080/chatting/love/${page}`)
-                .then(res => res.json())
-                .then(data => {
-                    data.result.reverse().forEach((message) => {
-                        $("#message-list").append("<tr><td>"
-                            + message.messageSendingTime + " / "
-                            + message.memberNickname + " / "
-                            + message.messageContent + "</td></tr>");
-                    })
-                })
-            }
+            // 초기 채팅 메세지 로드
+            loadLoveChatMessages(0);
+
+        }
 
         // 연결 실패(ERROR) 시 실행할 함수
         ,(err) => {
@@ -61,6 +50,26 @@ const enterLoveChattingRoom = () => {
         console.log("웹소켓 연결이 종료되었습니다.");
     }
 }
+
+// 채팅 메세지를 로드하는 함수
+function loadLoveChatMessages(page) {
+    fetch(`http://localhost:8080/chatting/love/${page}`)
+        .then((res) => res.json())
+        .then((data) => {
+            data.result.loveChatRes.forEach((message) => {  //.reverse()제거
+                $("#message-list").prepend(
+                    "<tr><td>" +
+                    message.messageSendingTime +
+                    " / " +
+                    message.memberNickname +
+                    " / " +
+                    message.messageContent +
+                    "</td></tr>"
+                );
+            });
+        });
+}
+
 
 // 메세지 송신을 위해 실행해야 하는 함수
 function sendMessage_love() {

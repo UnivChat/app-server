@@ -51,12 +51,12 @@ const enterOTOChattingRoom = () => {
                             + message.messageContent + "</td></tr>");
                     })
                 })
-            }
+        }
 
         // 연결 실패(ERROR) 시 실행할 함수
         ,(err) => {
             alert("연결에 실패 했습니다!");
-    });
+        });
 
     // 웹소켓 연결 종료 시 실행되는 함수
     stompClient.ws.onclose = () => {
@@ -86,7 +86,7 @@ function sendMessage_oto() {
 function receiveMessage(message) {
 
     // messageRes 객체
-     console.log(message)
+    console.log(message)
 
     $("#message-list").append("<tr><td>"
         + message.messageSendingTime + " / "
