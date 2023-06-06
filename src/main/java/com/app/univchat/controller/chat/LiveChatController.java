@@ -35,11 +35,12 @@ public class LiveChatController {
     @SendTo("/sub/live")
     public ChatRes.LiveChatRes sendToDormChattingRoom(ChatReq.LiveChatReq liveChatReq) {
         String messageSendingTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS").format(new Date());
+        String plainMessageContent = liveChatReq.getMessageContent();
         liveChatService.saveChat(liveChatReq, messageSendingTime); //채팅 내역 저장
 
         return new ChatRes.LiveChatRes().builder()
                 .memberNickname(liveChatReq.getMemberNickname())
-                .messageContent(liveChatReq.getMessageContent())
+                .messageContent(plainMessageContent)
                 .messageSendingTime(messageSendingTime)
                 .build();
     }

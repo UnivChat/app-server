@@ -1,5 +1,6 @@
 package com.app.univchat.controller.chat;
 
+import com.app.univchat.base.BaseException;
 import com.app.univchat.base.BaseResponse;
 import com.app.univchat.base.BaseResponseStatus;
 import com.app.univchat.dto.ChatReq;
@@ -39,11 +40,13 @@ public class DormChatController {
     public ChatRes.DormChatRes sendToDormChattingRoom(ChatReq.DormChatReq dormChatReq) {
 
         String messageSendingTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS").format(new Date());
+        String plainMessageContent = dormChatReq.getMessageContent();
+
         dormChatService.saveChat(dormChatReq, messageSendingTime);
 
         return new ChatRes.DormChatRes().builder()
                 .memberNickname(dormChatReq.getMemberNickname())
-                .messageContent(dormChatReq.getMessageContent())
+                .messageContent(plainMessageContent)
                 .messageSendingTime(messageSendingTime)
                 .build();
     }

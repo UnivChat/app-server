@@ -36,11 +36,13 @@ public class LoveChatController {
     public ChatRes.LoveChatRes sendToLoveChattingRoom(ChatReq.LoveChatReq loveChatReq) {
 
         String messageSendingTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS").format(new Date());
+        String plainMessageContent = loveChatReq.getMessageContent();
+
         loveChatService.saveChat(loveChatReq, messageSendingTime);
 
         return new ChatRes.LoveChatRes().builder()
                 .memberNickname(loveChatReq.getMemberNickname())
-                .messageContent(loveChatReq.getMessageContent())
+                .messageContent(plainMessageContent)
                 .messageSendingTime(messageSendingTime)
                 .build();
     }
