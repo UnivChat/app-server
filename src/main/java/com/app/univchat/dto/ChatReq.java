@@ -1,5 +1,7 @@
 package com.app.univchat.dto;
 
+import com.app.univchat.base.BaseException;
+import com.app.univchat.base.BaseResponseStatus;
 import com.app.univchat.chat.OTOChatVisible;
 import com.app.univchat.domain.*;
 import com.sun.istack.NotNull;
@@ -23,6 +25,7 @@ public class ChatReq {
 
 
     @NoArgsConstructor
+    @Builder
     @Getter
     @Setter
     @ApiModel(value = "DormChatReq - 채팅 메시지 전송 객체")
@@ -30,7 +33,7 @@ public class ChatReq {
 
         public DormChat toEntity(Optional<Member> member, String messageSendingTime) throws Exception {
             return DormChat.builder()
-                    .member(member.orElseThrow(() -> new Exception("존재하지 않는 회원입니다.")))
+                    .member(member.orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_EXIST_ERROR)))
                     .messageContent(messageContent)
                     .messageSendingTime(messageSendingTime)
                     .build();
@@ -49,7 +52,7 @@ public class ChatReq {
 
         public LoveChat toEntity(Optional<Member> member, String messageSendingTime) throws Exception {
             return LoveChat.builder()
-                    .member(member.orElseThrow(() -> new Exception("존재하지 않는 회원입니다.")))
+                    .member(member.orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_EXIST_ERROR)))
                     .messageContent(messageContent)
                     .messageSendingTime(messageSendingTime)
                     .build();
@@ -78,8 +81,8 @@ public class ChatReq {
 
         public OTOChat toEntity(Optional<OTOChatRoom> room,Optional<Member> member, String messageSendingTime) throws Exception {
             return OTOChat.builder()
-                    .room(room.orElseThrow(() -> new Exception("존재하지 않는 채팅방입니다.")))
-                    .member(member.orElseThrow(() -> new Exception("존재하지 않는 회원입니다.")))
+                    .room(room.orElseThrow(() -> new BaseException(BaseResponseStatus.CHATTING_NOT_EXIST_ROOM_ERROR)))
+                    .member(member.orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_EXIST_ERROR)))
                     .messageContent(messageContent)
                     .messageSendingTime(messageSendingTime)
                     .build();
