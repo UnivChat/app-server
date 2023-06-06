@@ -86,7 +86,7 @@ public class OTOChatController {
 
     @Tag(name = "chatting")
     @ApiOperation(value = "채팅방 삭제 API")
-    @DeleteMapping("/delete/{roomId}")
+    @DeleteMapping("/{roomId}")
     public BaseResponse<String> deleteChatRoom(@PathVariable Long roomId, @ApiIgnore @AuthenticationPrincipal PrincipalDetails member) throws IOException {
 
         boolean isVisible= otoChatService.checkVisible(roomId);
