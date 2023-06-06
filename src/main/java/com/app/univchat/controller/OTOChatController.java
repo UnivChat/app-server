@@ -46,16 +46,17 @@ public class OTOChatController {
 
 //     1:1 채팅 송신 및 저장을 위한 API(ws)
 
-    @MessageMapping("/{roomId}")
+    @MessageMapping("/oto/{roomId}")
     @SendTo("/sub/oto/{roomId}")
     public ChatRes.OTOChatRes sendToOTOChattingRoom(@DestinationVariable Long roomId, ChatReq.OTOChatReq otoChatReq) {
 
         String messageSendingTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS").format(new Date());
+        String plainMessageContent = otoChatReq.getMessageContent();
         otoChatService.saveChat(roomId, otoChatReq, messageSendingTime);
 
         return new ChatRes.OTOChatRes().builder()
                 .memberNickname(otoChatReq.getMemberNickname())
-                .messageContent(otoChatReq.getMessageContent())
+                .messageContent(plainMessageContent)
                 .messageSendingTime(messageSendingTime)
                 .build();
     }
@@ -108,7 +109,7 @@ public class OTOChatController {
         List<ChatRes.OTOChatRoomRes> chattingRoomList = otoChatService.getChattingRoomList(member.getMember());
 
         if(chattingRoomList.isEmpty()) {
-            return BaseResponse.ok(BaseResponseStatus.CHATTING_NOT_EXIST_OTO_ROOM_ERROR);
+            return BaseResponse.ok(BaseResponseStatus.CHATTING_NOT_EXIST_ROOM_ERROR);
         }
 
         return BaseResponse.ok(BaseResponseStatus.SUCCESS, chattingRoomList);
