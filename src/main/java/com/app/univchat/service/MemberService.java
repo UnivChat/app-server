@@ -139,12 +139,28 @@ public class MemberService {
 
     }
 
-    public boolean checkEmail(String email) {
-        return memberRepository.existsByEmail(email);
+//    public boolean checkEmail(String email) {
+//        return memberRepository.existsByEmail(email);
+//    }
+
+//    public boolean checkNickname(String nickname) {
+//        return memberRepository.existsByNickname(nickname);
+//    }
+
+    public String checkNickname(MemberReq.CheckNicknameReq checkNicknameReq) throws BaseException {
+
+        String nickname=checkNicknameReq.getNickname();
+        boolean exist=memberRepository.existsByNickname(nickname);
+        if(exist) return "이미 사용 중인 닉네임입니다.";
+        else return "사용 가능한 닉네임입니다.";
     }
 
-    public boolean checkNickname(String nickname) {
-        return memberRepository.existsByNickname(nickname);
+    public String checkEmail(MemberReq.CheckEmailReq checkEmailReq) throws BaseException {
+
+        String email=checkEmailReq.getEmail();
+        boolean exist=memberRepository.existsByEmail(email);
+        if(exist) return "이미 사용 중인 이메일입니다.";
+        else return "사용 가능한 이메일입니다.";
     }
 
     @SneakyThrows(IOException.class)
