@@ -40,7 +40,6 @@ public class MemberController {
 
     private final EmailService emailService;
     private final MemberService memberService;
-
     private final RedisService redisService;
 
     // 이메일 인증
@@ -62,19 +61,41 @@ public class MemberController {
     public BaseResponse<String> signup(@RequestBody MemberReq.Signup memberDto){
 
         // 이메일 중복 체크
-        if(memberService.checkEmail(memberDto.getEmail())) {
-            throw new BaseException(BaseResponseStatus.USER_ALREADY_EXIST_USERNAME);
-        }
+//        if(memberService.checkEmail(memberDto.getEmail())) {
+//            throw new BaseException(BaseResponseStatus.USER_ALREADY_EXIST_USERNAME);
+//        }
         // 닉네임 중복 체크
-        if(memberService.checkNickname(memberDto.getNickname())) {
-            throw new BaseException(BaseResponseStatus.USER_EXISTS_NICKNAME_ERROR);
-        }
+//        if(memberService.checkNickname(memberDto.getNickname())) {
+//            throw new BaseException(BaseResponseStatus.USER_EXISTS_NICKNAME_ERROR);
+//        }
 
         return BaseResponse.ok(BaseResponseStatus.SUCCESS,memberService.signup(memberDto));
 
     }
 
-    // 비밀번호 변경
+    @Tag(name = "member", description = "회원 관리 API")
+    @ApiOperation(value = "닉네임 중복 확인 API")
+    @PostMapping("/check/nickname")
+    public BaseResponse<String> checkNickname(@RequestBody MemberReq.CheckNicknameReq checkNicknameReq){
+
+        String checkRes=memberService.checkNickname(checkNicknameReq);
+
+        return BaseResponse.ok(BaseResponseStatus.SUCCESS, checkRes);
+
+    }
+
+    @Tag(name = "member", description = "회원 관리 API")
+    @ApiOperation(value = "이메일 중복 확인 API")
+    @PostMapping("/check/email")
+    public BaseResponse<String> checkEmail(@RequestBody MemberReq.CheckEmailReq checkEmailReq){
+
+        String checkRes=memberService.checkEmail(checkEmailReq);
+
+        return BaseResponse.ok(BaseResponseStatus.SUCCESS, checkRes);
+
+    }
+
+
     @Tag(name = "member", description = "회원 관리 API")
     @ApiOperation(value = "비밀번호 변경 API")
     @PostMapping("/change/password")
@@ -118,8 +139,8 @@ public class MemberController {
             @ApiResponse(code = 200, message = "", response = MemberRes.Update.class),
             @ApiResponse(code = 415, message = "Content type 'application/octet-stream' not supported")
     })
-    @PutMapping("/info")
-    public BaseResponse<MemberRes.Update> update(@RequestPart MemberReq.Update memberUpdateDto,
+    @PatchMapping("/info")
+    public BaseResponse<MemberRes.Update> update(@RequestBody MemberReq.Update memberUpdateDto,
                                     @RequestPart(required = false) MultipartFile profileImage,
                                     @ApiIgnore @AuthenticationPrincipal PrincipalDetails member){
 
@@ -160,7 +181,7 @@ public class MemberController {
      */
     @Tag(name = "member", description = "회원 관리 API")
     @ApiOperation(value = "회원탈퇴 API")
-    @DeleteMapping("/delete")
+    @DeleteMapping("")
     public BaseResponse<String> memberDelete(@ApiIgnore @AuthenticationPrincipal PrincipalDetails member) throws IOException {
 
         String deleteRes=memberService.memberDelete(member.getMember());
