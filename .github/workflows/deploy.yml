@@ -1,6 +1,7 @@
 name: catchat server CI/CD
 
 on:
+  push:
   pull_request:
     branches: [main]
 
