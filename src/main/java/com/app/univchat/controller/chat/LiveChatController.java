@@ -46,7 +46,7 @@ public class LiveChatController {
     //page가 -1이면 최근 채팅 10개 보내기
     //반환 객체 안에 현재(최근)페이지 수가 몇인지 같이 반환
     @Tag(name = "chatting")
-    @ApiOperation(value = "라이브 채팅 내역 API", notes = "채팅 내역 최신순으로 10개를 반환하며, 페이지 번호는 0부터 시작합니다.")
+    @ApiOperation(value = "라이브 채팅 내역 API", notes = "채팅 내역 최신순으로 10개를 반환합니다. \n\n 처음 채팅방 입장 시 page = -1로 요청해주세요. 이후 이전 채팅 목록 조회 시 응답으로 받은 nowPage에서 -1씩 줄이며 요청 보내면 됩니다.")
     @GetMapping("/{page}")
     public BaseResponse<ChatRes.LiveChatListRes> loadLiveChattingList(@PathVariable int page) {
         ChatRes.LiveChatListRes chattingList = liveChatService.getChattingList(page, 10);

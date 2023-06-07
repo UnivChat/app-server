@@ -54,27 +54,32 @@ public class DormChatService {
 
         int all = dormChatRepository.findAll().size();
         //총 페이지수 0~maxPage, 0이 최신
-        int maxPage = all / 10;
+        int maxPage = all / size;
+
+        //총 페이지 수 나누어 떨어지면 마지막 페이지에 아무것도 없음(페이지는 0부터 시작하기 때문)
+        if(maxPage%size == 0) maxPage--;
 
         if(page > maxPage) return null;
 
         if(page == -1){
             //초기에 채팅 리스트 불러올 때
             //-1로 접근하면 무조건 최신 10개
-            page = 0;
+            page = maxPage;
         }
 
 
         // page는 요청하는 곳에 맞게, 한 번의 요청에는 10개의 채팅, 시간 내림차순으로 정렬.
         Pageable pageable = PageRequest.of(page, size,
-                Sort.by("messageSendingTime").descending());
+                Sort.by("messageSendingTime").ascending());
 
         // pagenation 한 채팅 목록을 modleMapper로 변환하여 반환
        List<ChatRes.DormChatRes> chattingList = dormChatRepository
             .findAll(pageable)
             .stream()
             .map(chat -> modelMapper.map(chat, ChatRes.DormChatRes.class))
+            .sorted((o1, o2) -> o2.getMessageSendingTime().compareTo(o1.getMessageSendingTime()))
             .collect(Collectors.toList());
+
 
         for(ChatRes.DormChatRes chatting : chattingList) {
             chatting.setMessageContent(cipherService.decryptChat(chatting).getMessageContent());

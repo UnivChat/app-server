@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,25 +63,29 @@ public class LiveChatService {
     public ChatRes.LiveChatListRes getChattingList(int page, int size) {
         int all = liveChatRepository.findAll().size();
         //총 페이지수 0~maxPage, 0이 최신
-        int maxPage = all / 10;
+        int maxPage = all / size;
+
+        //총 페이지 수 나누어 떨어지면 마지막 페이지에 아무것도 없음(페이지는 0부터 시작하기 때문)
+        if(maxPage%size == 0) maxPage--;
 
         if(page > maxPage) return null;
 
         if(page == -1){
             //초기에 채팅 리스트 불러올 때
             //-1로 접근하면 무조건 최신 10개
-            page = 0;
+            page = maxPage;
         }
 
 
         //pageable 객체 생성
         PageRequest pageable = PageRequest.of(page, size,
-                Sort.by("messageSendingTime").descending());
+                Sort.by("messageSendingTime").ascending());
 
         // ChatRes.LiveChatRes으로 변환하여 반환
         List<ChatRes.LiveChatRes> chattingList = liveChatRepository.findAll(pageable)
                 .stream()
                 .map(chat -> modelMapper.map(chat, ChatRes.LiveChatRes.class))
+                .sorted((o1, o2) -> o2.getMessageSendingTime().compareTo(o1.getMessageSendingTime()))
                 .collect(Collectors.toList());
 
         for(ChatRes.LiveChatRes chatting : chattingList) {
@@ -88,6 +93,5 @@ public class LiveChatService {
         }
 
         return new ChatRes.LiveChatListRes(maxPage, page, chattingList);
-
     }
 }

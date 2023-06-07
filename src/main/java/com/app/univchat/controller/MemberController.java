@@ -117,8 +117,8 @@ public class MemberController {
             @ApiResponse(code = 200, message = "", response = MemberRes.Update.class),
             @ApiResponse(code = 415, message = "Content type 'application/octet-stream' not supported")
     })
-    @PutMapping("/info")
-    public BaseResponse<MemberRes.Update> update(@RequestPart MemberReq.Update memberUpdateDto,
+    @PatchMapping("/info")
+    public BaseResponse<MemberRes.Update> update(@RequestBody MemberReq.Update memberUpdateDto,
                                     @RequestPart(required = false) MultipartFile profileImage,
                                     @ApiIgnore @AuthenticationPrincipal PrincipalDetails member){
 
@@ -159,7 +159,7 @@ public class MemberController {
      */
     @Tag(name = "member", description = "회원 관리 API")
     @ApiOperation(value = "회원탈퇴 API")
-    @DeleteMapping("/delete")
+    @DeleteMapping("")
     public BaseResponse<String> memberDelete(@ApiIgnore @AuthenticationPrincipal PrincipalDetails member) throws IOException {
 
         String deleteRes=memberService.memberDelete(member.getMember());
