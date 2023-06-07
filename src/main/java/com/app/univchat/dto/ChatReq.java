@@ -103,14 +103,14 @@ public class ChatReq {
 
         @ApiModelProperty(name = "수신자 닉네임", example = "닉네임2")
         @NotNull
-        protected String receiveNickname; // 수신자 식별자
+        protected String receiverNickname; // 수신자 식별자
 
 //        protected OTOChatVisible='ALL';
 
-        public OTOChatRoom toEntity(Optional<Member> sender,Optional<Member> receive) throws Exception {
+        public OTOChatRoom toEntity(Optional<Member> sender,Optional<Member> receiver) throws Exception {
             return OTOChatRoom.builder()
                     .sender(sender.orElseThrow(() -> new Exception("존재하지 않는 회원입니다.")))
-                    .receive(receive.orElseThrow(() -> new Exception("존재하지 않는 회원니다.")))
+                    .receiver(receiver.orElseThrow(() -> new Exception("존재하지 않는 회원니다.")))
                     .visible(OTOChatVisible.ALL)
 //                    .lastMessageId(null)
                     .build();
