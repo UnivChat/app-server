@@ -50,7 +50,7 @@ public class AuthController {
      */
     @Tag(name = "member", description = "로그아웃 API")
     @ApiOperation(value = "로그아웃 API")
-    @GetMapping("/member/logout")  //TODO 경로를 /logout이라고 하면 계속 오류가 발생해서 일단은 /member/logout로 설정했습니다ㅠㅠ!
+    @GetMapping("/member/logout")
     public BaseResponse<Object> logout(@ApiIgnore @AuthenticationPrincipal PrincipalDetails member) throws IOException {
 
         String result = memberService.memberLogout(member.getMember());
