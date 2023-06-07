@@ -11,7 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @ToString
-public class Member {
+public class Member { 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
