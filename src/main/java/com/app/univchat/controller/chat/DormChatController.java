@@ -4,17 +4,12 @@ import com.app.univchat.base.BaseResponse;
 import com.app.univchat.base.BaseResponseStatus;
 import com.app.univchat.dto.ChatReq;
 import com.app.univchat.dto.ChatRes;
-import com.app.univchat.dto.MemberRes;
 import com.app.univchat.service.chat.DormChatService;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,11 +34,13 @@ public class DormChatController {
     public ChatRes.DormChatRes sendToDormChattingRoom(ChatReq.DormChatReq dormChatReq) {
 
         String messageSendingTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS").format(new Date());
+        String plainMessageContent = dormChatReq.getMessageContent();
+
         dormChatService.saveChat(dormChatReq, messageSendingTime);
 
         return new ChatRes.DormChatRes().builder()
                 .memberNickname(dormChatReq.getMemberNickname())
-                .messageContent(dormChatReq.getMessageContent())
+                .messageContent(plainMessageContent)
                 .messageSendingTime(messageSendingTime)
                 .build();
     }

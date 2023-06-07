@@ -8,12 +8,10 @@ import com.app.univchat.service.chat.OTOChatService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -22,7 +20,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import static com.app.univchat.base.BaseResponseStatus.CHATTING_NOT_EXIST_OTO_ROOM_ERROR;
 import static com.app.univchat.base.BaseResponseStatus.SUCCESS;
 
 @Tag(name = "chatting", description = "채팅 관련 API")
@@ -46,16 +43,17 @@ public class OTOChatController {
 
 //     1:1 채팅 송신 및 저장을 위한 API(ws)
 
-    @MessageMapping("/{roomId}")
+    @MessageMapping("/oto/{roomId}")
     @SendTo("/sub/oto/{roomId}")
     public ChatRes.OTOChatRes sendToOTOChattingRoom(@DestinationVariable Long roomId, ChatReq.OTOChatReq otoChatReq) {
 
         String messageSendingTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS").format(new Date());
+        String plainMessageContent = otoChatReq.getMessageContent();
         otoChatService.saveChat(roomId, otoChatReq, messageSendingTime);
 
         return new ChatRes.OTOChatRes().builder()
                 .memberNickname(otoChatReq.getMemberNickname())
-                .messageContent(otoChatReq.getMessageContent())
+                .messageContent(plainMessageContent)
                 .messageSendingTime(messageSendingTime)
                 .build();
     }
@@ -115,7 +113,7 @@ public class OTOChatController {
         List<ChatRes.OTOChatRoomRes> chattingRoomList = otoChatService.getChattingRoomList(member.getMember());
 
         if(chattingRoomList.isEmpty()) {
-            return BaseResponse.ok(CHATTING_NOT_EXIST_OTO_ROOM_ERROR);
+            return BaseResponse.ok(BaseResponseStatus.CHATTING_NOT_EXIST_ROOM_ERROR);
         }
 
         return BaseResponse.ok(SUCCESS, chattingRoomList);

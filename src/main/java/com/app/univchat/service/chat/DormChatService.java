@@ -1,11 +1,10 @@
 package com.app.univchat.service.chat;
 
-import com.app.univchat.domain.DormChat;
 import com.app.univchat.domain.Member;
 import com.app.univchat.dto.ChatReq;
 import com.app.univchat.dto.ChatRes;
 import com.app.univchat.repository.DormChatRepository;
-import com.app.univchat.repository.MemberRepository;
+import com.app.univchat.service.CipherService;
 import com.app.univchat.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -29,6 +28,7 @@ public class DormChatService {
     @Autowired
     private final ModelMapper modelMapper;
     private final MemberService memberService;
+    private final CipherService cipherService;
     private final DormChatRepository dormChatRepository;
 
     /**
@@ -43,7 +43,8 @@ public class DormChatService {
         Optional<Member> sender = memberService.getMember(senderNickname);
         
         // 채팅 내역 저장
-        dormChatRepository.save(dormChatReq.toEntity(sender, messageSendingTime));
+        dormChatRepository.save(((ChatReq.DormChatReq)(cipherService.encryptChat(dormChatReq)))
+                          .toEntity(sender, messageSendingTime));
     }
 
     /**
@@ -72,12 +73,18 @@ public class DormChatService {
                 Sort.by("messageSendingTime").ascending());
 
         // pagenation 한 채팅 목록을 modleMapper로 변환하여 반환
-        return new ChatRes.DormChatListRes(maxPage, page,
-                dormChatRepository.findAll(pageable)
-                        .stream()
-                        .map(chat -> modelMapper.map(chat, ChatRes.DormChatRes.class))
-                        .sorted((o1, o2) -> o2.getMessageSendingTime().compareTo(o1.getMessageSendingTime()))
-                        .collect(Collectors.toList()));
+       List<ChatRes.DormChatRes> chattingList = dormChatRepository
+            .findAll(pageable)
+            .stream()
+            .map(chat -> modelMapper.map(chat, ChatRes.DormChatRes.class))
+            .sorted((o1, o2) -> o2.getMessageSendingTime().compareTo(o1.getMessageSendingTime()))
+            .collect(Collectors.toList());
 
+
+        for(ChatRes.DormChatRes chatting : chattingList) {
+            chatting.setMessageContent(cipherService.decryptChat(chatting).getMessageContent());
+        }
+
+        return new ChatRes.DormChatListRes(maxPage, page, chattingList);
     }
 }

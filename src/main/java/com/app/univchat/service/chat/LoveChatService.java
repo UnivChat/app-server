@@ -4,6 +4,7 @@ import com.app.univchat.domain.Member;
 import com.app.univchat.dto.ChatReq;
 import com.app.univchat.dto.ChatRes;
 import com.app.univchat.repository.LoveChatRepository;
+import com.app.univchat.service.CipherService;
 import com.app.univchat.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -27,6 +28,7 @@ public class LoveChatService {
     @Autowired
     private final ModelMapper modelMapper;
     private final MemberService memberService;
+    private final CipherService cipherService;
     private final LoveChatRepository loveChatRepository;
 
     /**
@@ -41,7 +43,7 @@ public class LoveChatService {
         Optional<Member> sender = memberService.getMember(senderNickname);
         
         // 채팅 내역 저장
-        loveChatRepository.save(loveChatReq.toEntity(sender, messageSendingTime));
+        loveChatRepository.save(((ChatReq.LoveChatReq)cipherService.encryptChat(loveChatReq)).toEntity(sender, messageSendingTime));
     }
 
     /**
@@ -69,12 +71,17 @@ public class LoveChatService {
                 Sort.by("messageSendingTime").ascending());
 
         // pagenation 한 채팅 목록을 modleMapper로 변환하여 반환
-        return new ChatRes.LoveChatListRes(maxPage, page,
-                loveChatRepository.findAll(pageable)
+        List<ChatRes.LoveChatRes> chattingList = loveChatRepository
+                        .findAll(pageable)
                         .stream()
                         .map(chat -> modelMapper.map(chat, ChatRes.LoveChatRes.class))
                         .sorted((o1, o2) -> o2.getMessageSendingTime().compareTo(o1.getMessageSendingTime()))
-                        .collect(Collectors.toList()));
+                        .collect(Collectors.toList());
 
+        for(ChatRes.LoveChatRes chatting : chattingList) {
+            chatting.setMessageContent(cipherService.decryptChat(chatting).getMessageContent());
+        }
+
+        return new ChatRes.LoveChatListRes(maxPage, page, chattingList);
     }
 }

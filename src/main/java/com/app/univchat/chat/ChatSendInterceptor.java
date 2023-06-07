@@ -87,7 +87,7 @@ public class ChatSendInterceptor implements ChannelInterceptor {
         );
 
         // jwt 토큰과 닉네임으로 찾은 member 객체 일치하는지 확인
-        if (!member.getNickname().equals(email)) {
+        if (!member.getEmail().equals(email)) {
             throw new BaseException(BaseResponseStatus.JWT_AND_NICKNAME_DONT_MATCH);
         }
     }

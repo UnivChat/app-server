@@ -2,11 +2,28 @@ package com.app.univchat.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
-
 import java.util.List;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
+
+@Setter
+@Getter
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ChatRes {
+
+    protected String memberNickname;
+    protected String messageContent;
+    protected String messageSendingTime;
+
+    @SuperBuilder
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    // 기숙사 채팅 메시지 객체
+    public static class DormChatRes extends ChatRes { }
 
     @Builder
     @NoArgsConstructor
@@ -14,24 +31,18 @@ public class ChatRes {
     @Setter
     @Getter
     // 기숙사 채팅 메시지 객체
-    public static class DormChatRes {
-
-        private String memberNickname; // 송신자 식별자
-        private String messageContent;
-        private String messageSendingTime;
-    }
-
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Setter
-    @Getter
-    // 라이브 채팅 메시지 객체
     public static class DormChatListRes {
         private int maxPage;
         private int nowPage;
         private List<DormChatRes> dormChatRes;
     }
+
+    @SuperBuilder
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    // 연애상담 채팅 메시지 객체
+    public static class LoveChatRes extends ChatRes { }
 
     @Builder
     @NoArgsConstructor
@@ -39,18 +50,6 @@ public class ChatRes {
     @Setter
     @Getter
     // 연애상담 채팅 메시지 객체
-    public static class LoveChatRes {
-        private String memberNickname; // 송신자 식별자
-        private String messageContent;
-        private String messageSendingTime;
-    }
-
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Setter
-    @Getter
-    // 라이브 채팅 메시지 객체
     public static class LoveChatListRes {
         private int maxPage;
         private int nowPage;
@@ -59,17 +58,12 @@ public class ChatRes {
 
 
 
-    @Builder
-    @NoArgsConstructor
+    @SuperBuilder
     @AllArgsConstructor
     @Setter
     @Getter
     // 라이브 채팅 메시지 객체
-    public static class LiveChatRes {
-        private String memberNickname; // 송신자 식별자
-        private String messageContent;
-        private String messageSendingTime;
-    }
+    public static class LiveChatRes extends ChatRes { }
 
     @Builder
     @NoArgsConstructor
@@ -85,17 +79,12 @@ public class ChatRes {
 
 
 
-    @Builder
-    @NoArgsConstructor
+    @SuperBuilder
     @AllArgsConstructor
     @Setter
     @Getter
     // 1:1 채팅 메시지 객체
-    public static class OTOChatRes {
-        private String memberNickname; // 송신자 식별자
-        private String messageContent;
-        private String messageSendingTime;
-    }
+    public static class OTOChatRes extends ChatRes { }
 
     @Builder
     @NoArgsConstructor

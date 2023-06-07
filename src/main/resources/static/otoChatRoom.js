@@ -18,7 +18,7 @@ const enterOTOChattingRoom = () => {
         (res) => {
             // console.log('Connected: ' + res);
             // 기숙사 채팅방을 구독 => 기숙사 채팅방으로 오는 메세지를 수신하겠다는 의미
-            stompClient.subscribe(`/sub/${room}`, (stompResponse) => {
+            stompClient.subscribe(`/sub/oto/${room}`, (stompResponse) => {
 
                 // 메세지 전송 성공 시 메세지 내용을 전달
                 if (stompResponse.command === "MESSAGE") {
@@ -79,7 +79,7 @@ function sendMessage_oto() {
 
     const room= parseInt($("#room_id").val())
 //    console.log(room)
-    stompClient.send(`/pub/${room}`, header, JSON.stringify(message));
+    stompClient.send(`/pub/oto/${room}`, header, JSON.stringify(message));
 }
 
 // 메세지 송신 성공하면, 메세지를 반환함.
