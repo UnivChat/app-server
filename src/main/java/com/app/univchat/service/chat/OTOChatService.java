@@ -1,4 +1,4 @@
-package com.app.univchat.service;
+package com.app.univchat.service.chat;
 
 import com.app.univchat.chat.OTOChatVisible;
 import com.app.univchat.base.BaseException;
@@ -11,6 +11,7 @@ import com.app.univchat.dto.ChatRes;
 import com.app.univchat.dto.MemberRes;
 import com.app.univchat.repository.OTOChatRepository;
 import com.app.univchat.repository.OTOChatRoomRepository;
+import com.app.univchat.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
@@ -36,7 +37,6 @@ public class OTOChatService {
     @Autowired
     private final ModelMapper modelMapper;
     private final MemberService memberService;
-    private final CipherService cipherService;
     private final OTOChatRoomRepository otoChatRoomRepository;
     private final OTOChatRepository otoChatRepository;
 
@@ -52,23 +52,23 @@ public class OTOChatService {
         Optional<Member> sender = memberService.getMember(senderNickname);
 
         // nickname으로 수신자 member 객체 획득
-        String receiveNickname = otoChatRoomReq.getReceiveNickname();
-        Optional<Member> receive = memberService.getMember(receiveNickname);
+        String receiverNickname = otoChatRoomReq.getReceiveNickname();
+        Optional<Member> receiver = memberService.getMember(receiverNickname);
 
         // 송신자 - 수신자 쌍이 이미 존재하면 채팅방 개설 불가
         ChatRes.OTOChatRoomRes otoChatRoomRes = new ChatRes.OTOChatRoomRes();
 
         // 이미 채팅방 존재하면 해당 채팅방 id return
-        Optional<OTOChatRoom> foundRoom=null;
-        if(otoChatRoomRepository.findBySenderAndReceive(sender.get(),receive.get())!=null) {
-            foundRoom=otoChatRoomRepository.findBySenderAndReceive(sender.get(),receive.get());
+        Optional<OTOChatRoom> foundRoom = null;
+        if(otoChatRoomRepository.findBySenderAndReceive(sender.get(),receiver.get())!=null) {
+            foundRoom = otoChatRoomRepository.findBySenderAndReceive(sender.get(),receiver.get());
             if(foundRoom.isEmpty()) {
-                foundRoom=otoChatRoomRepository.findBySenderAndReceive(receive.get(),sender.get());
+                foundRoom = otoChatRoomRepository.findBySenderAndReceive(receiver.get(),sender.get());
             }
         }
         if(foundRoom.isEmpty()) {  // 채팅방 개설
-            otoChatRoomRepository.save(otoChatRoomReq.toEntity(sender,receive));
-            foundRoom=otoChatRoomRepository.findBySenderAndReceive(sender.get(),receive.get());
+            otoChatRoomRepository.save(otoChatRoomReq.toEntity(sender,receiver));
+            foundRoom = otoChatRoomRepository.findBySenderAndReceive(sender.get(),receiver.get());
         }
         otoChatRoomRes.setRoomId(foundRoom.get().getRoomId());
         return otoChatRoomRes;
@@ -90,11 +90,12 @@ public class OTOChatService {
 
         // roomId로 채팅방 객체 획득
 //        Long roomId=otoChatReq.getRoomId();
-        Optional<OTOChatRoom> room=otoChatRoomRepository.findByRoomId(roomId);
+        Optional<OTOChatRoom> room = otoChatRoomRepository.findByRoomId(roomId);
 
         // 채팅 내역 저장
-        otoChatRepository.save(((ChatReq.OTOChatReq)cipherService.encryptChat(otoChatReq)).toEntity(room, sender ,messageSendingTime));
+        otoChatRepository.save(otoChatReq.toEntity(room, sender ,messageSendingTime));
 
+        // TODO: 채팅방의 lastMessageId 값 저장? OR lastMessageId 필드 삭제?
     }
 
     /**
@@ -104,22 +105,16 @@ public class OTOChatService {
 
         // page는 요청하는 곳에 맞게, 한 번의 요청에는 10개의 채팅, 시간 내림차순으로 정렬.
         Pageable pageable = PageRequest.of(page, 10,
-                                    Sort.by("messageSendingTime").descending());
+                Sort.by("messageSendingTime").descending());
 
-        Optional<OTOChatRoom> room=otoChatRoomRepository.findByRoomId(roomId);
+        Optional<OTOChatRoom> room = otoChatRoomRepository.findByRoomId(roomId);
 
         // pagenation 한 채팅 목록을 modleMapper로 변환하여 반환
-        List<ChatRes.OTOChatRes> chattingList =  otoChatRepository
-                        .findByRoom(room,pageable)
-                        .stream()
-                        .map(chat -> modelMapper.map(chat, ChatRes.OTOChatRes.class))
-                        .collect(Collectors.toList());
-
-        for(ChatRes.OTOChatRes chatting : chattingList) {
-            chatting.setMessageContent(cipherService.decryptChat(chatting).getMessageContent());
-        }
-
-        return chattingList;
+        return otoChatRepository
+                .findByRoom(room,pageable)
+                .stream()
+                .map(chat -> modelMapper.map(chat, ChatRes.OTOChatRes.class))
+                .collect(Collectors.toList());
     }
 
     public boolean checkVisible(Long roomId) {
@@ -127,26 +122,27 @@ public class OTOChatService {
         Optional<OTOChatRoom> room=otoChatRoomRepository.findByRoomId(roomId);
 
         // 모든 유저가 채팅방에 남아있을 경우 true
-        if(room.get().getVisible()== OTOChatVisible.ALL) return true;
-        else return false;
+        if(room.get().getVisible() == OTOChatVisible.ALL)
+            return true;
+        else
+            return false;
     }
 
     /**
      *  1:1 채팅방 나가기
      */
     public String exitChatRoom(Long roomId, Member member) {
-        // 채팅방 나가는 회원 id
-        Long id=member.getId();
+        // 채팅방 나가는 회원 memberId
+        Long memberId = member.getId();
 
         // 현재 참여 채팅방 객체
-        Optional<OTOChatRoom> room=otoChatRoomRepository.findByRoomId(roomId);
-        OTOChatRoom chatRoom=room.get();
+        OTOChatRoom chatRoom = otoChatRoomRepository.findByRoomId(roomId).get();
 
-        // 채팅방 sender id
-        Long sid=chatRoom.getSender().getId();   // sender id
+        // 채팅방 sender memberId
+        Long senderId = chatRoom.getSender().getId();   // sender memberId
 
         // sender 가 나갈 경우
-        if(sid==id) {
+        if(senderId == memberId) {
             chatRoom.updateVisible(OTOChatVisible.RECEIVER);  // receiver만 볼 수 있음
         }
         // receiver 가 나갈 경우
@@ -163,12 +159,11 @@ public class OTOChatService {
      *  1:1 채팅방 삭제
      */
     public String deleteChatRoom(Long roomId, Member member) {
-        // 채팅방 나가는 회원 id
-        Long id=member.getId();
+        // 채팅방 나가는 회원 memberId
+        Long memberId = member.getId();
 
         // 현재 참여 채팅방 객체
         Optional<OTOChatRoom> room=otoChatRoomRepository.findByRoomId(roomId);
-        OTOChatRoom chatRoom=room.get();
 
         // 채팅 내역 삭제하기
         otoChatRepository.deleteByRoom(room);
@@ -180,11 +175,11 @@ public class OTOChatService {
     /**
      * 1:1 채팅방 ID를 통해 가장 최근 메세지 조회
      */
-    public ChatRes.OTOChatRes getLastMessage(OTOChatRoom room) {
+    public OTOChat getLastMessage(OTOChatRoom room) {
 
-        ChatRes.OTOChatRes lastMessage = modelMapper.map(otoChatRepository.findTop1ByRoomOrderByMessageSendingTimeDesc(room), ChatRes.OTOChatRes.class);
+        OTOChat lastMessage = otoChatRepository.findTop1ByRoomOrderByMessageSendingTimeDesc(room);
 
-        return (ChatRes.OTOChatRes)cipherService.decryptChat(lastMessage);
+        return lastMessage;
     }
 
     /**
@@ -198,9 +193,9 @@ public class OTOChatService {
         // visible에 따른 필터링
         if(result != null) {
             result = result.stream().filter(chattingRoom ->
-                            chattingRoom.getVisible() == OTOChatVisible.ALL
-                      ||   (chattingRoom.getVisible() == OTOChatVisible.SENDER && chattingRoom.getSender().getId() == member.getId())
-                      ||   (chattingRoom.getVisible() == OTOChatVisible.RECEIVER && chattingRoom.getReceive().getId() == member.getId()))
+                            chattingRoom.getVisible() == OTOChatVisible.ALL ||
+                            (chattingRoom.getVisible() == OTOChatVisible.SENDER && chattingRoom.getSender().getId() == member.getId()) ||
+                            (chattingRoom.getVisible() == OTOChatVisible.RECEIVER && chattingRoom.getReceive().getId() == member.getId()))
                            .collect(Collectors.toList());
         }
 
@@ -214,7 +209,7 @@ public class OTOChatService {
                     String opponentNickname = member.getId() != sender.getId()? sender.getNickname(): receiver.getNickname();
 
                     // 마지막 메세지 추출
-                    ChatRes.OTOChatRes lastMessage = getLastMessage(chattingRoom);
+                    OTOChat lastMessage = getLastMessage(chattingRoom);
 
                     // 빌더 패턴으로 응답 객체 반환
                     if(lastMessage != null) {
