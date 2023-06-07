@@ -82,6 +82,18 @@ public class MemberReq {
         private String nickname;
     }
 
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    @ApiModel(value = "CheckEmailReq - 닉네임 중복 확인 요청 객체")
+    public static class CheckEmailReq {
+        @NotNull
+        @ApiModelProperty(name = "이메일")
+        private String email;
+    }
+
 
     @Builder
     @NoArgsConstructor
