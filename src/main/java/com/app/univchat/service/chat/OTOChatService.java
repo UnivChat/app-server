@@ -52,7 +52,7 @@ public class OTOChatService {
         Optional<Member> sender = memberService.getMember(senderNickname);
 
         // nickname으로 수신자 member 객체 획득
-        String receiverNickname = otoChatRoomReq.getReceiveNickname();
+        String receiverNickname = otoChatRoomReq.getReceiverNickname();
         Optional<Member> receiver = memberService.getMember(receiverNickname);
 
         // 송신자 - 수신자 쌍이 이미 존재하면 채팅방 개설 불가
@@ -60,15 +60,15 @@ public class OTOChatService {
 
         // 이미 채팅방 존재하면 해당 채팅방 id return
         Optional<OTOChatRoom> foundRoom = null;
-        if(otoChatRoomRepository.findBySenderAndReceive(sender.get(),receiver.get())!=null) {
-            foundRoom = otoChatRoomRepository.findBySenderAndReceive(sender.get(),receiver.get());
+        if(otoChatRoomRepository.findBySenderAndReceiver(sender.get(),receiver.get())!=null) {
+            foundRoom = otoChatRoomRepository.findBySenderAndReceiver(sender.get(),receiver.get());
             if(foundRoom.isEmpty()) {
-                foundRoom = otoChatRoomRepository.findBySenderAndReceive(receiver.get(),sender.get());
+                foundRoom = otoChatRoomRepository.findBySenderAndReceiver(receiver.get(),sender.get());
             }
         }
         if(foundRoom.isEmpty()) {  // 채팅방 개설
             otoChatRoomRepository.save(otoChatRoomReq.toEntity(sender,receiver));
-            foundRoom = otoChatRoomRepository.findBySenderAndReceive(sender.get(),receiver.get());
+            foundRoom = otoChatRoomRepository.findBySenderAndReceiver(sender.get(),receiver.get());
         }
         otoChatRoomRes.setRoomId(foundRoom.get().getRoomId());
         return otoChatRoomRes;
@@ -188,14 +188,14 @@ public class OTOChatService {
     public List<ChatRes.OTOChatRoomRes> getChattingRoomList(Member member) {
 
         // 사용자 ID를 통해 송신자 혹은 수신자의 ID와 같다면 해당 1:1 채팅방 조회
-        List<OTOChatRoom> result = otoChatRoomRepository.findBySenderOrReceive(member, member);
+        List<OTOChatRoom> result = otoChatRoomRepository.findBySenderOrReceiver(member, member);
 
         // visible에 따른 필터링
         if(result != null) {
             result = result.stream().filter(chattingRoom ->
                             chattingRoom.getVisible() == OTOChatVisible.ALL ||
                             (chattingRoom.getVisible() == OTOChatVisible.SENDER && chattingRoom.getSender().getId() == member.getId()) ||
-                            (chattingRoom.getVisible() == OTOChatVisible.RECEIVER && chattingRoom.getReceive().getId() == member.getId()))
+                            (chattingRoom.getVisible() == OTOChatVisible.RECEIVER && chattingRoom.getReceiver().getId() == member.getId()))
                            .collect(Collectors.toList());
         }
 
@@ -205,7 +205,7 @@ public class OTOChatService {
                 .map(chattingRoom -> {
                     // 상대방 닉네임 추출
                     Member sender = chattingRoom.getSender();
-                    Member receiver = chattingRoom.getReceive();
+                    Member receiver = chattingRoom.getReceiver();
                     String opponentNickname = member.getId() != sender.getId()? sender.getNickname(): receiver.getNickname();
 
                     // 마지막 메세지 추출

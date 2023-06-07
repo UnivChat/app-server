@@ -22,8 +22,8 @@ public class OTOChatRoom {
     public Member sender; // 메시지 송신자 식별자
 
     @ManyToOne
-    @JoinColumn(name = "receive_id", nullable = false)
-    public Member receive; // 메시지 송신자 식별자
+    @JoinColumn(name = "receiver_id", nullable = false)
+    public Member receiver; // 메시지 송신자 식별자
 
     @Column(columnDefinition="ENUM('ALL','SENDER','RECEIVER')" ,nullable = false )
     @Enumerated(EnumType.STRING)
