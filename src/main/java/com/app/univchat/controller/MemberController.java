@@ -75,7 +75,7 @@ public class MemberController {
 
     @Tag(name = "member", description = "회원 관리 API")
     @ApiOperation(value = "닉네임 중복 확인 API")
-    @GetMapping("/check/nickname")
+    @PostMapping("/check/nickname")
     public BaseResponse<String> checkNickname(@RequestBody MemberReq.CheckNicknameReq checkNicknameReq){
 
         String checkRes=memberService.checkNickname(checkNicknameReq);
@@ -86,7 +86,7 @@ public class MemberController {
 
     @Tag(name = "member", description = "회원 관리 API")
     @ApiOperation(value = "이메일 중복 확인 API")
-    @GetMapping("/check/email")
+    @PostMapping("/check/email")
     public BaseResponse<String> checkEmail(@RequestBody MemberReq.CheckEmailReq checkEmailReq){
 
         String checkRes=memberService.checkEmail(checkEmailReq);
