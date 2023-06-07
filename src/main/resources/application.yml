@@ -74,4 +74,4 @@ cipher:
 
 hash:
   type: ${{ HASH_TYPE }}
-  mode: ${{ HASH_MODE }}
+  seed: ${{ HASH_SEED }}
