@@ -1,6 +1,7 @@
 name: catchat server CI/CD
 
 on:
+  push:
   pull_request:
     branches: [main]
 
@@ -33,6 +34,7 @@ jobs:
         cloud.aws.credentials.secret-key: ${{ secrets.AWS_S3_SECRET_KEY }}
         cloud.aws.region.static: ${{ secrets.AWS_S3_REGION }}
         jwt.secret: ${{ secrets.JWT_SECRET }}
+        spring.mail.username: ${{ secrets.GOOGLE_EMAIL }}
         spring.mail.password: ${{ secrets.GOOGLE_EMAIL_APP_PASSWORD }}
         cipher.type: ${{ secrets.CIPHER_TYPE }}
         cipher.mode: ${{ secrets.CIPHER_MODE }}
