@@ -27,7 +27,7 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: yujinkwon.dev@gmail.com
+    username: ${{ GOOGLE_EMAIL }}
     password: ${{ GOOGLE_EMAIL_APP_PASSWORD }}
     properties:
       mail:
@@ -74,4 +74,4 @@ cipher:
 
 hash:
   type: ${{ HASH_TYPE }}
-  mode: ${{ HASH_MODE }}
+  seed: ${{ HASH_SEED }}
