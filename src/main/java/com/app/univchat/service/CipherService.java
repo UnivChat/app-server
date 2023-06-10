@@ -25,7 +25,7 @@ public class CipherService {
     private String CIPHER_TYPE;
     @Value("${cipher.mode}")
     private String CIPHER_MODE;
-    private final static byte[] IV = new byte[16];
+    private final byte[] IV = new byte[16];
 
     public ChatReq encryptChat(ChatReq chat) {
 
@@ -46,6 +46,7 @@ public class CipherService {
 
         // base64 인코딩
         String encodedCipherChat = new String(Base64.getEncoder().encode(cipherChat), StandardCharsets.UTF_8);
+
         chat.setMessageContent(encodedCipherChat);
         return chat;
 
@@ -69,11 +70,12 @@ public class CipherService {
         SecretKeySpec keySpec = new SecretKeySpec(secretDigest, CIPHER_TYPE);
         IvParameterSpec ivSpec = new IvParameterSpec(IV);
 
+
         // 복호화 적용
         Cipher cipher = Cipher.getInstance(CIPHER_MODE);
         cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
-
         String plainChat = new String(cipher.doFinal(decodedCipherChat), StandardCharsets.UTF_8);
+
         chat.setMessageContent(plainChat);
 
         return chat;

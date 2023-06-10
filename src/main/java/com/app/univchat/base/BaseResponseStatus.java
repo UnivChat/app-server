@@ -25,7 +25,7 @@ public enum  BaseResponseStatus {
     /**
      * 2000 : User 오류
      */
-    USER_EXISTS_NICKNAME_ERROR("2001","중복된 닉네임입니다.", 400),
+    USER_EXISTS_NICKNAME_ERROR("2001","중복된 닉네임입니다.", 409),
 
     USER_FAILED_TO_LOG_IN_ERROR("2002", "로그인에 실패하였습니다.", 400),
 
@@ -57,9 +57,12 @@ public enum  BaseResponseStatus {
 
     USER_NOT_EXIST_ERROR("2015", "존재하지 않는 회원입니다.", 404),
 
+
     /**
      * 5000 : Chatting 오류
      */
+
+    CHAT_OVERFLOW_THE_RANGE("5001", "요청 범위가 넘쳤습니다", 400),
     CHATTING_NOT_EXIST_CHAT_ERROR("5002", "해당하는 채팅 내역이 존재하지 않습니다.", 404),
     CHATTING_NOT_EXIST_ROOM_ERROR("5003", "해당하는 채팅방이 존재하지 않습니다.", 404),
     UNSUPPORTED_SUBSCRIBE_URI("5004", "지원하지 않는 구독경로입니다.", 400),
@@ -85,8 +88,10 @@ public enum  BaseResponseStatus {
     JWT_INVALID_REFRESH_TOKEN("6008", "유효하지 않은 리프레시 토큰입니다.", 400),
     JWT_INVALID_USER_JWT("6008", "입력 RT와 사용자 RT가 일치하지 않습니다", 400),
     JWT_AND_NICKNAME_DONT_MATCH("6009", "JWT와 닉네임이 일치하지 않습니다.", 400),
+
+
     ;
-    
+
     private final String code;
     private final String message;
     private final int status;

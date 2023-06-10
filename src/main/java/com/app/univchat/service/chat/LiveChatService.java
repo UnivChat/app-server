@@ -6,6 +6,7 @@ import com.app.univchat.domain.Member;
 import com.app.univchat.dto.ChatReq;
 import com.app.univchat.dto.ChatRes;
 import com.app.univchat.repository.LiveChatRepository;
+import com.app.univchat.service.CipherService;
 import com.app.univchat.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -27,6 +28,7 @@ public class LiveChatService {
     @Autowired
     private final ModelMapper modelMapper;
     private final MemberService memberService;
+    private final CipherService cipherService;
     private final LiveChatRepository liveChatRepository;
 
     /**
@@ -43,7 +45,7 @@ public class LiveChatService {
         );
 
         // 채팅 내역 저장
-        liveChatRepository.save(liveChatReq.toEntity(sender, messageSendTime));
+        liveChatRepository.save(((ChatReq.LiveChatReq)(cipherService.encryptChat(liveChatReq))).toEntity(sender, messageSendTime));
     }
 
     /**
@@ -80,11 +82,16 @@ public class LiveChatService {
                 Sort.by("messageSendingTime").ascending());
 
         // ChatRes.LiveChatRes으로 변환하여 반환
-        return new ChatRes.LiveChatListRes(maxPage, page,
-                liveChatRepository.findAll(pageable)
-                        .stream()
-                        .map(chat -> modelMapper.map(chat, ChatRes.LiveChatRes.class))
-                        .sorted((o1, o2) -> o2.getMessageSendingTime().compareTo(o1.getMessageSendingTime()))
-                        .collect(Collectors.toList()));
+        List<ChatRes.LiveChatRes> chattingList = liveChatRepository.findAll(pageable)
+                .stream()
+                .map(chat -> modelMapper.map(chat, ChatRes.LiveChatRes.class))
+                .sorted((o1, o2) -> o2.getMessageSendingTime().compareTo(o1.getMessageSendingTime()))
+                .collect(Collectors.toList());
+
+        for(ChatRes.LiveChatRes chatting : chattingList) {
+            chatting.setMessageContent(cipherService.decryptChat(chatting).getMessageContent());
+        }
+
+        return new ChatRes.LiveChatListRes(maxPage, page, chattingList);
     }
 }

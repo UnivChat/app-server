@@ -2,8 +2,10 @@ package com.app.univchat.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.List;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+
 
 @Setter
 @Getter
@@ -23,6 +25,18 @@ public class ChatRes {
     // 기숙사 채팅 메시지 객체
     public static class DormChatRes extends ChatRes { }
 
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    // 기숙사 채팅 메시지 객체
+    public static class DormChatListRes {
+        private int maxPage;
+        private int nowPage;
+        private List<DormChatRes> dormChatRes;
+    }
+
     @SuperBuilder
     @AllArgsConstructor
     @Setter
@@ -30,12 +44,40 @@ public class ChatRes {
     // 연애상담 채팅 메시지 객체
     public static class LoveChatRes extends ChatRes { }
 
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    // 연애상담 채팅 메시지 객체
+    public static class LoveChatListRes {
+        private int maxPage;
+        private int nowPage;
+        private List<LoveChatRes> loveChatRes;
+    }
+
+
+
     @SuperBuilder
     @AllArgsConstructor
     @Setter
     @Getter
     // 라이브 채팅 메시지 객체
     public static class LiveChatRes extends ChatRes { }
+
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    // 라이브 채팅 메시지 객체
+    public static class LiveChatListRes {
+        private int maxPage;
+        private int nowPage;
+        private List<LiveChatRes> liveChatRes;
+    }
+
+
 
     @SuperBuilder
     @AllArgsConstructor
