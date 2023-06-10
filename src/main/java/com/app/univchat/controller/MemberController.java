@@ -41,6 +41,7 @@ public class MemberController {
     private final EmailService emailService;
     private final MemberService memberService;
     private final RedisService redisService;
+    private final JwtProvider jwtProvider;
 
     // 이메일 인증
     @Tag(name = "member", description = "회원 관리 API")
@@ -160,9 +161,10 @@ public class MemberController {
     @ApiOperation(value = "액세스토큰 재발급 API")
     @PostMapping("/re-token")
     public BaseResponse<MemberRes.PostReIssueRes> reIssueToken(@RequestBody MemberReq.PostReIssueReq postReIssueReq) {
+        String email = jwtProvider.getEmail(postReIssueReq.getRefreshToken());
 
         //이메일(키)로 저장된 리프레시 토큰(밸류) 불러오기
-        String redisRT = redisService.getValues(String.valueOf(postReIssueReq.getEmail()));
+        String redisRT = redisService.getValues(String.valueOf(email));
 
         if (redisRT == null) {
             throw new BaseException(BaseResponseStatus.JWT_INVALID_REFRESH_TOKEN);
@@ -171,7 +173,7 @@ public class MemberController {
             throw new BaseException(BaseResponseStatus.JWT_INVALID_USER_JWT);
         }
 
-        MemberRes.PostReIssueRes postReIssueRes = memberService.reIssueToken(postReIssueReq.getEmail());
+        MemberRes.PostReIssueRes postReIssueRes = memberService.reIssueToken(email);
 
         return BaseResponse.ok(SUCCESS, postReIssueRes);
     }
