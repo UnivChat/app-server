@@ -66,9 +66,9 @@ public class MemberController {
             throw new BaseException(BaseResponseStatus.USER_ALREADY_EXIST_USERNAME);
         }
         // 닉네임 중복 체크
-        if(memberService.checkNickname(memberDto.getNickname())) {
-            throw new BaseException(BaseResponseStatus.USER_EXISTS_NICKNAME_ERROR);
-        }
+//        if(memberService.checkNickname(memberDto.getNickname())) {
+//            throw new BaseException(BaseResponseStatus.USER_EXISTS_NICKNAME_ERROR);
+//        }
 
         return BaseResponse.ok(BaseResponseStatus.SUCCESS,memberService.signup(memberDto));
 
