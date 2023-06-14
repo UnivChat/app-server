@@ -1,5 +1,6 @@
 package com.app.univchat.controller.chat;
 
+import com.app.univchat.base.BaseException;
 import com.app.univchat.base.BaseResponse;
 import com.app.univchat.base.BaseResponseStatus;
 import com.app.univchat.dto.ChatReq;

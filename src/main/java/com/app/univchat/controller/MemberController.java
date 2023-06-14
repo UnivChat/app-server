@@ -62,9 +62,9 @@ public class MemberController {
     public BaseResponse<String> signup(@RequestBody MemberReq.Signup memberDto){
 
         // 이메일 중복 체크
-//        if(memberService.checkEmail(memberDto.getEmail())) {
-//            throw new BaseException(BaseResponseStatus.USER_ALREADY_EXIST_USERNAME);
-//        }
+        if(memberService.checkEmail(memberDto.getEmail())) {
+            throw new BaseException(BaseResponseStatus.USER_ALREADY_EXIST_USERNAME);
+        }
         // 닉네임 중복 체크
 //        if(memberService.checkNickname(memberDto.getNickname())) {
 //            throw new BaseException(BaseResponseStatus.USER_EXISTS_NICKNAME_ERROR);
@@ -79,7 +79,14 @@ public class MemberController {
     @PostMapping("/check/nickname")
     public BaseResponse<String> checkNickname(@RequestBody MemberReq.CheckNicknameReq checkNicknameReq){
 
-        String checkRes=memberService.checkNickname(checkNicknameReq);
+        boolean isDuplicate=memberService.checkNickname(checkNicknameReq.getNickname());
+        String checkRes;
+        if(isDuplicate) {
+            checkRes="이미 사용중인 닉네임입니다.";
+        }
+        else {
+            checkRes="사용 가능한 닉네임입니다.";
+        }
 
         return BaseResponse.ok(BaseResponseStatus.SUCCESS, checkRes);
 
@@ -90,7 +97,14 @@ public class MemberController {
     @PostMapping("/check/email")
     public BaseResponse<String> checkEmail(@RequestBody MemberReq.CheckEmailReq checkEmailReq){
 
-        String checkRes=memberService.checkEmail(checkEmailReq);
+        boolean isDuplicate=memberService.checkEmail(checkEmailReq.getEmail());
+        String checkRes;
+        if(isDuplicate) {
+            checkRes="이미 사용중인 이메일입니다.";
+        }
+        else {
+            checkRes="사용 가능한 이메일입니다.";
+        }
 
         return BaseResponse.ok(BaseResponseStatus.SUCCESS, checkRes);
 
