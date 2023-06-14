@@ -53,9 +53,6 @@ public class LoveChatController {
 
         ChatRes.LoveChatListRes chattingList = loveChatService.getChattingList(page, 10);
 
-        if(chattingList == null)
-            return BaseResponse.ok(CHAT_OVERFLOW_THE_RANGE);
-
 
         return BaseResponse.ok(BaseResponseStatus.SUCCESS, chattingList);
     }
