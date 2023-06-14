@@ -1,5 +1,6 @@
 package com.app.univchat.controller.chat;
 
+import com.app.univchat.base.BaseException;
 import com.app.univchat.base.BaseResponse;
 import com.app.univchat.base.BaseResponseStatus;
 import com.app.univchat.dto.ChatReq;
@@ -51,8 +52,6 @@ public class LiveChatController {
     public BaseResponse<ChatRes.LiveChatListRes> loadLiveChattingList(@PathVariable int page) {
         ChatRes.LiveChatListRes chattingList = liveChatService.getChattingList(page, 10);
 
-        if(chattingList == null)
-            return BaseResponse.ok(CHAT_OVERFLOW_THE_RANGE);
 
         return BaseResponse.ok(BaseResponseStatus.SUCCESS, chattingList);
     }
