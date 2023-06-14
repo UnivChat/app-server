@@ -65,6 +65,7 @@ public class LiveChatService {
     //실제 9페이지는 9로 요청
 
     public ChatRes.LiveChatListRes getChattingList(int page, int size) {
+
         int all = liveChatRepository.findAll().size();
         //총 페이지수 0~maxPage, 0이 최신
         int maxPage = all / size;
