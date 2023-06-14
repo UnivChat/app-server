@@ -41,6 +41,7 @@ public class MemberController {
     private final EmailService emailService;
     private final MemberService memberService;
     private final RedisService redisService;
+    private final JwtProvider jwtProvider;
 
     // 이메일 인증
     @Tag(name = "member", description = "회원 관리 API")
@@ -61,9 +62,9 @@ public class MemberController {
     public BaseResponse<String> signup(@RequestBody MemberReq.Signup memberDto){
 
         // 이메일 중복 체크
-//        if(memberService.checkEmail(memberDto.getEmail())) {
-//            throw new BaseException(BaseResponseStatus.USER_ALREADY_EXIST_USERNAME);
-//        }
+        if(memberService.checkEmail(memberDto.getEmail())) {
+            throw new BaseException(BaseResponseStatus.USER_ALREADY_EXIST_USERNAME);
+        }
         // 닉네임 중복 체크
 //        if(memberService.checkNickname(memberDto.getNickname())) {
 //            throw new BaseException(BaseResponseStatus.USER_EXISTS_NICKNAME_ERROR);
@@ -78,7 +79,14 @@ public class MemberController {
     @PostMapping("/check/nickname")
     public BaseResponse<String> checkNickname(@RequestBody MemberReq.CheckNicknameReq checkNicknameReq){
 
-        String checkRes=memberService.checkNickname(checkNicknameReq);
+        boolean isDuplicate=memberService.checkNickname(checkNicknameReq.getNickname());
+        String checkRes;
+        if(isDuplicate) {
+            checkRes="이미 사용중인 닉네임입니다.";
+        }
+        else {
+            checkRes="사용 가능한 닉네임입니다.";
+        }
 
         return BaseResponse.ok(BaseResponseStatus.SUCCESS, checkRes);
 
@@ -89,7 +97,14 @@ public class MemberController {
     @PostMapping("/check/email")
     public BaseResponse<String> checkEmail(@RequestBody MemberReq.CheckEmailReq checkEmailReq){
 
-        String checkRes=memberService.checkEmail(checkEmailReq);
+        boolean isDuplicate=memberService.checkEmail(checkEmailReq.getEmail());
+        String checkRes;
+        if(isDuplicate) {
+            checkRes="이미 사용중인 이메일입니다.";
+        }
+        else {
+            checkRes="사용 가능한 이메일입니다.";
+        }
 
         return BaseResponse.ok(BaseResponseStatus.SUCCESS, checkRes);
 
@@ -160,9 +175,10 @@ public class MemberController {
     @ApiOperation(value = "액세스토큰 재발급 API")
     @PostMapping("/re-token")
     public BaseResponse<MemberRes.PostReIssueRes> reIssueToken(@RequestBody MemberReq.PostReIssueReq postReIssueReq) {
+        String email = jwtProvider.getEmail(postReIssueReq.getRefreshToken());
 
         //이메일(키)로 저장된 리프레시 토큰(밸류) 불러오기
-        String redisRT = redisService.getValues(String.valueOf(postReIssueReq.getEmail()));
+        String redisRT = redisService.getValues(String.valueOf(email));
 
         if (redisRT == null) {
             throw new BaseException(BaseResponseStatus.JWT_INVALID_REFRESH_TOKEN);
@@ -171,7 +187,7 @@ public class MemberController {
             throw new BaseException(BaseResponseStatus.JWT_INVALID_USER_JWT);
         }
 
-        MemberRes.PostReIssueRes postReIssueRes = memberService.reIssueToken(postReIssueReq.getEmail());
+        MemberRes.PostReIssueRes postReIssueRes = memberService.reIssueToken(email);
 
         return BaseResponse.ok(SUCCESS, postReIssueRes);
     }

@@ -1,5 +1,6 @@
 package com.app.univchat.controller.chat;
 
+import com.app.univchat.base.BaseException;
 import com.app.univchat.base.BaseResponse;
 import com.app.univchat.base.BaseResponseStatus;
 import com.app.univchat.dto.ChatReq;
@@ -52,10 +53,6 @@ public class DormChatController {
     public BaseResponse<ChatRes.DormChatListRes>loadDormChattingList(@PathVariable int page) {
 
         ChatRes.DormChatListRes chattingList = dormChatService.getChattingList(page, 10);
-
-        if(chattingList == null)
-            return BaseResponse.ok(CHAT_OVERFLOW_THE_RANGE);
-
 
         return BaseResponse.ok(BaseResponseStatus.SUCCESS, chattingList);
     }
