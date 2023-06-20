@@ -29,7 +29,6 @@ import static com.app.univchat.base.BaseResponseStatus.CHAT_OVERFLOW_THE_RANGE;
 @RequiredArgsConstructor
 public class LiveChatService {
 
-    @Autowired
     private final ModelMapper modelMapper;
     private final MemberService memberService;
     private final CipherService cipherService;
@@ -55,19 +54,11 @@ public class LiveChatService {
     /**
      * 라이브 채팅 내역 리스트 조회
      */
-
-    //오래된 순으로 정렬 후
-    //마지막 페이지를 계산 후
-    //마지막 페이지를 가져옴
-    //요청 자체를 -1로 받고 반환에 페이지 마지막 번호 추가
-    //지금 82페이지니까
-    //총 9페이지
-    //실제 9페이지는 9로 요청
-
     public ChatRes.LiveChatListRes getChattingList(int page, int size) {
 
         int all = liveChatRepository.findAll().size();
-        //총 페이지수 0~maxPage, 0이 최신
+
+        //총 페이지 수
         int maxPage = all / size;
 
         //총 채팅 수 나누어 떨어지면 마지막 페이지에 아무것도 없음(페이지는 0부터 시작하기 때문)
@@ -76,7 +67,6 @@ public class LiveChatService {
         if(page > maxPage || page <= -2) throw new BaseException(CHAT_OVERFLOW_THE_RANGE);
 
         List<LiveChat> page2 = new ArrayList<>();
-
         if(page == -1){
             //초기에 채팅 리스트 불러올 때
             //-1로 접근하면 무조건 최신 10개
@@ -101,12 +91,9 @@ public class LiveChatService {
         }
         List<ChatRes.LiveChatRes> chattingList = page1.stream()
                 .map(chat -> modelMapper.map(chat, ChatRes.LiveChatRes.class))
-                .sorted((o1, o2) -> o2.getMessageSendingTime().compareTo(o1.getMessageSendingTime()))
+                .peek(chat -> chat.setMessageContent(cipherService.decryptChat(chat).getMessageContent())) //채팅 복호화
+                .sorted((o1, o2) -> o2.getMessageSendingTime().compareTo(o1.getMessageSendingTime())) //채팅 보낸 시간으로 정렬
                 .collect(Collectors.toList());
-
-        for(ChatRes.LiveChatRes chatting : chattingList) {
-            chatting.setMessageContent(cipherService.decryptChat(chatting).getMessageContent());
-        }
 
         return new ChatRes.LiveChatListRes(maxPage, (page2.isEmpty()?page:page-1), chattingList);
     }
