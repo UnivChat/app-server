@@ -183,10 +183,12 @@ public class OTOChatService {
      * 1:1 채팅방 ID를 통해 가장 최근 메세지 조회
      */
     public ChatRes.OTOChatRes getLastMessage(OTOChatRoom room) {
-
-        ChatRes.OTOChatRes lastMessage = modelMapper.map(otoChatRepository.findTop1ByRoomOrderByMessageSendingTimeDesc(room), ChatRes.OTOChatRes.class);
-
-        return (ChatRes.OTOChatRes)cipherService.decryptChat(lastMessage);
+        Optional<OTOChat> message = otoChatRepository.findTop1ByRoomOrderByMessageSendingTimeDesc(room);
+        if (message.isPresent()) {
+            ChatRes.OTOChatRes lastMessage = modelMapper.map(message.get(), ChatRes.OTOChatRes.class);
+            return (ChatRes.OTOChatRes)cipherService.decryptChat(lastMessage);
+        }
+        else return null;
     }
 
     /**
@@ -218,21 +220,13 @@ public class OTOChatService {
                     // 마지막 메세지 추출
                     ChatRes.OTOChatRes lastMessage = getLastMessage(chattingRoom);
 
-                    // 빌더 패턴으로 응답 객체 반환
+                    //반환 객체 생성
+                    ChatRes.OTOChatRoomRes chatRes = new ChatRes.OTOChatRoomRes(chattingRoom.getRoomId(), opponentNickname);
                     if(lastMessage != null) {
-                        return(ChatRes.OTOChatRoomRes.builder()
-                                .roomId(chattingRoom.getRoomId())
-                                .opponentNickname(opponentNickname)
-                                .lastMessageContent(lastMessage.getMessageContent())
-                                .lastMessageSendingTime(lastMessage.getMessageSendingTime()).build());
-                    } else {
-                        return(ChatRes.OTOChatRoomRes.builder()
-                                .roomId(chattingRoom.getRoomId())
-                                .opponentNickname(opponentNickname)
-                                .lastMessageContent("")
-                                .lastMessageSendingTime("").build());
+                        chatRes.setLastMessageContent(lastMessage.getMessageContent());
+                        chatRes.setLastMessageSendingTime(lastMessage.getMessageSendingTime());
                     }
-
+                    return chatRes;
                 })
                 // 마지막 메세지를 기준으로 최신순 정렬
                 .sorted(Comparator.comparing(ChatRes.OTOChatRoomRes::getLastMessageSendingTime).reversed())

@@ -14,7 +14,7 @@ public interface OTOChatRepository extends JpaRepository<OTOChat, Long> {
     Page<OTOChat> findAll(Pageable pageable);
     Page<OTOChat> findByRoom(Optional<OTOChatRoom> room, Pageable pageable);
 
-    OTOChat findTop1ByRoomOrderByMessageSendingTimeDesc(OTOChatRoom room);
+    Optional<OTOChat> findTop1ByRoomOrderByMessageSendingTimeDesc(OTOChatRoom room);
 
     boolean deleteByMessageId(Long messageId);
 

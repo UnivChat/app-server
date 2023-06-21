@@ -96,11 +96,21 @@ public class ChatRes {
     public static class OTOChatRoomRes {
         @ApiModelProperty(name = "채팅방 식별자", example = "1234")
         private Long roomId; // 채팅방 식별자
+
         @ApiModelProperty(name = "상대방 닉네임", example = "닉네임")
         private String opponentNickname; // 상대방 닉네임
+
         @ApiModelProperty(name = "가장 최근 메세지 내용", example = "채팅 내용")
         private String lastMessageSendingTime; // 마지막 메세지 송신 시각
+
         @ApiModelProperty(name = "가장 최근 메세지 송신 시각", example = "2023-05-29 01:23:45:678")
         private String lastMessageContent; // 마지막 메세지 내용
+
+        public OTOChatRoomRes(Long roomId, String opponentNickname) {
+            this.roomId = roomId;
+            this.opponentNickname = opponentNickname;
+            lastMessageContent = " ";
+            lastMessageSendingTime = " ";
+        }
     }
 }
