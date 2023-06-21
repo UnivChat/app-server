@@ -62,10 +62,10 @@ public class OTOChatController {
     @Tag(name = "chatting")
     @ApiOperation(value = "1:1 채팅 내역 API", notes = "채팅 내역 최신순으로 10개를 반환하며, 페이지 번호는 0부터 시작합니다.")
     @GetMapping("/{roomId}/{page}")
-    public BaseResponse<List<ChatRes.OTOChatRes>>loadOTOChattingList(@PathVariable(value = "roomId") Long roomId,
+    public BaseResponse<ChatRes.OTOChatListRes>loadOTOChattingList(@PathVariable(value = "roomId") Long roomId,
                                                                      @PathVariable(value = "page") int page) {
 
-        List<ChatRes.OTOChatRes> chattingList = otoChatService.getChattingList(roomId,page);
+        ChatRes.OTOChatListRes chattingList = otoChatService.getChattingList(roomId, page);
 
         return BaseResponse.ok(SUCCESS, chattingList);
     }

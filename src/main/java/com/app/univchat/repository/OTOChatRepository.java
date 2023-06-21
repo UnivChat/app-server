@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface OTOChatRepository extends JpaRepository<OTOChat, Long> {
     Page<OTOChat> findAll(Pageable pageable);
-    Page<OTOChat> findByRoom(Optional<OTOChatRoom> room, Pageable pageable);
+    Page<OTOChat> findByRoom(OTOChatRoom room, Pageable pageable);
 
     Optional<OTOChat> findTop1ByRoomOrderByMessageSendingTimeDesc(OTOChatRoom room);
 
@@ -20,5 +20,6 @@ public interface OTOChatRepository extends JpaRepository<OTOChat, Long> {
 
     @Transactional
     void deleteByRoom(Optional<OTOChatRoom> room);
-    List<OTOChat> findByRoom(Optional<OTOChatRoom> room);
+
+    List<OTOChat> findByRoom(OTOChatRoom room);
 }

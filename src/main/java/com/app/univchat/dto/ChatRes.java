@@ -91,6 +91,18 @@ public class ChatRes {
     @AllArgsConstructor
     @Setter
     @Getter
+    // 라이브 채팅 메시지 객체
+    public static class OTOChatListRes {
+        private int maxPage;
+        private int nowPage;
+        private List<OTOChatRes> otoChatRes;
+    }
+
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
     @ApiModel(value = "1:1 채팅방 목록 조회 api 응답 객체")
     // 1:1 채팅방 객체
     public static class OTOChatRoomRes {

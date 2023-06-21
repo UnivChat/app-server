@@ -29,6 +29,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -102,26 +103,43 @@ public class OTOChatService {
     /**
      *  1:1 채팅 내역 조회
      */
-    public List<ChatRes.OTOChatRes> getChattingList(Long roomId, int page) {
+    public ChatRes.OTOChatListRes getChattingList(Long roomId, int page) {
+        OTOChatRoom room = otoChatRoomRepository.findByRoomId(roomId).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.CHATTING_NOT_EXIST_ROOM_ERROR));
 
-        // page는 요청하는 곳에 맞게, 한 번의 요청에는 10개의 채팅, 시간 내림차순으로 정렬.
-        Pageable pageable = PageRequest.of(page, 10,
-                Sort.by("messageSendingTime").descending());
+        int size = 10;
 
-        Optional<OTOChatRoom> room = otoChatRoomRepository.findByRoomId(roomId);
+        int all = otoChatRepository.findByRoom(room).size();
 
-        // pagenation 한 채팅 목록을 modleMapper로 변환하여 반환
-        List<ChatRes.OTOChatRes> chattingList =  otoChatRepository
-                        .findByRoom(room,pageable)
-                        .stream()
-                        .map(chat -> modelMapper.map(chat, ChatRes.OTOChatRes.class))
-                        .collect(Collectors.toList());
+        int maxPage = all / size;
 
-        for(ChatRes.OTOChatRes chatting : chattingList) {
-            chatting.setMessageContent(cipherService.decryptChat(chatting).getMessageContent());
+        if(all%size == 0 && maxPage > 0) maxPage--;
+
+        List<OTOChat> page2 = new ArrayList<>();
+        if (page == -1) {
+            page = maxPage;
+
+            if (all % size != 0 && page > 0) {
+                PageRequest pageable = PageRequest.of(page - 1, size,
+                        Sort.by("messageSendingTime").ascending());
+                page2 = otoChatRepository.findByRoom(room, pageable).toList();
+            }
         }
 
-        return chattingList;
+        PageRequest pageable = PageRequest.of(page, size,
+                Sort.by("messageSendingTime").ascending());
+
+        List<OTOChat> page1 = otoChatRepository.findByRoom(room, pageable).toList();
+        if (!page2.isEmpty()) {
+            page1 = Stream.concat(page1.stream(), page2.stream()).collect(Collectors.toList());
+        }
+        List<ChatRes.OTOChatRes> chattingList = page1.stream()
+                .map(chat -> modelMapper.map(chat, ChatRes.OTOChatRes.class))
+                .peek(chat -> chat.setMessageContent(cipherService.decryptChat(chat).getMessageContent()))
+                .sorted((o1, o2) -> o2.getMessageSendingTime().compareTo(o1.getMessageSendingTime()))
+                .collect(Collectors.toList());
+
+        return new ChatRes.OTOChatListRes(maxPage, (page2.isEmpty() ? page : page - 1), chattingList);
     }
 
     public boolean checkVisible(Long roomId) {
