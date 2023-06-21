@@ -44,7 +44,7 @@ const enterOTOChattingRoom = () => {
             fetch(`http://localhost:8080/chatting/oto/${room}/${page}`)
                 .then(res => res.json())
                 .then(data => {
-                    data.result.reverse().forEach((message) => {
+                    data.result.otoChatRes.reverse().forEach((message) => {
                         $("#message-list").append("<tr><td>"
                             + message.messageSendingTime + " / "
                             + message.memberNickname + " / "
