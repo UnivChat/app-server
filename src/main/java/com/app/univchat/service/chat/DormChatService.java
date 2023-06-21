@@ -31,8 +31,6 @@ import static com.app.univchat.base.BaseResponseStatus.CHAT_OVERFLOW_THE_RANGE;
 @RequiredArgsConstructor
 public class DormChatService {
 
-    // MapperConfig에서 설정한 Mapper를 연결해주기 위함.
-    @Autowired
     private final ModelMapper modelMapper;
     private final MemberService memberService;
     private final CipherService cipherService;
@@ -60,7 +58,8 @@ public class DormChatService {
     public ChatRes.DormChatListRes getChattingList(int page, int size) {
 
         int all = dormChatRepository.findAll().size();
-        //총 페이지수 0~maxPage, 0이 최신
+
+        //총 페이지 수
         int maxPage = all / size;
 
         //총 채팅 수 나누어 떨어지면 마지막 페이지에 아무것도 없음(페이지는 0부터 시작하기 때문)
@@ -69,7 +68,6 @@ public class DormChatService {
         if(page > maxPage || page <= -2) throw new BaseException(CHAT_OVERFLOW_THE_RANGE);
 
         List<DormChat> page2 = new ArrayList<>();
-
         if(page == -1){
             //초기에 채팅 리스트 불러올 때
             //-1로 접근하면 무조건 최신 10개
@@ -94,13 +92,10 @@ public class DormChatService {
         }
         List<ChatRes.DormChatRes> chattingList = page1.stream()
                 .map(chat -> modelMapper.map(chat, ChatRes.DormChatRes.class))
-                .sorted((o1, o2) -> o2.getMessageSendingTime().compareTo(o1.getMessageSendingTime()))
+                .peek(chat -> chat.setMessageContent(cipherService.decryptChat(chat).getMessageContent())) //채팅 복호화
+                .sorted((o1, o2) -> o2.getMessageSendingTime().compareTo(o1.getMessageSendingTime())) //채팅 보낸 시간으로 정렬
                 .collect(Collectors.toList());
 
-        for(ChatRes.DormChatRes chatting : chattingList) {
-            chatting.setMessageContent(cipherService.decryptChat(chatting).getMessageContent());
-        }
-
-        return new ChatRes.DormChatListRes(maxPage, page, chattingList);
+        return new ChatRes.DormChatListRes(maxPage, (page2.isEmpty()?page:page-1), chattingList);
     }
 }
