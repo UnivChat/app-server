@@ -99,6 +99,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/oto/**").permitAll()
                 .antMatchers("/chatting/**").permitAll()
 
+                .antMatchers("/fcm/**").permitAll()
+
                 .anyRequest().authenticated() //위의 api가 아닌 경로는 모두 jwt 토큰 인증을 해야 함
 
                 .and()
