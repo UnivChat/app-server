@@ -11,10 +11,8 @@ import javax.persistence.*;
 @Entity
 @ToString
 public class ClassRoom {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "room_id")
-    private Long id;
 
+    @Id
     @Column(unique = true, nullable = false)
     private String classNumber; //과목번호
 
