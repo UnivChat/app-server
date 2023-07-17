@@ -38,6 +38,7 @@ public class FileReaderJobConfig {
                 .<ClassRoomDto, ClassRoomDto>chunk(chunkSize) //<reader에서 읽을 타입, writer에 넘겨줄 타입>
                 .reader(csvReader.csvFileReader())
                 .writer(csvWriter)
+//                .allowStartIfComplete(true) //JobInstance COMPLETED 상태여도 재시작
                 .build();
     }
 
