@@ -44,7 +44,7 @@ public class ClassRoomDto {
         classTime = classTime.replace("\"", "");
 
         return ClassRoom.builder()
-                .className(this.className)
+                .classNumber(this.classNumber)
                 .className(this.className)
                 .professor(this.professor)
                 .section(this.section)
