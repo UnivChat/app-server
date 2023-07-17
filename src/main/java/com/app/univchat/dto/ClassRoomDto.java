@@ -26,7 +26,7 @@ public class ClassRoomDto {
     private String section; //구분
 
     @ApiModelProperty(name = "학년", example = "1")
-    private int grade; //학년
+    private String grade; //학년
 
     @ApiModelProperty(name = "시간", example = "수11~13(K260)")
     private String classTime; //시간
@@ -39,9 +39,9 @@ public class ClassRoomDto {
 
     public ClassRoom toEntity(){
         //교수 이름 따옴표로 묶여있다면 따옴표 제거
-        if(professor.contains("\"")) {
-            professor = professor.replace("\"", "");
-        }
+        professor = professor.replace("\"", "");
+        //시간에 따옴표로 묶여있다면 따옴표 제거
+        classTime = classTime.replace("\"", "");
 
         return ClassRoom.builder()
                 .className(this.className)

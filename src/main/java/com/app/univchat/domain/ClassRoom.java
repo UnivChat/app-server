@@ -24,7 +24,7 @@ public class ClassRoom {
     @Column(nullable = false)
     private String  section;//구분
 
-    private int grade; //학년
+    private String grade; //학년
 
     @Column(nullable = false)
     private String classTime; //시간
