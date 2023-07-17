@@ -14,8 +14,10 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class FileReaderJobConfig {
 
-    private final JobBuilderFactory jobBuilderFactory;
-    private final StepBuilderFactory stepBuilderFactory;
+        private final JobBuilderFactory jobBuilderFactory;
+        private final StepBuilderFactory stepBuilderFactory;
+        private final CsvReader csvReader;
+        private final CsvWriter csvWriter;
 
     private static final int chunkSize = 1000; //데이터 처리할 row size
 
@@ -34,9 +36,8 @@ public class FileReaderJobConfig {
     public Step csvFileReaderStep(){
         return stepBuilderFactory.get("csvFileReaderStep")
                 .<ClassRoomDto, ClassRoomDto>chunk(chunkSize) //<reader에서 읽을 타입, writer에 넘겨줄 타입>
-//                .reader()
-//                .processor()
-//                .writer()
+                .reader(csvReader.csvFileReader())
+                .writer(csvWriter)
                 .build();
     }
 
