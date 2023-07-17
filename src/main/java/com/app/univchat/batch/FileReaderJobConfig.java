@@ -1,6 +1,7 @@
 package com.app.univchat.batch;
 
 import com.app.univchat.domain.ClassRoom;
+import com.app.univchat.dto.ClassRoomDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -32,7 +33,7 @@ public class FileReaderJobConfig {
     @Bean
     public Step csvFileReaderStep(){
         return stepBuilderFactory.get("csvFileReaderStep")
-                .<ClassRoom, ClassRoom>chunk(chunkSize) //<reader에서 읽을 타입, writer에 넘겨줄 타입>
+                .<ClassRoomDto, ClassRoomDto>chunk(chunkSize) //<reader에서 읽을 타입, writer에 넘겨줄 타입>
 //                .reader()
 //                .processor()
 //                .writer()
