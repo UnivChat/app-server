@@ -1,9 +1,7 @@
 package com.app.univchat.service;
 
-import com.app.univchat.domain.Fcm;
 import com.app.univchat.domain.Member;
 import com.app.univchat.dto.FcmReq;
-import com.app.univchat.repository.FcmRepository;
 import com.app.univchat.repository.MemberRepository;
 import com.google.firebase.messaging.*;
 import com.google.firebase.messaging.Notification;
@@ -18,21 +16,20 @@ public class FCMNotificationService {
 
     private final FirebaseMessaging firebaseMessaging;
     private final MemberRepository memberRepository;
-    private final FcmRepository fcmRepository;
 
     public String sendNotificationByToken(FcmReq.Notification fcmNotificationReq) {
         Optional<Member> member=memberRepository.findById(fcmNotificationReq.getId());
-        Optional<Fcm> target=fcmRepository.findByMember(member.get());    // target member 객체
+//        Optional<Fcm> target=fcmRepository.findByMember(member.get());    // target member 객체
 
-        if(target.isPresent()) {
-            if(target.get().getToken()!=null) {
+        if(member.isPresent()) {
+            if(member.get().getFirebaseToken()!=null) {
                 Notification notification=Notification.builder()
                         .setTitle(fcmNotificationReq.getTitle())
                         .setBody(fcmNotificationReq.getBody())
                         .build();
 
                 Message message=Message.builder()
-                        .setToken(target.get().getToken())
+                        .setToken(member.get().getFirebaseToken())
                         .setNotification(notification)
                         .build();
 
