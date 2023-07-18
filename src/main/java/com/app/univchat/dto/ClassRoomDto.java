@@ -37,6 +37,9 @@ public class ClassRoomDto {
     @ApiModelProperty(name = "비고", example = "외국인 학생 수업")
     private String etc; //비고
 
+    /**
+     * ClassRoom 엔티티 반환
+     */
     public ClassRoom toEntity(){
         //교수 이름 따옴표로 묶여있다면 따옴표 제거
         professor = professor.replace("\"", "");
@@ -54,5 +57,19 @@ public class ClassRoomDto {
                 .build();
     }
 
+    /**
+     * 생성자
+     * @param classRoom entity
+     */
+    public ClassRoomDto(ClassRoom classRoom){
+        classNumber = classRoom.getClassNumber();
+        className = classRoom.getClassName();
+        professor = classRoom.getProfessor();
+        section = classRoom.getSection();
+        grade = classRoom.getGrade();
+        classTime = classRoom.getClassTime();
+        credit = classRoom.getCredit();
+        etc = classRoom.getEtc() == null ? "" : classRoom.getEtc();
+    }
 
 }
