@@ -1,4 +1,5 @@
 let stompClient = null;
+// 채팅 test시 송신자의 jwt로 변경
 let jwtToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzZW5kZXJAY2F0aG9saWMuYWMua3IiLCJpYXQiOjE2ODk2Njk1NzEsImV4cCI6MTcyMTIwNTU3MX0.A51HThrXCZIGL6ohjI4MjiJse7HlMxnFR6BGrlErnSz6092xsHMRBVDfKI6r5DGrBlebQi1iCJlDUY0UKFUFcA';
 // jwt 토큰을 인증 헤더의 Bearer에 담음
 let header = { Authorization: `Bearer ${jwtToken}`};
