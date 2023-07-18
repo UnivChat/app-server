@@ -18,16 +18,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Tag(name="Notification",description="FCM Notification api")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/notification")
+//@RequestMapping("/api/v1/notification")
+@RequestMapping("/notification")
 public class FCMNotificationController {
     private final FCMNotificationService fcmNotificationService;
 
-    @Operation(summary = "알림 보내기")
-    @PostMapping("")
-    public BaseResponse<String> sendNotification(@RequestBody FcmReq.Notification fcmNotificationReq) {
-
-        String res=fcmNotificationService.sendNotificationByToken(fcmNotificationReq);
-
-        return BaseResponse.ok(BaseResponseStatus.SUCCESS, res);
-    }
+//    @Operation(summary = "알림 보내기")
+//    @PostMapping("")
+//    public BaseResponse<String> sendNotification(@RequestBody FcmReq.Notification fcmNotificationReq) {
+//
+//        String res=fcmNotificationService.sendNotificationByToken(fcmNotificationReq);
+//
+//        return BaseResponse.ok(BaseResponseStatus.SUCCESS, res);
+//    }
 }

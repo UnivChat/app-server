@@ -1,5 +1,5 @@
 let stompClient = null;
-let jwtToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ3aGVoZGduMTAwMUBrb29rbWluLmFjLmtyIiwiaWF0IjoxNjgzNjEwNTQ0LCJleHAiOjE3MTUxNDY1NDR9.U6I3WKqv4tUuAiyBAODetQmxOtdpMJQO-VknA0_uZFhb6aFGFzMuCWCdM8hcOFALTjbqn-tNaahcjwbO2OuBRA';
+let jwtToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzZW5kZXJAY2F0aG9saWMuYWMua3IiLCJpYXQiOjE2ODk2Njk1NzEsImV4cCI6MTcyMTIwNTU3MX0.A51HThrXCZIGL6ohjI4MjiJse7HlMxnFR6BGrlErnSz6092xsHMRBVDfKI6r5DGrBlebQi1iCJlDUY0UKFUFcA';
 // jwt 토큰을 인증 헤더의 Bearer에 담음
 let header = { Authorization: `Bearer ${jwtToken}`};
 
