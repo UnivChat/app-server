@@ -16,7 +16,7 @@ import java.util.List;
 public class FCMConfig {
     @Bean
     FirebaseMessaging firebaseMessaging() throws IOException {
-        ClassPathResource resource=new ClassPathResource("firebase/catchat-test-dk-firebase-adminsdk-b53p4-540c1055c7.json");
+        ClassPathResource resource=new ClassPathResource("firebase/catchat-a1dff-firebase-adminsdk-u8ti7-8eeb4a78b3.json");
 
         InputStream refreshToken=resource.getInputStream();
 
