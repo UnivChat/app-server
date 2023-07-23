@@ -1,6 +1,5 @@
 package com.app.univchat.batch;
 
-import com.app.univchat.domain.ClassRoom;
 import com.app.univchat.dto.ClassRoomDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
@@ -17,7 +16,7 @@ public class FileReaderJobConfig {
         private final JobBuilderFactory jobBuilderFactory;
         private final StepBuilderFactory stepBuilderFactory;
         private final CsvReader csvReader;
-        private final CsvWriter csvWriter;
+        private final CsvClassWriter csvClassWriter;
 
     private static final int chunkSize = 1000; //데이터 처리할 row size
 
@@ -37,7 +36,7 @@ public class FileReaderJobConfig {
         return stepBuilderFactory.get("csvFileReaderStep")
                 .<ClassRoomDto, ClassRoomDto>chunk(chunkSize) //<reader에서 읽을 타입, writer에 넘겨줄 타입>
                 .reader(csvReader.csvFileReader())
-                .writer(csvWriter)
+                .writer(csvClassWriter)
 //                .allowStartIfComplete(true) //JobInstance COMPLETED 상태여도 재시작
                 .build();
     }
