@@ -36,4 +36,11 @@ public class PhoneDto {
                 .location((this.location != null)?this.location:"")
                 .build();
     }
+
+    public PhoneDto(Phone phone) {
+        this.major = phone.getMajor();
+        this.phoneNumber = (phone.getPhoneNumber() != null)?phone.getPhoneNumber():"";
+        this.email = (phone.getEmail() != null)?phone.getEmail():"";
+        this.location = (phone.getLocation() != null)?phone.getLocation():"";
+    }
 }
