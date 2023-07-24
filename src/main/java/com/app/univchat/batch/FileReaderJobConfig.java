@@ -2,6 +2,7 @@ package com.app.univchat.batch;
 
 import com.app.univchat.dto.ClassRoomDto;
 import com.app.univchat.dto.school.PhoneDto;
+import com.app.univchat.dto.school.ScheduleDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -19,6 +20,7 @@ public class FileReaderJobConfig {
         private final CsvReader csvReader;
         private final CsvClassWriter csvClassWriter;
         private final CsvPhoneWriter csvPhoneWriter;
+        private  final CsvScheduleWriter csvScheduleWriter;
 
     private static final int chunkSize = 1000; //데이터 처리할 row size
 
@@ -44,6 +46,16 @@ public class FileReaderJobConfig {
                 .build();
     }
 
+    /**
+     * 학사일정 저장 Job
+     */
+    @Bean
+    public Job csvScheduleJob(){
+        return jobBuilderFactory.get("csvScheduleJob")
+                .start(csvScheduleReaderStep())
+                .build();
+    }
+
     @Bean
     public Step csvFileReaderStep(){
         return stepBuilderFactory.get("csvFileReaderStep")
@@ -63,6 +75,16 @@ public class FileReaderJobConfig {
 //                .allowStartIfComplete(true)
                 .build();
 
+    }
+
+    @Bean
+    public Step csvScheduleReaderStep(){
+        return stepBuilderFactory.get("csvScheduleReaderStep")
+                .<ScheduleDto, ScheduleDto>chunk(chunkSize)
+                .reader(csvReader.csvScheduleReader())
+                .writer(csvScheduleWriter)
+//                .allowStartIfComplete(true)
+                .build();
     }
 
 
