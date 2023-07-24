@@ -10,7 +10,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(value = "phone Dto")
+@ApiModel(value = "연락망")
 public class PhoneDto {
 
     @ApiModelProperty(name = "학과", example = "국어국문학과")
