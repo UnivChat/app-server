@@ -34,4 +34,10 @@ public class ScheduleDto {
                 .build();
 
     }
+
+    public ScheduleDto(Schedule schedule) {
+        this.month = schedule.getMonth();
+        this.date = schedule.getDate();
+        this.event = schedule.getEvent();
+    }
 }
