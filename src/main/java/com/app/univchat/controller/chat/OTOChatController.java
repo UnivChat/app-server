@@ -4,6 +4,7 @@ import com.app.univchat.base.BaseResponse;
 import com.app.univchat.base.BaseResponseStatus;
 import com.app.univchat.dto.*;
 import com.app.univchat.security.auth.PrincipalDetails;
+import com.app.univchat.service.FCMNotificationService;
 import com.app.univchat.service.chat.OTOChatService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,6 +30,7 @@ import static com.app.univchat.base.BaseResponseStatus.SUCCESS;
 public class OTOChatController {
 
     private final OTOChatService otoChatService;
+    private final FCMNotificationService fcmNotificationService;
 
     /*
         1:1 채팅방 개설 api
@@ -50,7 +52,9 @@ public class OTOChatController {
 
         String messageSendingTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS").format(new Date());
         String plainMessageContent = otoChatReq.getMessageContent();
-        otoChatService.saveChat(roomId, otoChatReq, messageSendingTime);
+        otoChatService.saveChat(roomId, otoChatReq, messageSendingTime);    // 1:1 채팅 메시지 저장
+        otoChatReq.setMessageContent(plainMessageContent);  // 암호화 전 Original message set해서 알림 전송
+        fcmNotificationService.sendNotificationByToken(roomId, otoChatReq); // 1:1 채팅 알림 전송
 
         return new ChatRes.OTOChatRes().builder()
                 .memberNickname(otoChatReq.getMemberNickname())

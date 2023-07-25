@@ -86,11 +86,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/hello/**").permitAll()
 
                 .antMatchers("/member/signup","/member/change/password", "/member/check/**","/member/email/verified",
-                        "/member/re-token").permitAll()
+                        "/member/re-token","/notification").permitAll()
 
                 // 채팅 테스트 시 주석 해제
-                //.antMatchers("/app.js").permitAll()
-                //.antMatchers("/main.css").permitAll()
+//                .antMatchers("/app.js").permitAll()
+//                .antMatchers("/main.css").permitAll()
 
                 .antMatchers("/chattingList.html", "/chattingListStyle.css", "/dormChat.html", "/dormChat.js", "/dormChatStyle.css", "/liveChat.js", "/liveChat.html",  "/loveChat.js", "/loveChat.html", "/otoChat.js", "/otoChat.html", "/otoChatRoom.js", "/otoChatRoom.html").permitAll()
 
