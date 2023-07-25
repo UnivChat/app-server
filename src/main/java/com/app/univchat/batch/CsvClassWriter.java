@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Configuration
 @RequiredArgsConstructor
-public class CsvWriter implements ItemWriter<ClassRoomDto> {
+public class CsvClassWriter implements ItemWriter<ClassRoomDto> {
     private final ClassRoomRepository classRoomRepository;
     @Override
     public void write(List<? extends ClassRoomDto> items) throws Exception {
