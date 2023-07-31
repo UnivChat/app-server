@@ -41,6 +41,8 @@ jobs:
         cipher.mode: ${{ secrets.CIPHER_MODE }}
         hash.type: ${{ secrets.HASH_TYPE }}
         hash.seed: ${{ secrets.HASH_SEED }}
+        fcm.id: ${{ secrets.FCM_PRIVATE_KEY_ID }}
+        fcm.key: ${{ secrets.FCM_PRIVATE_KEY }}
 
     - name: Run chmod to make gradlew executable
       run: chmod +x ./gradlew
@@ -77,10 +79,24 @@ jobs:
         deployment_package: deploy/deploy.zip
         wait_for_environment_recovery: 300
 
+#    - name: Create fcm json
+#        run: |
+#          cd src/main/resources/firebase
+#          echo ${{ secrets.FCM_SECRET_KEY }} | base64 -d > fcm-key.json
 
-    - name: create firebase key
-        run: |
-          cd ./src/main/resources/firebase
-          touch ./catchat-a1dff-firebase-adminsdk-u8ti7-8eeb4a78b3.json
-          echo "${{ secrets.FCM_SECRET_KEY }}" > ./catchat-a1dff-firebase-adminsdk-u8ti7-8eeb4a78b3.json
-        shell: bash
+
+
+#    - name: create firebase key
+#        run: |
+#          cd ./src/main/resources/firebase
+#          touch ./catchat-a1dff-firebase-adminsdk-u8ti7-8eeb4a78b3.json
+#          echo "${{ secrets.FCM_SECRET_KEY }}" > ./catchat-a1dff-firebase-adminsdk-u8ti7-8eeb4a78b3.json
+#        shell: bash
+
+
+#    - name: create firebase key
+#        run: |
+#          cd ./src/main/resources/firebase
+#          touch ./catchat-a1dff-firebase-adminsdk-u8ti7-8eeb4a78b3.json
+#          echo "${{ secrets.FCM_SECRET_KEY }}" > ./catchat-a1dff-firebase-adminsdk-u8ti7-8eeb4a78b3.json
+#        shell: bash
