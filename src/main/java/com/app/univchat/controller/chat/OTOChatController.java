@@ -23,7 +23,7 @@ import java.util.List;
 
 import static com.app.univchat.base.BaseResponseStatus.SUCCESS;
 
-@Tag(name = "chatting", description = "채팅 관련 API")
+@Tag(name = "chatting-OTO", description = "일대일 채팅 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/chatting/oto")
@@ -35,7 +35,7 @@ public class OTOChatController {
     /*
         1:1 채팅방 개설 api
      */
-    @Tag(name = "chatting")
+    @Tag(name = "chatting-OTO")
     @ApiOperation(value = "1:1 채팅방 개설 API")
     @PostMapping("/room")
     public BaseResponse<ChatRes.OTOChatRoomRes> createChatRoom(@RequestBody ChatReq.OTOChatRoomReq otoChatRoomReq){
@@ -45,6 +45,7 @@ public class OTOChatController {
 
 //     1:1 채팅 송신 및 저장을 위한 API(ws)
 
+    @Tag(name = "chatting-OTO")
     @MessageMapping("/oto/{roomId}")
     @SendTo("/sub/oto/{roomId}")
     public ChatRes.OTOChatRes sendToOTOChattingRoom(@DestinationVariable Long roomId, ChatReq.OTOChatReq otoChatReq) {
@@ -63,7 +64,7 @@ public class OTOChatController {
     }
 
 //     1:1 채팅 내역을 불러오기 위한 API(http)
-    @Tag(name = "chatting")
+    @Tag(name = "chatting-OTO")
     @ApiOperation(value = "1:1 채팅 내역 API", notes = "채팅 내역 최신순으로 10개를 반환하며, 페이지 번호는 0부터 시작합니다.")
     @GetMapping("/{roomId}/{page}")
     public BaseResponse<ChatRes.OTOChatListRes>loadOTOChattingList(@PathVariable(value = "roomId") Long roomId,
@@ -74,7 +75,7 @@ public class OTOChatController {
         return BaseResponse.ok(SUCCESS, chattingList);
     }
 
-    @Tag(name = "chatting")
+    @Tag(name = "chatting-OTO")
     @ApiOperation(value = "채팅방 나가기 API")
     @PutMapping("/exit/{roomId}")
     public BaseResponse<String> exitChatRoom(@PathVariable Long roomId,
@@ -89,8 +90,7 @@ public class OTOChatController {
         return BaseResponse.ok(SUCCESS, exitRes);
 
     }
-
-    @Tag(name = "chatting")
+    @Tag(name = "chatting-OTO")
     @ApiOperation(value = "채팅방 삭제 API")
     @DeleteMapping("/{roomId}")
     public BaseResponse<String> deleteChatRoom(@PathVariable Long roomId,
@@ -109,7 +109,7 @@ public class OTOChatController {
 
 
     //     사용자별 참여하고 있는 1:1 채팅방 목록 조회를 위한 API
-    @Tag(name = "chatting")
+    @Tag(name = "chatting-OTO")
     @ApiOperation(value = "사용자별 1:1 채팅방 목록 API", notes = "사용자가 참여하고 있는 1:1 채팅방 목록을 반환합니다.")
     @GetMapping("/rooms")
     public BaseResponse<List<ChatRes.OTOChatRoomRes>> loadOTOChattingRoomList(@ApiIgnore @AuthenticationPrincipal PrincipalDetails member) {
