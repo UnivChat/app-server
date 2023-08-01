@@ -79,3 +79,7 @@ cipher:
 hash:
   type: ${{ HASH_TYPE }}
   seed: ${{ HASH_SEED }}
+
+fcm:
+  id: ${{ FCM_PRIVATE_KEY_ID }}
+  key: ${{ FCM_PRIVATE_KEY }}
