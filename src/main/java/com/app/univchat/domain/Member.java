@@ -29,6 +29,9 @@ public class Member {
 
     private String profileImageUrl;
 
+    @Column(name = "firebase_token")
+    private String firebaseToken;
+
 
     public void updateNickname(String nickname) {
         this.nickname = nickname;

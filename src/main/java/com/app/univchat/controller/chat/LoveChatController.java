@@ -20,7 +20,7 @@ import java.util.Date;
 
 import static com.app.univchat.base.BaseResponseStatus.CHAT_OVERFLOW_THE_RANGE;
 
-@Tag(name = "chatting", description = "채팅 관련 API")
+@Tag(name = "chatting-love", description = "연애 상담 채팅 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/chatting/love")
@@ -29,6 +29,7 @@ public class LoveChatController {
     private final LoveChatService loveChatService;
 
     // 연애상담 채팅 송신 및 저장을 위한 API(ws)
+    @Tag(name = "chatting-love")
     @MessageMapping("/love")
     @SendTo("/sub/love")
     public ChatRes.LoveChatRes sendToLoveChattingRoom(ChatReq.LoveChatReq loveChatReq) {
@@ -46,7 +47,7 @@ public class LoveChatController {
     }
 
     // 기숙사 채팅 내역을 불러오기 위한 API(http)
-    @Tag(name = "chatting")
+    @Tag(name = "chatting-love")
     @ApiOperation(value = "연애 상담 채팅 내역 API", notes = "채팅 내역 최신순으로 10개를 반환합니다. \n\n 처음 채팅방 입장 시 page = -1로 요청해주세요. 이후 이전 채팅 목록 조회 시 응답으로 받은 nowPage에서 -1씩 줄이며 요청 보내면 됩니다.")
     @GetMapping("/{page}")
     public BaseResponse<ChatRes.LoveChatListRes>loadLoveChattingList(@PathVariable int page) {
