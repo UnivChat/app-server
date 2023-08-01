@@ -6,6 +6,8 @@ import java.util.List;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import javax.persistence.Column;
+
 
 @Setter
 @Getter
@@ -124,5 +126,52 @@ public class ChatRes {
             lastMessageContent = " ";
             lastMessageSendingTime = " ";
         }
+    }
+
+    @SuperBuilder
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    // 클래스 채팅 메시지 객체
+    public static class ClassChatRes extends ChatRes { }
+
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    // 클래스 채팅 메시지 목록
+    public static class ClassChatListRes {
+        private int maxPage;
+        private int nowPage;
+        private List<ClassChatRes> classChatRes;
+    }
+
+    // 클래스 채팅방 목록 객체
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    public static class ClassChatRoomRes {
+        private String roomNumber; // 채팅방 식별자
+        private String className; //교과목명
+        private String professor; //교수님
+        private String classTime; //시간표
+        private String  section;//이수구분
+        private int credit; //학점
+        private String etc; //비고
+    }
+
+    // 클래스 목록 객체
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
+    public static class ClassChatRoomListRes {
+        private int maxPage;
+        private int nowPage;
+        private List<ClassChatRoomRes> classChatRoomList;
     }
 }

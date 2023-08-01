@@ -10,7 +10,8 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @ToString
-public class ClassRoom {
+@Table(name = "class_room")
+public class ClassChatRoom {
 
     @Id
     @Column(unique = true, nullable = false)
