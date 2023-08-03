@@ -19,25 +19,23 @@ import java.util.List;
 
 @Configuration
 public class FCMConfig {
-    @Value("${fcm.id}")
-    private String id;
 
-    @Value("${fcm.key}")
+    @Value("${fcm.json}")
     private String key;
 
     @Bean
     FirebaseMessaging firebaseMessaging() throws IOException, ParseException {
 
-        ClassPathResource resource = new ClassPathResource("firebase/fcm-key.json");
+//        ClassPathResource resource = new ClassPathResource("firebase/fcm-key.json");
 
-        JSONParser parser=new JSONParser();
-        Reader reader= new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8);
-        JSONObject jsonObject=(JSONObject)parser.parse(reader);
+//        JSONParser parser=new JSONParser();
+//        Reader reader= new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8);
+//        JSONObject jsonObject=(JSONObject)parser.parse(reader);
+//
+//        jsonObject.replace("private_key_id",id);
+//        jsonObject.replace("private_key",key);
 
-        jsonObject.replace("private_key_id",id);
-        jsonObject.replace("private_key",key);
-
-        InputStream refreshToken = new ByteArrayInputStream(jsonObject.toString().getBytes());
+        InputStream refreshToken = new ByteArrayInputStream(key.getBytes());
 
 
         FirebaseApp firebaseApp=null;
