@@ -14,37 +14,19 @@ import org.json.simple.parser.ParseException;
 
 
 import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Configuration
 public class FCMConfig {
-    @Value("${fcm.id}")
-    private String id;
 
-    @Value("${fcm.key}")
+    @Value("${fcm.json}")
     private String key;
 
     @Bean
     FirebaseMessaging firebaseMessaging() throws IOException, ParseException {
 
-        ClassPathResource resource = new ClassPathResource("firebase/fcm-key.json");
-        Path path = Paths.get(resource.getURI());
-
-        JSONParser parser=new JSONParser();
-        Reader reader=new FileReader(path.toString());
-        JSONObject jsonObject=(JSONObject)parser.parse(reader);
-
-        jsonObject.replace("private_key_id",id);
-        jsonObject.replace("private_key",key);
-
-        FileWriter file = new FileWriter(path.toString());
-        file.write(jsonObject.toJSONString());
-        file.flush();
-        file.close();
-
-        InputStream refreshToken=resource.getInputStream();
+        InputStream refreshToken = new ByteArrayInputStream(key.getBytes());
 
 
         FirebaseApp firebaseApp=null;
