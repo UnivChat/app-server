@@ -57,6 +57,8 @@ public enum  BaseResponseStatus {
 
     USER_NOT_EXIST_ERROR("2015", "존재하지 않는 회원입니다.", 404),
 
+    USER_NO_EXIST_CHATTING_ROOM("2016", "해당 채팅방에 사용자가 포함되어 있지 않습니다,", 404),
+
 
     /**
      * 5000 : Chatting 오류
@@ -68,6 +70,9 @@ public enum  BaseResponseStatus {
     UNSUPPORTED_SUBSCRIBE_URI("5004", "지원하지 않는 구독경로입니다.", 400),
     CHATTING_ENCRYPTION_FAIL_ERROR("5005", "채팅 암호화에 실패했습니다.", 400),
     CHATTING_DECRYPTION_FAIL_ERROR("5006", "채팅 복호화에 실패했습니다.", 400),
+    CLASS_NOT_FOUND("5007", "해당 클래스가 존재하지 않습니다.", 404),
+    CLASS_ALREADY_EXIST("5008", "사용자의 클래스 목록에 이미 해당 클래스가 존재합니다.", 400),
+    CLASS_NOT_FOUND_IN_USER_LIST("5009", "사용자의 클래스 목록에 해당 클래스가 존재하지 않습니다.", 400),
 
     /**
      * 6000 : Jwt 오류
