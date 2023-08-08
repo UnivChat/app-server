@@ -41,8 +41,7 @@ jobs:
         cipher.mode: ${{ secrets.CIPHER_MODE }}
         hash.type: ${{ secrets.HASH_TYPE }}
         hash.seed: ${{ secrets.HASH_SEED }}
-        fcm.id: ${{ secrets.FCM_PRIVATE_KEY_ID }}
-        fcm.key: ${{ secrets.FCM_PRIVATE_KEY }}
+        fcm.json: ${{ secrets.FCM_SECRET_KEY }}
 
     - name: Run chmod to make gradlew executable
       run: chmod +x ./gradlew

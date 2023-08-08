@@ -81,5 +81,4 @@ hash:
   seed: ${{ HASH_SEED }}
 
 fcm:
-  id: ${{ FCM_PRIVATE_KEY_ID }}
-  key: ${{ FCM_PRIVATE_KEY }}
+  json: ${{ FCM_SECRET_KEY }}
