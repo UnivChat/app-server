@@ -6,6 +6,7 @@ import com.app.univchat.dto.ClassChatReq;
 import com.app.univchat.dto.ClassChatRes;
 import com.app.univchat.dto.ClassRoomDto;
 import com.app.univchat.security.auth.PrincipalDetails;
+import com.app.univchat.service.FCMNotificationService;
 import com.app.univchat.service.chat.ClassChatService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,6 +29,7 @@ import java.util.List;
 public class ClassChatController {
 
     private final ClassChatService classChatService;
+    private final FCMNotificationService fcmNotificationService;
 
     /* *************** Class ************** */
 
@@ -50,7 +52,9 @@ public class ClassChatController {
 
         String messageSendingTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS").format(new Date());
         String plainMessageContent = classChatReq.getMessageContent();
-        classChatService.saveChat(classNumber, classChatReq, messageSendingTime);
+        classChatService.saveChat(classNumber, classChatReq, messageSendingTime);   // class 채팅 내용 저장
+        classChatReq.setMessageContent(plainMessageContent);  // 암호화 전 Original message set해서 알림 전송
+        fcmNotificationService.sendClassChatNotificationByToken(classNumber, classChatReq); // class 채팅 알림 전송
 
         return ClassChatRes.Chat.builder()
                 .memberNickname(classChatReq.getMemberNickname())
