@@ -17,7 +17,7 @@ public class LoveChat {
     private Long messageId;
 
     @ManyToOne
-    @JoinColumn(name = "id", nullable = false)
+    @JoinColumn(name = "member_id", nullable = false)
     public Member member; // 메시지 송신자 식별자
 
     @Column(nullable = false)
