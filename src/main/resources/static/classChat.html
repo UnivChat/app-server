@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Room</title>
+    <script src="/classChatRoom.js"></script>
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <link href="/dormChatStyle.css" rel="stylesheet">
+</head>
+<body>
+<div class="chat-room">
+    <h3 class="chat-title">Class Chatting</h3>
+
+    <div class="message-input">
+        <label for="class_id">Class ID:</label>
+        <input type="text" id="class_id" class="class_id-input">
+        <button id="send-id" class="send-id-btn" onclick="enterClassChattingRoom()">Enter Chatting Room</button>
+    </div>
+</div>
+</body>
+</html>

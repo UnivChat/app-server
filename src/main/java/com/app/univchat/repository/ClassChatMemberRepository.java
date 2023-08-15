@@ -11,6 +11,8 @@ import java.util.Optional;
 public interface ClassChatMemberRepository extends JpaRepository<ClassChatMember, Long> {
     List<ClassChatMember> findByMember(Member member);
 
+    List<ClassChatMember> findByClassRoomClassNumber(String classNumber);
+
     Optional<ClassChatMember> findByClassRoomClassNumberAndMember(String classNumber, Member member);
 
     void deleteByClassRoomClassNumberAndMember(String classNumber, Member member);

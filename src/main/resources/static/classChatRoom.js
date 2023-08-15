@@ -1,16 +1,5 @@
-let stompClient = null;
-// 채팅 test시 송신자의 jwt로 변경
-let jwtToken = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzZW5kZXJAY2F0aG9saWMuYWMua3IiLCJpYXQiOjE2OTE3NjM4ODcsImV4cCI6MTcyMzI5OTg4N30.dMnCTcGFOse_hqPSv7YdXRs7TJDPIqBsbzm_M4EJKQ5AGltKGp_N6ofQZb5n1M_SoP_sZa1TuXkMFUeiwHGbDw';
-// jwt 토큰을 인증 헤더의 Bearer에 담음
-let header = { Authorization: `Bearer ${jwtToken}`};
-
-// 기숙사 채팅
-const enterDormChattingRoom = () => {
-
-    // jwt 토큰 확인 후 아래 로직을 실행해야 한다.
-    // 웹소켓에서 컨트롤하기 까다로움
-    // 해당 기숙사인지 확인하는 api에서
-    // jwt 토큰을 확인하면 해결해야 한다고 생각
+// 1:1 채팅
+const enterClassChattingRoom = () => {
 
     let socket = new SockJS(`/chat/`);
 
@@ -22,13 +11,15 @@ const enterDormChattingRoom = () => {
     // 배포 시 아래처럼 설정하여 콘솔창에 보이지 않게 설정한다.
     stompClient.debug = (res) => {};
 
+    const room= $("#class_id").val()
     // 기숙사 채팅방 입장(내부적으로 웹소켓 연결)
     stompClient.connect(header,
         // 연결 성공 시 실행하는 함수
         (res) => {
             // console.log('Connected: ' + res);
             // 기숙사 채팅방을 구독 => 기숙사 채팅방으로 오는 메세지를 수신하겠다는 의미
-            stompClient.subscribe(`/sub/dorm`, (stompResponse) => {
+//            const room= $("#class_id").val()
+            stompClient.subscribe(`/sub/class/${room}`, (stompResponse) => {
 
                 // 메세지 전송 성공 시 메세지 내용을 전달
                 if (stompResponse.command === "MESSAGE") {
@@ -36,23 +27,38 @@ const enterDormChattingRoom = () => {
                 }
             });
 
-            // a 태그로 페이지 이동 시 stompClient 값이 초기화되므로 하는 행동
-            // 페이지 이동이 아닌, 한 페이지에서 동작하게 함.
-            fetch('/dormChat.html')
+//            // a 태그로 페이지 이동 시 stompClient 값이 초기화되므로 하는 행동
+//            // 페이지 이동이 아닌, 한 페이지에서 동작하게 함.
+            fetch('/classChatRoom.html')
                 .then(res => res.text())
                 .then(html => {
                     const content = document.getElementById('dorm-chat');
                     content.innerHTML = html;
                 })
                 .catch(err => console.error(err));
+//
+            // 최근 채팅 내역을 불러 오는 부분
+            // 임의로 페이지를 설정함(가장 최근 10개 -> 페이지 0)
+            // 무한 스크롤 등을 구현하여, page 별로 요청하면 됨.
+            const page = 0;
 
-            // 초기 채팅 메세지 로드
-            loadDormChatMessages(-1);
+//            const room= $("#class_id").val()
+            fetch(`http://localhost:8080/chatting/class/${room}/${page}`)
+                .then(res => res.json())
+                .then(data => {
+                    data.result.classChatList.reverse().forEach((message) => {
+                        $("#message-list").append("<tr><td>"
+                            + message.messageSendingTime + " / "
+                            + message.memberNickname + " / "
+                            + message.messageContent + "</td></tr>");
+                    })
+                })
         }
+
         // 연결 실패(ERROR) 시 실행할 함수
         ,(err) => {
             alert("연결에 실패 했습니다!");
-    });
+        });
 
     // 웹소켓 연결 종료 시 실행되는 함수
     stompClient.ws.onclose = () => {
@@ -60,46 +66,28 @@ const enterDormChattingRoom = () => {
     }
 }
 
-// 채팅 메세지를 로드하는 함수
-function loadDormChatMessages(page) {
-    fetch(`http://localhost:8080/chatting/dorm/${page}`)
-        .then((res) => res.json())
-        .then((data) => {
-            data.result.dormChatRes.forEach((message) => {  //.reverse()제거
-                $("#message-list").prepend(
-                    "<tr><td>" +
-                    message.messageSendingTime +
-                    " / " +
-                    message.memberNickname +
-                    " / " +
-                    message.messageContent +
-                    "</td></tr>"
-                );
-            });
-        });
-}
-
-
 // 메세지 송신을 위해 실행해야 하는 함수
-function sendMessage_dorm() {
+function sendMessage_class() {
     const message = {
         memberNickname: $("#sender").val(),
         messageContent: $("#message").val(),
-        //
     }
 
     // 첫 번째 인자: 메시지를 보내기 위한 url
     // 두 번째 인자: 헤더
     // 세 번쨰 인자: 보낼 메세지
     // 메세지를 직렬화해서 보내야 함.
-    stompClient.send(`/pub/dorm`, header, JSON.stringify(message));
+
+    const room= $("#class_id").val()
+    console.log(room)
+    stompClient.send(`/pub/class/${room}`, header, JSON.stringify(message));
 }
 
 // 메세지 송신 성공하면, 메세지를 반환함.
 function receiveMessage(message) {
 
     // messageRes 객체
-    // console.log(message)
+    console.log(message)
 
     $("#message-list").append("<tr><td>"
         + message.messageSendingTime + " / "

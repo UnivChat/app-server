@@ -54,7 +54,7 @@ public class OTOChatController {
         String plainMessageContent = otoChatReq.getMessageContent();
         otoChatService.saveChat(roomId, otoChatReq, messageSendingTime);    // 1:1 채팅 메시지 저장
         otoChatReq.setMessageContent(plainMessageContent);  // 암호화 전 Original message set해서 알림 전송
-        fcmNotificationService.sendNotificationByToken(roomId, otoChatReq); // 1:1 채팅 알림 전송
+        fcmNotificationService.sendOTOChatNotificationByToken(roomId, otoChatReq); // 1:1 채팅 알림 전송
 
         return new ChatRes.OTOChatRes().builder()
                 .memberNickname(otoChatReq.getMemberNickname())
