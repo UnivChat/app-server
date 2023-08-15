@@ -6,6 +6,7 @@ import com.app.univchat.dto.ClassChatReq;
 import com.app.univchat.dto.ClassChatRes;
 import com.app.univchat.dto.ClassRoomDto;
 import com.app.univchat.security.auth.PrincipalDetails;
+import com.app.univchat.service.FCMNotificationService;
 import com.app.univchat.service.chat.ClassChatService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,15 +29,17 @@ import java.util.List;
 public class ClassChatController {
 
     private final ClassChatService classChatService;
+    private final FCMNotificationService fcmNotificationService;
 
     /* *************** Class ************** */
 
     // 개설된 클래스 목록 조회 API
     @Tag(name = "chatting-class")
-    @ApiOperation(value = "개설 수업 목록 조회")
+    @ApiOperation(value = "클래스 리스트 조회", notes = "50개씩 결과를 가져옵니다. \n\n 검색이 필요한 경우 query parameter로 className을 보내주시면 됩니다.")
     @GetMapping("{page}")
-    public BaseResponse<List<ClassRoomDto>> getClassRoomList(@PathVariable int page){
-        List<ClassRoomDto> result = classChatService.getClassRoomList(page);
+    public BaseResponse<List<ClassRoomDto>> getClassRoomList(@PathVariable int page,
+                                                             @RequestParam(required = false) String className){
+        List<ClassRoomDto> result = classChatService.getClassRoomList(page, className);
 
         return BaseResponse.ok(BaseResponseStatus.SUCCESS, result);
     }
@@ -50,7 +53,9 @@ public class ClassChatController {
 
         String messageSendingTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS").format(new Date());
         String plainMessageContent = classChatReq.getMessageContent();
-        classChatService.saveChat(classNumber, classChatReq, messageSendingTime);
+        classChatService.saveChat(classNumber, classChatReq, messageSendingTime);   // class 채팅 내용 저장
+        classChatReq.setMessageContent(plainMessageContent);  // 암호화 전 Original message set해서 알림 전송
+        fcmNotificationService.sendClassChatNotificationByToken(classNumber, classChatReq); // class 채팅 알림 전송
 
         return ClassChatRes.Chat.builder()
                 .memberNickname(classChatReq.getMemberNickname())

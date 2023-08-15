@@ -43,14 +43,15 @@ public class ClassChatService {
 
     private static final int size = 50;
 
-    public List<ClassRoomDto> getClassRoomList(int page){
+    public List<ClassRoomDto> getClassRoomList(int page, String className){
+        if(className == null) className = "";
         //pageable 객체 생성
         PageRequest pageable = PageRequest.of(page, size,
-                Sort.by("className").ascending()
+                Sort.by("classNumber").ascending()
         );
 
         //조회 및 DTO로 매핑
-        List<ClassRoomDto> result = classRoomRepository.findAll(pageable).stream()
+        List<ClassRoomDto> result = classRoomRepository.findByClassNameContaining(className, pageable).stream()
                 .map(classRoom -> {
                     return new ClassRoomDto(classRoom);
                 })
