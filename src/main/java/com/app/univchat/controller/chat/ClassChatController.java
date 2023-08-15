@@ -35,10 +35,11 @@ public class ClassChatController {
 
     // 개설된 클래스 목록 조회 API
     @Tag(name = "chatting-class")
-    @ApiOperation(value = "개설 수업 목록 조회")
+    @ApiOperation(value = "클래스 리스트 조회", notes = "50개씩 결과를 가져옵니다. \n\n 검색이 필요한 경우 query parameter로 className을 보내주시면 됩니다.")
     @GetMapping("{page}")
-    public BaseResponse<List<ClassRoomDto>> getClassRoomList(@PathVariable int page){
-        List<ClassRoomDto> result = classChatService.getClassRoomList(page);
+    public BaseResponse<List<ClassRoomDto>> getClassRoomList(@PathVariable int page,
+                                                             @RequestParam(required = false) String className){
+        List<ClassRoomDto> result = classChatService.getClassRoomList(page, className);
 
         return BaseResponse.ok(BaseResponseStatus.SUCCESS, result);
     }
