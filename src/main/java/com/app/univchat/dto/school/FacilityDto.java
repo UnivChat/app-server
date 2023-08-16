@@ -38,4 +38,12 @@ public class FacilityDto {
                 .build();
     }
 
+    public FacilityDto(Facility facility) {
+        this.building = facility.getBuilding();
+        this.location = facility.getLocation();
+        this.name = facility.getName();
+        this.time = (facility.getTime() != null ? facility.getTime() : "");
+        this.phone = (facility.getPhone() != null ? facility.getPhone() : "");
+
+    }
 }
