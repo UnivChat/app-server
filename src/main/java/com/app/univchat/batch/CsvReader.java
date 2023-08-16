@@ -1,6 +1,7 @@
 package com.app.univchat.batch;
 
 import com.app.univchat.dto.ClassRoomDto;
+import com.app.univchat.dto.school.FacilityDto;
 import com.app.univchat.dto.school.PhoneDto;
 import com.app.univchat.dto.school.ScheduleDto;
 import lombok.RequiredArgsConstructor;
@@ -86,7 +87,8 @@ public class CsvReader {
         /* 파일읽기 */
         FlatFileItemReader<ScheduleDto> flatFileItemReader = new FlatFileItemReader<>();
         flatFileItemReader.setResource(new ClassPathResource("/csv/schedule.csv")); //읽을 파일 경로 지정
-        flatFileItemReader.setEncoding("UTF-8"); //인토딩 설정
+        flatFileItemReader.setLinesToSkip(1);
+        flatFileItemReader.setEncoding("UTF-8"); //인코딩 설정
 
         /* defaultLineMapper: 읽으려는 데이터 LineMapper을 통해 Dto로 매핑 */
         DefaultLineMapper<ScheduleDto> defaultLineMapper = new DefaultLineMapper<>();
@@ -106,5 +108,33 @@ public class CsvReader {
 
         return flatFileItemReader;
 
+    }
+
+    @Bean
+    public FlatFileItemReader<FacilityDto> csvFacilityReader(){
+        /* 파일 읽기 */
+        FlatFileItemReader<FacilityDto> flatFileItemReader = new FlatFileItemReader<>();
+        flatFileItemReader.setResource(new ClassPathResource("/csv/facility.csv"));
+        flatFileItemReader.setLinesToSkip(1);
+        flatFileItemReader.setEncoding("UTF-8");
+
+        /* defaultLineMapper: 읽으려는 데이터 LineMapper을 통해 Dto로 매핑 */
+        DefaultLineMapper<FacilityDto> defaultLineMapper = new DefaultLineMapper<>();
+
+        /* delimitedLineTokenizer : csv 파일에서 구분자 지정하고 구분한 데이터 setNames를 통해 각 이름 설정 */
+        DelimitedLineTokenizer delimitedLineTokenizer = new customDelimitedLineTokenizer(); //csv 파일에서 구분자
+        delimitedLineTokenizer.setDelimiter(",");
+        delimitedLineTokenizer.setNames("building", "name", "location", "time", "phone"); //행으로 읽은 데이터 매칭할 데이터 각 이름
+        defaultLineMapper.setLineTokenizer(delimitedLineTokenizer); //lineTokenizer 설정
+
+        /* beanWrapperFieldSetMapper: 매칭할 class 타입 지정 */
+        BeanWrapperFieldSetMapper<FacilityDto> beanWrapperFieldSetMapper = new BeanWrapperFieldSetMapper<>();
+        beanWrapperFieldSetMapper.setTargetType(FacilityDto.class);
+
+        defaultLineMapper.setFieldSetMapper(beanWrapperFieldSetMapper); //fieldSetMapper 지정
+
+        flatFileItemReader.setLineMapper(defaultLineMapper); //lineMapper 지정
+
+        return flatFileItemReader;
     }
 }
