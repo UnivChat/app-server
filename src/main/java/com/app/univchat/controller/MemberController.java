@@ -168,6 +168,17 @@ public class MemberController {
         return BaseResponse.ok(BaseResponseStatus.SUCCESS, result);
     }
 
+    @Tag(name = "member", description = "회원 관리 API")
+    @ApiOperation(value = "firebase-token 등록 API")
+    @PatchMapping("/fcm-token")
+    public BaseResponse<String> fcmToken(@RequestBody MemberReq.UpdateFCMReq updateFCMReq,
+                                                 @ApiIgnore @AuthenticationPrincipal PrincipalDetails member){
+
+        String result = memberService.UpdateFCM(updateFCMReq, member.getMember());
+
+        return BaseResponse.ok(BaseResponseStatus.SUCCESS, result);
+    }
+
 
 
 

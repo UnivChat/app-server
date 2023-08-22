@@ -1,4 +1,4 @@
-package com.app.univchat.batch;
+package com.app.univchat.batch.writer;
 
 import com.app.univchat.domain.school.Phone;
 import com.app.univchat.dto.school.PhoneDto;

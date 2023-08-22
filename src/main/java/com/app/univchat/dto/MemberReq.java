@@ -75,6 +75,18 @@ public class MemberReq {
     @AllArgsConstructor
     @Setter
     @Getter
+    @ApiModel(value = "UpdateFCMReq - firebase token 등록 객체")
+    public static class UpdateFCMReq {
+        @NotNull
+        @ApiModelProperty(name = "firebase token")
+        private String fcmToken;
+    }
+
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Setter
+    @Getter
     @ApiModel(value = "CheckNicknameReq - 닉네임 중복 확인 요청 객체")
     public static class CheckNicknameReq {
         @NotNull
