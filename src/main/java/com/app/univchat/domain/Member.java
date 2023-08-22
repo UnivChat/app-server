@@ -45,4 +45,8 @@ public class Member {
         this.password=password;
     }
 
+    public void updateFCMToken(String firebaseToken) {
+        this.firebaseToken=firebaseToken;
+    }
+
 }
