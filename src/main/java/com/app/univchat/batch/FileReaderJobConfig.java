@@ -1,6 +1,11 @@
 package com.app.univchat.batch;
 
+import com.app.univchat.batch.writer.CsvClassWriter;
+import com.app.univchat.batch.writer.CsvFacilityWriter;
+import com.app.univchat.batch.writer.CsvPhoneWriter;
+import com.app.univchat.batch.writer.CsvScheduleWriter;
 import com.app.univchat.dto.ClassRoomDto;
+import com.app.univchat.dto.school.FacilityDto;
 import com.app.univchat.dto.school.PhoneDto;
 import com.app.univchat.dto.school.ScheduleDto;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +26,7 @@ public class FileReaderJobConfig {
         private final CsvClassWriter csvClassWriter;
         private final CsvPhoneWriter csvPhoneWriter;
         private  final CsvScheduleWriter csvScheduleWriter;
+        private final CsvFacilityWriter csvFacilityWriter;
 
     private static final int chunkSize = 1000; //데이터 처리할 row size
 
@@ -56,6 +62,17 @@ public class FileReaderJobConfig {
                 .build();
     }
 
+    /**
+     * 편의시설 저장 Job
+     */
+    @Bean
+    public Job csvFacilityJob() {
+        return jobBuilderFactory.get("csvFacilityJob")
+                .start(csvFacilityReaderStep())
+                .build();
+    }
+
+
     @Bean
     public Step csvFileReaderStep(){
         return stepBuilderFactory.get("csvFileReaderStep")
@@ -87,5 +104,14 @@ public class FileReaderJobConfig {
                 .build();
     }
 
+    @Bean
+    public Step csvFacilityReaderStep() {
+        return stepBuilderFactory.get("csvFacilityReaderStep")
+                .<FacilityDto, FacilityDto>chunk(chunkSize)
+                .reader(csvReader.csvFacilityReader())
+                .writer(csvFacilityWriter)
+//                .allowStartIfComplete(true)
+                .build();
+    }
 
 }

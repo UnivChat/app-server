@@ -54,7 +54,10 @@ public class Member {
         this.isWithdrawal = true;
         this.firebaseToken = null;
 
-        //TODO: 비밀번호 설정
+    }
+    
+    public void updateFCMToken(String firebaseToken) {
+        this.firebaseToken=firebaseToken;
     }
 
 }

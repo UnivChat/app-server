@@ -155,6 +155,14 @@ public class MemberService {
 
     }
 
+    public String UpdateFCM(MemberReq.UpdateFCMReq updateFCMReq, Member member) throws BaseException {
+
+        member.updateFCMToken(updateFCMReq.getFcmToken());
+        memberRepository.save(member);
+
+        return "firebase token이 등록되었습니다.";
+    }
+
     public boolean checkEmail(String email) {
         return memberRepository.existsByEmail(email);
     }
@@ -163,17 +171,6 @@ public class MemberService {
         return memberRepository.existsByNickname(nickname);
     }
 
-//    public boolean checkNickname(String nickname) throws BaseException {
-//        return memberRepository.existsByNickname(nickname);
-//    }
-//
-//    public boolean checkEmail(MemberReq.CheckEmailReq checkEmailReq) throws BaseException {
-//
-//        String email=checkEmailReq.getEmail();
-//        boolean exist=memberRepository.existsByEmail(email);
-//        if(exist) return false; // 이메일 중복
-//        else return true;
-//    }
 
     @SneakyThrows(IOException.class)
     public void updateProfileImage(MultipartFile image, Member member) {
