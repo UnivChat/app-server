@@ -52,10 +52,8 @@ public class Member {
         this.gender = "none";
 
         this.isWithdrawal = true;
-        this.firebaseToken = null;
-
     }
-    
+
     public void updateFCMToken(String firebaseToken) {
         this.firebaseToken=firebaseToken;
     }

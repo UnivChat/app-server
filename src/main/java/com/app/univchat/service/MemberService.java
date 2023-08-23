@@ -130,6 +130,7 @@ public class MemberService {
         }
 
         //firebase token, 닉네임, 성별 삭제
+        member.updateFCMToken(null);
         member.deleteMember();
 
         //로그아웃
