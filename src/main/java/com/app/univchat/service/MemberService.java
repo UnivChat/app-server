@@ -118,8 +118,24 @@ public class MemberService {
      */
     public String memberDelete(Member member) throws IOException{
 
-        Long id=member.getId();
-        memberRepository.deleteById(id);
+        /** hard delete **/
+//        Long id=member.getId();
+//        memberRepository.deleteById(id);
+
+        /** soft delete **/
+        //프로필 이미지 삭제
+        if (member.getProfileImageUrl() != null) {
+            awss3Uploader.deleteByUrl(member.getProfileImageUrl());
+            member.updateProfileImage(null);
+        }
+
+        //firebase token, 닉네임, 성별 삭제
+        member.deleteMember();
+
+        //로그아웃
+        memberLogout(member);
+
+        memberRepository.save(member);
 
         return "회원 탈퇴가 완료되었습니다.";
     }

@@ -32,6 +32,8 @@ public class Member {
     @Column(name = "firebase_token")
     private String firebaseToken;
 
+    private boolean isWithdrawal;
+
 
     public void updateNickname(String nickname) {
         this.nickname = nickname;
@@ -43,6 +45,16 @@ public class Member {
 
     public void updatePassword(String password) {
         this.password=password;
+    }
+
+    public void deleteMember() {
+        this.nickname = "탈퇴한 회원";
+        this.gender = "none";
+
+        this.isWithdrawal = true;
+        this.firebaseToken = null;
+
+        //TODO: 비밀번호 설정
     }
 
 }
