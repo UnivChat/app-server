@@ -48,6 +48,7 @@ public class PrincipalDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+//        return true;
+        return !member.isWithdrawal();
     }
 }
