@@ -83,9 +83,12 @@ public class OTOChatController {
 
         boolean isVisible = otoChatService.checkVisible(roomId);
 
-        String exitRes ="채팅방 나가기 권한이 없습니다.";
+        String exitRes ="채팅방을 나갔습니다";
 
-        if(isVisible) exitRes = otoChatService.exitChatRoom(roomId, member.getMember());
+        // 모든 유저가 채팅방에 남아있을 경우
+        if(isVisible) otoChatService.exitChatRoom(roomId, member.getMember());
+        // 아닐 경우 채팅방 삭제
+        else otoChatService.deleteChatRoom(roomId, member.getMember());
 
         return BaseResponse.ok(SUCCESS, exitRes);
 
