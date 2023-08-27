@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,12 +33,13 @@ public class LoveChatController {
     @Tag(name = "chatting-love")
     @MessageMapping("/love")
     @SendTo("/sub/love")
-    public ChatRes.LoveChatRes sendToLoveChattingRoom(ChatReq.LoveChatReq loveChatReq) {
+    public ChatRes.LoveChatRes sendToLoveChattingRoom(ChatReq.LoveChatReq loveChatReq,
+                                                      SimpMessageHeaderAccessor accessor) {
 
         String messageSendingTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS").format(new Date());
         String plainMessageContent = loveChatReq.getMessageContent();
-
-        loveChatService.saveChat(loveChatReq, messageSendingTime);
+        String authorization = String.valueOf(accessor.getNativeHeader("Authorization"));
+        loveChatService.saveChat(loveChatReq, messageSendingTime, authorization);
 
         return new ChatRes.LoveChatRes().builder()
                 .memberNickname(loveChatReq.getMemberNickname())
