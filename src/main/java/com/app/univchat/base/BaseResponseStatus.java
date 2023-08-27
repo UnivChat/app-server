@@ -60,6 +60,7 @@ public enum  BaseResponseStatus {
     USER_NO_EXIST_CHATTING_ROOM("2016", "해당 채팅방에 사용자가 포함되어 있지 않습니다,", 404),
 
     USER_FAILED_TO_ACCEPT_INQUIRY("2017", "문의 접수에 실패했습니다.", 400),
+    USER_IS_WITHDRAWAL("2018", "탈퇴한 회원입니다.", 400),
 
     /**
      * 5000 : Chatting 오류

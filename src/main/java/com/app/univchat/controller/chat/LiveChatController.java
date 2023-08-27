@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,10 +33,13 @@ public class LiveChatController {
     @Tag(name = "chatting-live")
     @MessageMapping("/live")
     @SendTo("/sub/live")
-    public ChatRes.LiveChatRes sendToDormChattingRoom(ChatReq.LiveChatReq liveChatReq) {
+    public ChatRes.LiveChatRes sendToLiveChattingRoom(ChatReq.LiveChatReq liveChatReq,
+                                                      SimpMessageHeaderAccessor accessor) {
         String messageSendingTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS").format(new Date());
         String plainMessageContent = liveChatReq.getMessageContent();
-        liveChatService.saveChat(liveChatReq, messageSendingTime); //채팅 내역 저장
+        String authorization = String.valueOf(accessor.getNativeHeader("Authorization"));
+        liveChatService.saveChat(liveChatReq, messageSendingTime, authorization); //채팅 내역 저장
+
 
         return new ChatRes.LiveChatRes().builder()
                 .memberNickname(liveChatReq.getMemberNickname())
