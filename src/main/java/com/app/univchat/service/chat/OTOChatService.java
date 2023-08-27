@@ -96,7 +96,7 @@ public class OTOChatService {
         Optional<OTOChatRoom> room = otoChatRoomRepository.findByRoomId(roomId);
 
         // 채팅 내역 저장
-        otoChatRepository.save(((ChatReq.OTOChatReq)cipherService.encryptChat(otoChatReq)).toEntity(room, sender ,messageSendingTime));
+        otoChatRepository.save(((ChatReq.OTOChatReq)cipherService.encryptChat(otoChatReq, sender.get())).toEntity(room, sender ,messageSendingTime));
 
     }
 

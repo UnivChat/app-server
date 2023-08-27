@@ -51,7 +51,7 @@ public class LiveChatService {
         );
 
         // 채팅 내역 저장
-        liveChatRepository.save(((ChatReq.LiveChatReq)(cipherService.encryptChat(liveChatReq))).toEntity(sender, messageSendTime));
+        liveChatRepository.save(((ChatReq.LiveChatReq)(cipherService.encryptChat(liveChatReq, sender))).toEntity(sender, messageSendTime));
     }
 
     /**
@@ -93,7 +93,8 @@ public class LiveChatService {
             page1 = Stream.concat(page1.stream(), page2.stream()).collect(Collectors.toList());
         }
         List<ChatRes.LiveChatRes> chattingList = page1.stream()
-                .map(chat -> modelMapper.map(chat, ChatRes.LiveChatRes.class))
+//                .map(chat -> modelMapper.map(chat, ChatRes.LiveChatRes.class))
+                .map(ChatRes.LiveChatRes::new)
                 .peek(chat -> chat.setMessageContent(cipherService.decryptChat(chat).getMessageContent())) //채팅 복호화
                 .sorted((o1, o2) -> o2.getMessageSendingTime().compareTo(o1.getMessageSendingTime())) //채팅 보낸 시간으로 정렬
                 .collect(Collectors.toList());
