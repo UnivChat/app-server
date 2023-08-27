@@ -105,6 +105,13 @@ public class MemberService {
     }
 
     /**
+     * email을 통한 member 조회
+     */
+    public Optional<Member> getMemberByEmail(String email) {
+        return memberRepository.findByEmail(email);
+    }
+
+    /**
      * 성별 조회
      */
     public MemberRes.GenderRes viewGender(Member member) throws IOException{
