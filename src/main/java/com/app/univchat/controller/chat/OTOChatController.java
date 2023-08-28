@@ -88,18 +88,15 @@ public class OTOChatController {
     public BaseResponse<String> exitChatRoom(@PathVariable Long roomId,
                                              @ApiIgnore @AuthenticationPrincipal PrincipalDetails member) throws IOException {
 
-        boolean isVisible = otoChatService.checkVisible(roomId);
-
         String exitRes ="채팅방을 나갔습니다";
 
-        // 모든 유저가 채팅방에 남아있을 경우
-        if(isVisible) otoChatService.exitChatRoom(roomId, member.getMember());
-        // 아닐 경우 채팅방 삭제
-        else otoChatService.deleteChatRoom(roomId, member.getMember());
+        // 채팅방 삭제
+        exitRes=otoChatService.exitChatRoom(roomId, member.getMember());
 
         return BaseResponse.ok(SUCCESS, exitRes);
 
     }
+
     @Tag(name = "chatting-OTO")
     @ApiOperation(value = "채팅방 삭제 API")
     @DeleteMapping("/{roomId}")
