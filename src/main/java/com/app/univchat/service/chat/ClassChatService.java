@@ -9,6 +9,7 @@ import com.app.univchat.domain.Member;
 import com.app.univchat.dto.ClassChatReq;
 import com.app.univchat.dto.ClassChatRes;
 import com.app.univchat.dto.ClassRoomDto;
+import com.app.univchat.jwt.JwtProvider;
 import com.app.univchat.repository.ClassChatMemberRepository;
 import com.app.univchat.repository.ClassChatRepository;
 import com.app.univchat.repository.ClassRoomRepository;
@@ -34,6 +35,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class ClassChatService {
 
+    private final JwtProvider jwtProvider;
     private final MemberService memberService;
     private final CipherService cipherService;
     private final ModelMapper modelMapper;
@@ -64,16 +66,22 @@ public class ClassChatService {
     // 클래스 채팅 메시지 저장
     @SneakyThrows
     @Transactional
-    public void saveChat(String classNumber, ClassChatReq.Chat classChatReq, String messageSendingTime) {
+    public Member saveChat(String classNumber, ClassChatReq.Chat classChatReq, String messageSendingTime, String authorization) {
 
-        String senderNickname = classChatReq.getMemberNickname();
+        String prefix = "Bearer ";
+        String jwt = authorization.substring(prefix.length());
 
-        Optional<Member> sender = memberService.getMember(senderNickname);
+        String email = jwtProvider.getEmail(jwt);
+
+        Member sender = memberService.getMemberByEmail(email).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.USER_NOT_EXIST_ERROR)
+        );
 
         Optional<ClassRoom> classRoom = classRoomRepository.findById(classNumber);
 
-        classChatRepository.save(((ClassChatReq.Chat)cipherService.encryptChat(classChatReq)).toEntity(classRoom, sender ,messageSendingTime));
+        classChatRepository.save(((ClassChatReq.Chat)cipherService.encryptChat(classChatReq, sender)).toEntity(classRoom, sender ,messageSendingTime));
 
+        return sender;
     }
 
     // 클래스 채팅 내역 조회
@@ -110,7 +118,12 @@ public class ClassChatService {
         }
         List<ClassChatRes.Chat> chattingList = page1.stream()
                 .map(chat -> modelMapper.map(chat, ClassChatRes.Chat.class))
-                .peek(chat -> chat.setMessageContent(cipherService.decryptChat(chat).getMessageContent()))
+                .peek(chat -> {
+                    chat.setMessageContent(cipherService.decryptChat(chat).getMessageContent());
+                    if (memberService.getMemberByEmail(chat.getMemberEmail()).get().isWithdrawal()) {
+                      chat.setMemberNickname("탈퇴한 회원");
+                    }
+                })
                 .sorted((o1, o2) -> o2.getMessageSendingTime().compareTo(o1.getMessageSendingTime()))
                 .collect(Collectors.toList());
 

@@ -29,5 +29,5 @@ public class ClassChat {
 
     @ManyToOne
     @JoinColumn(name = "senderId", nullable = false)
-    private Member member;
+    public Member member;
 }

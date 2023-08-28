@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -49,11 +50,14 @@ public class ClassChatController {
     // 클래스 채팅 송수신 및 저장 API
     @MessageMapping("/class/{classNumber}")
     @SendTo("/sub/class/{classNumber}")
-    public ClassChatRes.Chat sendToOTOChattingRoom(@DestinationVariable String classNumber, ClassChatReq.Chat classChatReq) {
+    public ClassChatRes.Chat sendToClassChattingRoom(@DestinationVariable String classNumber, ClassChatReq.Chat classChatReq,
+                                                     SimpMessageHeaderAccessor accessor) {
 
         String messageSendingTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS").format(new Date());
         String plainMessageContent = classChatReq.getMessageContent();
-        classChatService.saveChat(classNumber, classChatReq, messageSendingTime);   // class 채팅 내용 저장
+        String authorization = String.valueOf(accessor.getNativeHeader("Authorization"));
+
+        classChatService.saveChat(classNumber, classChatReq, messageSendingTime, authorization);   // class 채팅 내용 저장
         classChatReq.setMessageContent(plainMessageContent);  // 암호화 전 Original message set해서 알림 전송
         fcmNotificationService.sendClassChatNotificationByToken(classNumber, classChatReq); // class 채팅 알림 전송
 
@@ -84,7 +88,7 @@ public class ClassChatController {
     @Tag(name = "chatting-class")
     @ApiOperation(value = "사용자별 클래스 채팅방 목록 API",
             notes = "사용자가 참여하고 있는 클래스 채팅방 목록을 반환합니다. 안 읽은 메세지 수, 가장 촤근 메세지 송신 시각을 포함합니다. 가장 최근 메세지 송신 시각은 채팅이 없을 경우 \"\"를 반환합니다.")
-    public BaseResponse<List<ClassChatRes.ChattingRoom>> loadOTOChattingRoomList(@ApiIgnore @AuthenticationPrincipal PrincipalDetails member) {
+    public BaseResponse<List<ClassChatRes.ChattingRoom>> loadClassChattingRoomList(@ApiIgnore @AuthenticationPrincipal PrincipalDetails member) {
 
         List<ClassChatRes.ChattingRoom> chattingRoomList = classChatService.getChattingRoomList(member.getMember());
 
