@@ -89,9 +89,14 @@ public class OTOChatController {
                                              @ApiIgnore @AuthenticationPrincipal PrincipalDetails member) throws IOException {
 
         String exitRes ="채팅방을 나갔습니다";
+        boolean isVisible= otoChatService.checkVisible(roomId);
 
-        // 채팅방 삭제
-        exitRes=otoChatService.exitChatRoom(roomId, member.getMember());
+        if(!isVisible) {
+            exitRes=otoChatService.deleteChatRoom(roomId, member.getMember());
+        }
+        else {
+            otoChatService.exitChatRoom(roomId, member.getMember());
+        }
 
         return BaseResponse.ok(SUCCESS, exitRes);
 

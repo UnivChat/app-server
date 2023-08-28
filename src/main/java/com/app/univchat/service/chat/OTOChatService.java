@@ -134,7 +134,8 @@ public class OTOChatService {
             page1 = Stream.concat(page1.stream(), page2.stream()).collect(Collectors.toList());
         }
         List<ChatRes.OTOChatRes> chattingList = page1.stream()
-                .map(chat -> modelMapper.map(chat, ChatRes.OTOChatRes.class))
+//                .map(chat -> modelMapper.map(chat, ChatRes.OTOChatRes.class))
+                .map(ChatRes.OTOChatRes::new)
                 .peek(chat -> chat.setMessageContent(cipherService.decryptChat(chat).getMessageContent()))
                 .sorted((o1, o2) -> o2.getMessageSendingTime().compareTo(o1.getMessageSendingTime()))
                 .collect(Collectors.toList());
@@ -172,7 +173,12 @@ public class OTOChatService {
                 .collect(Collectors.toList());
 
         for(int i=0;i<result.size();i++) {
-            exitChatRoom(result.get(i).getRoomId(),member);
+            if(result.get(i).getVisible() != OTOChatVisible.ALL) {
+                deleteChatRoom(result.get(i).getRoomId(),member);
+            }
+            else {
+                exitChatRoom(result.get(i).getRoomId(),member);
+            }
         }
 
         return "채팅방을 나갔습니다.";
@@ -192,11 +198,6 @@ public class OTOChatService {
         // 채팅방 sender memberId
         Long senderId = chatRoom.getSender().getId();   // sender memberId
 
-        String res="채팅방을 나갔습니다.";
-        // 채팅방에 한 명만 있을 경우 채팅방 삭제
-        if(chatRoom.getVisible()!=OTOChatVisible.ALL) {
-            return deleteChatRoom(roomId,member);
-        }
 
         // sender 가 나갈 경우
         if(senderId == memberId) {
@@ -209,7 +210,7 @@ public class OTOChatService {
 
         otoChatRoomRepository.save(chatRoom);
 
-        return res;
+        return "채팅방을 나갔습니다.";
     }
 
     /**
