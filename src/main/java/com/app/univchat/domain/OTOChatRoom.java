@@ -36,4 +36,8 @@ public class OTOChatRoom {
         this.visible = visible;
     }
 
+    public void exitAllChatRoom() {
+        System.out.println("채팅방 나가기");
+    }
+
 }

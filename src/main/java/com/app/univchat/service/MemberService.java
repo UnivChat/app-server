@@ -4,6 +4,7 @@ import com.app.univchat.aws.AWSS3Uploader;
 import com.app.univchat.base.BaseException;
 
 import com.app.univchat.base.BaseResponseStatus;
+import com.app.univchat.chat.OTOChatVisible;
 import com.app.univchat.config.SecurityUtil;
 
 import com.app.univchat.domain.Member;
@@ -13,6 +14,7 @@ import com.app.univchat.dto.MemberRes;
 import com.app.univchat.jwt.JwtProvider;
 import com.app.univchat.repository.MemberRepository;
 import com.app.univchat.security.auth.PrincipalDetails;
+import com.app.univchat.service.chat.OTOChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +34,7 @@ public class MemberService {
     private final AWSS3Uploader awss3Uploader;
     private final RedisService redisService;
     private final JwtProvider jwtProvider;
+
 
     @Value("${jwt.expire-time.refresh-token}")
     private int refreshTime;
@@ -136,6 +139,10 @@ public class MemberService {
             member.updateProfileImage(null);
         }
 
+        // 참여중인 1:1 채팅방 퇴장기
+
+//        otoChatService.exitAllChatRoom(member);
+
         //firebase token, 닉네임, 성별 삭제
         member.updateFCMToken(null);
         member.deleteMember();
@@ -177,6 +184,18 @@ public class MemberService {
 
     public boolean checkNickname(String nickname) {
         return memberRepository.existsByNickname(nickname);
+    }
+
+    public boolean checkDeletedMember(String nickname) {
+        // 현재 참여 채팅방 객체
+        Optional<Member> member=memberRepository.findByNickname(nickname);
+
+        // 모든 유저가 채팅방에 남아있을 경우 true
+
+        if(member.get().isWithdrawal())
+            return true;
+        else
+            return false;
     }
 
 

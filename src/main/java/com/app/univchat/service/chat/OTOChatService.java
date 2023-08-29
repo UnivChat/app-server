@@ -134,7 +134,8 @@ public class OTOChatService {
             page1 = Stream.concat(page1.stream(), page2.stream()).collect(Collectors.toList());
         }
         List<ChatRes.OTOChatRes> chattingList = page1.stream()
-                .map(chat -> modelMapper.map(chat, ChatRes.OTOChatRes.class))
+//                .map(chat -> modelMapper.map(chat, ChatRes.OTOChatRes.class))
+                .map(ChatRes.OTOChatRes::new)
                 .peek(chat -> chat.setMessageContent(cipherService.decryptChat(chat).getMessageContent()))
                 .sorted((o1, o2) -> o2.getMessageSendingTime().compareTo(o1.getMessageSendingTime()))
                 .collect(Collectors.toList());
@@ -154,9 +155,40 @@ public class OTOChatService {
     }
 
     /**
+     *  탈퇴한 회원이 참여중인 모든 채팅방 나가기
+     */
+    public String exitAllChatRoom(Member member) {
+        // 사용자 ID를 통해 송신자 혹은 수신자의 ID와 같다면 해당 1:1 채팅방 조회
+        List<OTOChatRoom> result = otoChatRoomRepository.findBySenderOrReceiver(member, member);
+
+        // visible에 따른 필터링
+        if(result==null) {
+            return "소속된 채팅방이 없습니다.";
+        }
+
+        result = result.stream().filter(chattingRoom ->
+                        chattingRoom.getVisible() == OTOChatVisible.ALL ||
+                                (chattingRoom.getVisible() == OTOChatVisible.SENDER && chattingRoom.getSender().getId() == member.getId()) ||
+                                (chattingRoom.getVisible() == OTOChatVisible.RECEIVER && chattingRoom.getReceiver().getId() == member.getId()))
+                .collect(Collectors.toList());
+
+        for(int i=0;i<result.size();i++) {
+            if(result.get(i).getVisible() != OTOChatVisible.ALL) {
+                deleteChatRoom(result.get(i).getRoomId(),member);
+            }
+            else {
+                exitChatRoom(result.get(i).getRoomId(),member);
+            }
+        }
+
+        return "채팅방을 나갔습니다.";
+    }
+
+    /**
      *  1:1 채팅방 나가기
      */
     public String exitChatRoom(Long roomId, Member member) {
+
         // 채팅방 나가는 회원 memberId
         Long memberId = member.getId();
 
@@ -165,6 +197,7 @@ public class OTOChatService {
 
         // 채팅방 sender memberId
         Long senderId = chatRoom.getSender().getId();   // sender memberId
+
 
         // sender 가 나갈 경우
         if(senderId == memberId) {

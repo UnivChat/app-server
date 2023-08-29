@@ -3,6 +3,7 @@ package com.app.univchat.dto;
 import com.app.univchat.domain.DormChat;
 import com.app.univchat.domain.LiveChat;
 import com.app.univchat.domain.LoveChat;
+import com.app.univchat.domain.OTOChat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.List;
@@ -109,7 +110,14 @@ public class ChatRes {
     @Setter
     @Getter
     // 1:1 채팅 메시지 객체
-    public static class OTOChatRes extends ChatRes { }
+    public static class OTOChatRes extends ChatRes {
+        public OTOChatRes(OTOChat chat) {
+            memberEmail = chat.getMember().getEmail();
+            memberNickname = chat.getMember().isWithdrawal() ? "탈퇴한 회원" : chat.member.getNickname();
+            messageContent = chat.getMessageContent();
+            messageSendingTime = chat.getMessageSendingTime();
+        }
+    }
 
     @Builder
     @NoArgsConstructor

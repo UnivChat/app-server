@@ -58,4 +58,5 @@ public class Member {
         this.firebaseToken=firebaseToken;
     }
 
+
 }
