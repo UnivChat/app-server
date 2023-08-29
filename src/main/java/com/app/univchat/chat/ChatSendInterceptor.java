@@ -65,30 +65,26 @@ public class ChatSendInterceptor implements ChannelInterceptor {
         String email = jwtProvider.getEmail(jwt);
 
         // 닉네임 DB에 있는지 체크 & jwt와 일치하는지 확인
-        checkNickname(message, email);
+//        checkNickname(message, email);
+
+        // jwt에서 추출한 email DB에 있는지 확인 & 탈퇴한 회원인지 확인
+        checkMember(email);
 
         return message;
     }
 
     /**
-     * 닉네임 DB에 있는지 체크 & jwt와 일치하는지 확인
+     * email DB에 있는지 확인 & 탈퇴한 회원인지 확인
      */
-    @SneakyThrows
-    public void checkNickname(Message<?> message, String email) {
+    public void checkMember(String email) {
+        //DB 조회
+        Member member = memberService.getMemberByEmail(email).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.USER_NOT_EXIST_ERROR
+                ));
 
-        // message payload에서 닉네임 얻기
-        String payload = new String((byte[])message.getPayload());
-        ChatReq.LiveChatReq body = Jackson.fromJsonString(payload, ChatReq.LiveChatReq.class);
-        System.out.println("sender nickname: " + body.getMemberNickname());
-
-        // DB에 닉네임 있는지 확인
-        Member member = memberService.getMember(body.getMemberNickname()).orElseThrow(
-                () -> new BaseException(BaseResponseStatus.USER_NOT_EXIST_NICKNAME_ERROR)
-        );
-
-        // jwt 토큰과 닉네임으로 찾은 member 객체 일치하는지 확인
-        if (!member.getEmail().equals(email)) {
-            throw new BaseException(BaseResponseStatus.JWT_AND_NICKNAME_DONT_MATCH);
+        //탈퇴 여부 확인
+        if (member.isWithdrawal()) {
+            throw new BaseException(BaseResponseStatus.USER_IS_WITHDRAWAL);
         }
     }
 
@@ -115,5 +111,28 @@ public class ChatSendInterceptor implements ChannelInterceptor {
             );
         }
 
+    }
+
+
+    /**
+     * 닉네임 DB에 있는지 체크 & jwt와 일치하는지 확인
+     */
+    @SneakyThrows
+    public void checkNickname(Message<?> message, String email) {
+
+        // message payload에서 닉네임 얻기
+        String payload = new String((byte[])message.getPayload());
+        ChatReq.LiveChatReq body = Jackson.fromJsonString(payload, ChatReq.LiveChatReq.class);
+        System.out.println("sender nickname: " + body.getMemberNickname());
+
+        // DB에 닉네임 있는지 확인
+        Member member = memberService.getMember(body.getMemberNickname()).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.USER_NOT_EXIST_NICKNAME_ERROR)
+        );
+
+        // jwt 토큰과 닉네임으로 찾은 member 객체 일치하는지 확인
+        if (!member.getEmail().equals(email)) {
+            throw new BaseException(BaseResponseStatus.JWT_AND_NICKNAME_DONT_MATCH);
+        }
     }
 }

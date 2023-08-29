@@ -5,6 +5,7 @@ import com.app.univchat.base.BaseResponseStatus;
 import com.app.univchat.dto.*;
 import com.app.univchat.security.auth.PrincipalDetails;
 import com.app.univchat.service.FCMNotificationService;
+import com.app.univchat.service.MemberService;
 import com.app.univchat.service.chat.OTOChatService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,6 +31,7 @@ import static com.app.univchat.base.BaseResponseStatus.SUCCESS;
 public class OTOChatController {
 
     private final OTOChatService otoChatService;
+    private final MemberService memberService;
     private final FCMNotificationService fcmNotificationService;
 
     /*
@@ -39,6 +41,11 @@ public class OTOChatController {
     @ApiOperation(value = "1:1 채팅방 개설 API")
     @PostMapping("/room")
     public BaseResponse<ChatRes.OTOChatRoomRes> createChatRoom(@RequestBody ChatReq.OTOChatRoomReq otoChatRoomReq){
+
+        // 탈퇴한 회원과 채팅방 개설 불가 - 수신자가 탈퇴회원인지 확인
+        if(memberService.checkDeletedMember(otoChatRoomReq.getReceiverNickname())) {
+            return BaseResponse.ok(BaseResponseStatus.USER_ALREADY_DELETED_ERROR);
+        }
 
         return BaseResponse.ok(SUCCESS, otoChatService.createChatRoom(otoChatRoomReq));
     }
@@ -81,15 +88,20 @@ public class OTOChatController {
     public BaseResponse<String> exitChatRoom(@PathVariable Long roomId,
                                              @ApiIgnore @AuthenticationPrincipal PrincipalDetails member) throws IOException {
 
-        boolean isVisible = otoChatService.checkVisible(roomId);
+        String exitRes ="채팅방을 나갔습니다";
+        boolean isVisible= otoChatService.checkVisible(roomId);
 
-        String exitRes ="채팅방 나가기 권한이 없습니다.";
-
-        if(isVisible) exitRes = otoChatService.exitChatRoom(roomId, member.getMember());
+        if(!isVisible) {
+            exitRes=otoChatService.deleteChatRoom(roomId, member.getMember());
+        }
+        else {
+            otoChatService.exitChatRoom(roomId, member.getMember());
+        }
 
         return BaseResponse.ok(SUCCESS, exitRes);
 
     }
+
     @Tag(name = "chatting-OTO")
     @ApiOperation(value = "채팅방 삭제 API")
     @DeleteMapping("/{roomId}")

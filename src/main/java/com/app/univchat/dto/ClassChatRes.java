@@ -12,6 +12,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class ClassChatRes {
 
+    protected String memberEmail;
     protected String memberNickname;
     protected String messageContent;
     protected String messageSendingTime;

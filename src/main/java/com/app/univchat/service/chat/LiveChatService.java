@@ -1,18 +1,17 @@
 package com.app.univchat.service.chat;
 
 import com.app.univchat.base.BaseException;
+import com.app.univchat.base.BaseResponseStatus;
 import com.app.univchat.domain.LiveChat;
 import com.app.univchat.domain.Member;
 import com.app.univchat.dto.ChatReq;
 import com.app.univchat.dto.ChatRes;
+import com.app.univchat.jwt.JwtProvider;
 import com.app.univchat.repository.LiveChatRepository;
 import com.app.univchat.service.CipherService;
 import com.app.univchat.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -33,22 +32,26 @@ public class LiveChatService {
     private final MemberService memberService;
     private final CipherService cipherService;
     private final LiveChatRepository liveChatRepository;
+    private final JwtProvider jwtProvider;
 
     /**
      * 라이브 채팅 저장
      */
-    @SneakyThrows
     @Transactional
-    public void saveChat(ChatReq.LiveChatReq liveChatReq, String messageSendTime) {
-        // nickname으로 member 찾기
-        String senderNickname = liveChatReq.getMemberNickname();
-        Member sender = memberService.getMember(senderNickname).orElseThrow(
-//                () -> new BaseException(BaseResponseStatus.USER_NOT_EXIST_NICKNAME_ERROR)
-                () ->  new Exception("존재하지 않는 회원입니다.")
+    public void saveChat(ChatReq.LiveChatReq liveChatReq, String messageSendTime, String authorization) {
+
+        String prefix = "Bearer ";
+        String jwt = authorization.substring(prefix.length());
+
+        String email = jwtProvider.getEmail(jwt);
+
+        // email로 member 조회
+        Member sender = memberService.getMemberByEmail(email).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.USER_NOT_EXIST_ERROR)
         );
 
         // 채팅 내역 저장
-        liveChatRepository.save(((ChatReq.LiveChatReq)(cipherService.encryptChat(liveChatReq))).toEntity(sender, messageSendTime));
+        liveChatRepository.save(((ChatReq.LiveChatReq)(cipherService.encryptChat(liveChatReq, sender))).toEntity(sender, messageSendTime));
     }
 
     /**
@@ -90,7 +93,8 @@ public class LiveChatService {
             page1 = Stream.concat(page1.stream(), page2.stream()).collect(Collectors.toList());
         }
         List<ChatRes.LiveChatRes> chattingList = page1.stream()
-                .map(chat -> modelMapper.map(chat, ChatRes.LiveChatRes.class))
+//                .map(chat -> modelMapper.map(chat, ChatRes.LiveChatRes.class))
+                .map(ChatRes.LiveChatRes::new)
                 .peek(chat -> chat.setMessageContent(cipherService.decryptChat(chat).getMessageContent())) //채팅 복호화
                 .sorted((o1, o2) -> o2.getMessageSendingTime().compareTo(o1.getMessageSendingTime())) //채팅 보낸 시간으로 정렬
                 .collect(Collectors.toList());

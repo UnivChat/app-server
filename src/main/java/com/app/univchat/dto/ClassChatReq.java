@@ -35,10 +35,10 @@ public class ClassChatReq {
     @ApiModel(value = "ClassChatReq - 클래스 채팅 메시지 전송 객체")
     public static class Chat extends ClassChatReq {
 
-        public ClassChat toEntity(Optional<ClassRoom> classRoom,Optional<Member> member, String messageSendingTime) throws Exception {
+        public ClassChat toEntity(Optional<ClassRoom> classRoom,Member member, String messageSendingTime) throws Exception {
             return ClassChat.builder()
                     .classRoom(classRoom.orElseThrow(() -> new BaseException(BaseResponseStatus.CHATTING_NOT_EXIST_ROOM_ERROR)))
-                    .member(member.orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_EXIST_ERROR)))
+                    .member(member)
                     .messageContent(messageContent)
                     .messageSendingTime(messageSendingTime)
                     .build();

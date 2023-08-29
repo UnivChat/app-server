@@ -2,6 +2,7 @@ package com.app.univchat.service;
 
 import com.app.univchat.base.BaseException;
 import com.app.univchat.base.BaseResponseStatus;
+import com.app.univchat.domain.Member;
 import com.app.univchat.dto.ChatReq;
 import com.app.univchat.dto.ChatRes;
 import com.app.univchat.dto.ClassChatReq;
@@ -29,13 +30,13 @@ public class CipherService {
     private String CIPHER_MODE;
     private final byte[] IV = new byte[16];
 
-    public ChatReq encryptChat(ChatReq chat) {
+    public ChatReq encryptChat(ChatReq chat, Member member) {
 
         try {
 
         // 비밀키 생성
         MessageDigest secret = MessageDigest.getInstance(HASH_TYPE);
-        byte[] secretDigest = secret.digest((HASH_SEED + chat.getMemberNickname()).getBytes(StandardCharsets.UTF_8));
+        byte[] secretDigest = secret.digest((HASH_SEED + member.getEmail()).getBytes(StandardCharsets.UTF_8));
 
         // 암호화 준비
         SecretKeySpec keySpec = new SecretKeySpec(secretDigest, CIPHER_TYPE);
@@ -57,13 +58,13 @@ public class CipherService {
         }
     }
 
-    public ClassChatReq encryptChat(ClassChatReq chat) {
+    public ClassChatReq encryptChat(ClassChatReq chat, Member member) {
 
         try {
 
             // 비밀키 생성
             MessageDigest secret = MessageDigest.getInstance(HASH_TYPE);
-            byte[] secretDigest = secret.digest((HASH_SEED + chat.getMemberNickname()).getBytes(StandardCharsets.UTF_8));
+            byte[] secretDigest = secret.digest((HASH_SEED + member.getEmail()).getBytes(StandardCharsets.UTF_8));
 
             // 암호화 준비
             SecretKeySpec keySpec = new SecretKeySpec(secretDigest, CIPHER_TYPE);
@@ -91,7 +92,7 @@ public class CipherService {
 
         // 비밀키 생성
         MessageDigest secret = MessageDigest.getInstance(HASH_TYPE);
-        byte[] secretDigest = secret.digest((HASH_SEED + chat.getMemberNickname()).getBytes(StandardCharsets.UTF_8));
+        byte[] secretDigest = secret.digest((HASH_SEED + chat.getMemberEmail()).getBytes(StandardCharsets.UTF_8));
 
         // base64 디코딩
         byte[] decodedCipherChat = Base64.getDecoder().decode(chat.getMessageContent().getBytes("UTF-8"));
@@ -121,7 +122,7 @@ public class CipherService {
 
             // 비밀키 생성
             MessageDigest secret = MessageDigest.getInstance(HASH_TYPE);
-            byte[] secretDigest = secret.digest((HASH_SEED + chat.getMemberNickname()).getBytes(StandardCharsets.UTF_8));
+            byte[] secretDigest = secret.digest((HASH_SEED + chat.getMemberEmail()).getBytes(StandardCharsets.UTF_8));
 
             // base64 디코딩
             byte[] decodedCipherChat = Base64.getDecoder().decode(chat.getMessageContent().getBytes("UTF-8"));

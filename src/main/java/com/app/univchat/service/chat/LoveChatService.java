@@ -1,20 +1,19 @@
 package com.app.univchat.service.chat;
 
 import com.app.univchat.base.BaseException;
-import com.app.univchat.domain.LiveChat;
+import com.app.univchat.base.BaseResponseStatus;
 import com.app.univchat.domain.LoveChat;
 import com.app.univchat.domain.Member;
 import com.app.univchat.dto.ChatReq;
 import com.app.univchat.dto.ChatRes;
+import com.app.univchat.jwt.JwtProvider;
 import com.app.univchat.repository.LoveChatRepository;
 import com.app.univchat.service.CipherService;
 import com.app.univchat.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -35,20 +34,27 @@ public class LoveChatService {
     private final MemberService memberService;
     private final CipherService cipherService;
     private final LoveChatRepository loveChatRepository;
+    private final JwtProvider jwtProvider;
 
     /**
      *  연애상담 채팅 메시지 저장
      */
     @SneakyThrows
     @Transactional
-    public void saveChat(ChatReq.LoveChatReq loveChatReq, String messageSendingTime) {
+    public void saveChat(ChatReq.LoveChatReq loveChatReq, String messageSendingTime, String authorization) {
 
-        // nickname으로 송신자 member 객체 획득
-        String senderNickname = loveChatReq.getMemberNickname();
-        Optional<Member> sender = memberService.getMember(senderNickname);
+        String prefix = "Bearer ";
+        String jwt = authorization.substring(prefix.length());
+
+        String email = jwtProvider.getEmail(jwt);
+
+        // email로 member 조회
+        Member sender = memberService.getMemberByEmail(email).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.USER_NOT_EXIST_ERROR)
+        );
         
         // 채팅 내역 저장
-        loveChatRepository.save(((ChatReq.LoveChatReq)cipherService.encryptChat(loveChatReq)).toEntity(sender, messageSendingTime));
+        loveChatRepository.save(((ChatReq.LoveChatReq)cipherService.encryptChat(loveChatReq, sender)).toEntity(sender, messageSendingTime));
     }
 
     /**
@@ -90,7 +96,8 @@ public class LoveChatService {
             page1 = Stream.concat(page1.stream(), page2.stream()).collect(Collectors.toList());
         }
         List<ChatRes.LoveChatRes> chattingList = page1.stream()
-                .map(chat -> modelMapper.map(chat, ChatRes.LoveChatRes.class))
+//                .map(chat -> modelMapper.map(chat, ChatRes.LoveChatRes.class))
+                .map(ChatRes.LoveChatRes::new)
                 .peek(chat -> chat.setMessageContent(cipherService.decryptChat(chat).getMessageContent())) //채팅 복호화
                 .sorted((o1, o2) -> o2.getMessageSendingTime().compareTo(o1.getMessageSendingTime())) //채팅 보낸 시간으로 정렬
                 .collect(Collectors.toList());

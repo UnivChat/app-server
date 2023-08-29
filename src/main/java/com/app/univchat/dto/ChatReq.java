@@ -31,9 +31,9 @@ public class ChatReq {
     @ApiModel(value = "DormChatReq - 채팅 메시지 전송 객체")
     public static class DormChatReq extends ChatReq {
 
-        public DormChat toEntity(Optional<Member> member, String messageSendingTime) throws Exception {
+        public DormChat toEntity(Member member, String messageSendingTime) throws Exception {
             return DormChat.builder()
-                    .member(member.orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_EXIST_ERROR)))
+                    .member(member)
                     .messageContent(messageContent)
                     .messageSendingTime(messageSendingTime)
                     .build();
@@ -50,9 +50,9 @@ public class ChatReq {
     @ApiModel(value = "LoveChatReq - 채팅 메시지 전송 객체")
     public static class LoveChatReq extends ChatReq {
 
-        public LoveChat toEntity(Optional<Member> member, String messageSendingTime) throws Exception {
+        public LoveChat toEntity(Member member, String messageSendingTime) throws Exception {
             return LoveChat.builder()
-                    .member(member.orElseThrow(() -> new BaseException(BaseResponseStatus.USER_NOT_EXIST_ERROR)))
+                    .member(member)
                     .messageContent(messageContent)
                     .messageSendingTime(messageSendingTime)
                     .build();
