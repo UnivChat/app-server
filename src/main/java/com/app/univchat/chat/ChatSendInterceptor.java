@@ -67,7 +67,25 @@ public class ChatSendInterceptor implements ChannelInterceptor {
         // 닉네임 DB에 있는지 체크 & jwt와 일치하는지 확인
 //        checkNickname(message, email);
 
+        // jwt에서 추출한 email DB에 있는지 확인 & 탈퇴한 회원인지 확인
+        checkMember(email);
+
         return message;
+    }
+
+    /**
+     * email DB에 있는지 확인 & 탈퇴한 회원인지 확인
+     */
+    public void checkMember(String email) {
+        //DB 조회
+        Member member = memberService.getMemberByEmail(email).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.USER_NOT_EXIST_ERROR
+                ));
+
+        //탈퇴 여부 확인
+        if (member.isWithdrawal()) {
+            throw new BaseException(BaseResponseStatus.USER_IS_WITHDRAWAL);
+        }
     }
 
     /**

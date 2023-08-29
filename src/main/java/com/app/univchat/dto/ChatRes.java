@@ -1,5 +1,8 @@
 package com.app.univchat.dto;
 
+import com.app.univchat.domain.DormChat;
+import com.app.univchat.domain.LiveChat;
+import com.app.univchat.domain.LoveChat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.List;
@@ -14,6 +17,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class ChatRes {
 
+    protected String memberEmail;
     protected String memberNickname;
     protected String messageContent;
     protected String messageSendingTime;
@@ -23,7 +27,14 @@ public class ChatRes {
     @Setter
     @Getter
     // 기숙사 채팅 메시지 객체
-    public static class DormChatRes extends ChatRes { }
+    public static class DormChatRes extends ChatRes {
+        public DormChatRes(DormChat chat) {
+            memberEmail = chat.getMember().getEmail();
+            memberNickname = chat.getMember().isWithdrawal() ? "탈퇴한 회원" : chat.member.getNickname();
+            messageContent = chat.getMessageContent();
+            messageSendingTime = chat.getMessageSendingTime();
+        }
+    }
 
     @Builder
     @NoArgsConstructor
@@ -42,7 +53,14 @@ public class ChatRes {
     @Setter
     @Getter
     // 연애상담 채팅 메시지 객체
-    public static class LoveChatRes extends ChatRes { }
+    public static class LoveChatRes extends ChatRes {
+        public LoveChatRes(LoveChat chat) {
+            memberEmail = chat.getMember().getEmail();
+            memberNickname = chat.getMember().isWithdrawal() ? "탈퇴한 회원" : chat.member.getNickname();
+            messageContent = chat.getMessageContent();
+            messageSendingTime = chat.getMessageSendingTime();
+        }
+    }
 
     @Builder
     @NoArgsConstructor
@@ -63,7 +81,14 @@ public class ChatRes {
     @Setter
     @Getter
     // 라이브 채팅 메시지 객체
-    public static class LiveChatRes extends ChatRes { }
+    public static class LiveChatRes extends ChatRes {
+        public LiveChatRes(LiveChat chat) {
+            memberEmail = chat.getMember().getEmail();
+            memberNickname = chat.getMember().isWithdrawal() ? "탈퇴한 회원" : chat.member.getNickname();
+            messageContent = chat.getMessageContent();
+            messageSendingTime = chat.getMessageSendingTime();
+        }
+    }
 
     @Builder
     @NoArgsConstructor

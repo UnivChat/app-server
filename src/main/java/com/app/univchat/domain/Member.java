@@ -48,7 +48,7 @@ public class Member {
     }
 
     public void deleteMember() {
-        this.nickname = "탈퇴한 회원";
+//        this.nickname = "탈퇴한 회원";
         this.gender = "none";
 
         this.isWithdrawal = true;
