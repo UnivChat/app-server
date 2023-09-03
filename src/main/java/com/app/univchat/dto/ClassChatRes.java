@@ -45,7 +45,8 @@ public class ClassChatRes {
     public static class ChattingRoom {
         private ClassRoomDto classRoom;
         private String lastMessageSendingTime;
-        private int numberOfUnreadMessage;
+        private int numberOfParticipant; // 참여 인원 수
+        private int numberOfUnreadMessage; // 읽지 않은 메세지 수
     }
 
 }
