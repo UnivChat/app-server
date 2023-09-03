@@ -18,4 +18,6 @@ public interface ClassChatMemberRepository extends JpaRepository<ClassChatMember
     Optional<ClassChatMember> findByClassRoomClassNumberAndMember(String classNumber, Member member);
 
     void deleteByClassRoomClassNumberAndMember(String classNumber, Member member);
+
+    void deleteByMember(Member member);
 }
