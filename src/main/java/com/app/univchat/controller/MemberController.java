@@ -13,6 +13,7 @@ import com.app.univchat.dto.MemberReq;
 import com.app.univchat.dto.MemberRes;
 import com.app.univchat.service.EmailService;
 import com.app.univchat.service.RedisService;
+import com.app.univchat.service.chat.ClassChatService;
 import com.app.univchat.service.chat.OTOChatService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -42,6 +43,7 @@ public class MemberController {
     private final EmailService emailService;
     private final MemberService memberService;
     private final OTOChatService otoChatService;
+    private final ClassChatService classChatService;
     private final RedisService redisService;
     private final JwtProvider jwtProvider;
 
@@ -215,6 +217,7 @@ public class MemberController {
 
         String deleteRes=memberService.memberDelete(member.getMember());
         otoChatService.exitAllChatRoom(member.getMember());
+        classChatService.exitAllChatRoom(member.getMember());
 
         return BaseResponse.ok(BaseResponseStatus.SUCCESS,deleteRes);
 
