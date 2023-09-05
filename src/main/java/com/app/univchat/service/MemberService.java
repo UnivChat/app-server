@@ -66,7 +66,11 @@ public class MemberService {
      */
     @Transactional
     public MemberRes.Update update(MemberReq.Update memberUpdateDto, Member member){
-        //업데이트
+
+        //닉네임 변경
+        if(checkNickname(memberUpdateDto.getNickname())){
+            throw new BaseException(BaseResponseStatus.USER_EXISTS_NICKNAME_ERROR);
+        }
         member.updateNickname(memberUpdateDto.getNickname());
 
         //프로필 사진 업데이트

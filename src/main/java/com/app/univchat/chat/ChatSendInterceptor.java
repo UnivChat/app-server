@@ -116,23 +116,25 @@ public class ChatSendInterceptor implements ChannelInterceptor {
 
     /**
      * 닉네임 DB에 있는지 체크 & jwt와 일치하는지 확인
+     * 2023.09.03 주석 처리
+     * 닉네임 회원 조회에서 jwt의 email로 회원 조회로 변경
      */
-    @SneakyThrows
-    public void checkNickname(Message<?> message, String email) {
-
-        // message payload에서 닉네임 얻기
-        String payload = new String((byte[])message.getPayload());
-        ChatReq.LiveChatReq body = Jackson.fromJsonString(payload, ChatReq.LiveChatReq.class);
-        System.out.println("sender nickname: " + body.getMemberNickname());
-
-        // DB에 닉네임 있는지 확인
-        Member member = memberService.getMember(body.getMemberNickname()).orElseThrow(
-                () -> new BaseException(BaseResponseStatus.USER_NOT_EXIST_NICKNAME_ERROR)
-        );
-
-        // jwt 토큰과 닉네임으로 찾은 member 객체 일치하는지 확인
-        if (!member.getEmail().equals(email)) {
-            throw new BaseException(BaseResponseStatus.JWT_AND_NICKNAME_DONT_MATCH);
-        }
-    }
+//    @SneakyThrows
+//    public void checkNickname(Message<?> message, String email) {
+//
+//        // message payload에서 닉네임 얻기
+//        String payload = new String((byte[])message.getPayload());
+//        ChatReq.LiveChatReq body = Jackson.fromJsonString(payload, ChatReq.LiveChatReq.class);
+//        System.out.println("sender nickname: " + body.getMemberNickname());
+//
+//        // DB에 닉네임 있는지 확인
+//        Member member = memberService.getMember(body.getMemberNickname()).orElseThrow(
+//                () -> new BaseException(BaseResponseStatus.USER_NOT_EXIST_NICKNAME_ERROR)
+//        );
+//
+//        // jwt 토큰과 닉네임으로 찾은 member 객체 일치하는지 확인
+//        if (!member.getEmail().equals(email)) {
+//            throw new BaseException(BaseResponseStatus.JWT_AND_NICKNAME_DONT_MATCH);
+//        }
+//    }
 }
