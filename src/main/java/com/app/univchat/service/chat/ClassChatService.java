@@ -147,7 +147,7 @@ public class ClassChatService {
                 .map((classRoom) -> {
                     Optional<ClassChat> classChat = classChatRepository.findTopByClassRoomOrderByMessageSendingTimeDesc(classRoom.toEntity());
                     Optional<ClassChatMember> chatMember = classChatMemberRepository.findByClassRoomClassNumberAndMember(classRoom.getClassNumber(), member);
-
+                    Long numberOfParticipant = classChatMemberRepository.countByClassRoomClassNumber(classRoom.getClassNumber());
                     if(classChat.isPresent() && chatMember.isPresent()) {
 
                         return ClassChatRes.ChattingRoom
@@ -155,6 +155,7 @@ public class ClassChatService {
                                 .classRoom(classRoom)
                                 .lastMessageSendingTime(classChat.get().getMessageSendingTime())
                                 .numberOfUnreadMessage(classChatRepository.countByMessageSendingTimeGreaterThan(chatMember.get().getLastAccessTime()))
+                                .numberOfParticipant(numberOfParticipant.intValue())
                                 .build();
 
                     } else {
@@ -165,6 +166,7 @@ public class ClassChatService {
                                 .classRoom(classRoom)
                                 .lastMessageSendingTime("")
                                 .numberOfUnreadMessage(0)
+                                .numberOfParticipant(numberOfParticipant.intValue())
                                 .build();
                     }
 
@@ -235,6 +237,12 @@ public class ClassChatService {
             throw new BaseException(BaseResponseStatus.CLASS_NOT_FOUND);
 
         }
+    }
+
+    // 사용자의 클래스 목록 전체 삭제
+    @Transactional
+    public void exitAllChatRoom(Member member) {
+        classChatMemberRepository.deleteByMember(member);
     }
 
     // 마지막 접속 시간 업데이트

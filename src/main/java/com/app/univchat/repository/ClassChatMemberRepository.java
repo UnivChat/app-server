@@ -13,7 +13,11 @@ public interface ClassChatMemberRepository extends JpaRepository<ClassChatMember
 
     List<ClassChatMember> findByClassRoomClassNumber(String classNumber);
 
+    Long countByClassRoomClassNumber(String classNumber);
+
     Optional<ClassChatMember> findByClassRoomClassNumberAndMember(String classNumber, Member member);
 
     void deleteByClassRoomClassNumberAndMember(String classNumber, Member member);
+
+    void deleteByMember(Member member);
 }
