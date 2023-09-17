@@ -19,21 +19,12 @@ public class FacilityService {
 
     private final FacilityRepository facilityRepository;
 
-    public List<FacilityDto> getFacilityList(String building){
-        //TODO: 필터링 추가하기
+    public List<FacilityDto> getFacilityList(String name){
 
         // 건물 기호로 검색한 경우
-        if (building != null) {
-            Optional<Building> buildingOptional = Enums.getIfPresent(Building.class, building);
+        if (name == null) name = "";
 
-            // 없는 건물 기호를 입려한 경우 에러 반환
-            if (!buildingOptional.isPresent()) {
-                new BaseException(BaseResponseStatus.INVALID_BUILDING_SYMBOL);
-            }
-            building = buildingOptional.get().getBuildingName();
-        } else building = "";
-
-        return facilityRepository.findByBuildingContaining(building).stream()
+        return facilityRepository.findByNameContaining(name).stream()
                 .map(facility -> {
                     return new FacilityDto(facility);
                 }).collect(Collectors.toList());

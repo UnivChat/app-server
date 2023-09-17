@@ -20,12 +20,11 @@ public class FacilityController {
     private final FacilityService facilityService;
 
     @Tag(name = "school", description = "학교 정보 관련 API")
-    @ApiOperation(value = "편의시설 전체 조회 API", notes = "건물별 편의시설 조회 시 건물 번호 검색 \n\n " +
-            "[K: 김수환관, N: 니콜스관, V: 비루투스관, D: 다솔관, B: 학생미래인재관, T: 미카엘관, L: 베리타스관, A: 안드레아관, BA: 밤비노관")
+    @ApiOperation(value = "편의시설 전체 조회 API", notes = "편의시설 이름 검색 시 관련 편의시설 데이터만 반환")
     @GetMapping("/facility")
-    public BaseResponse<List<FacilityDto>> getFacilityList(@RequestParam(required = false)String building) {
+    public BaseResponse<List<FacilityDto>> getFacilityList(@RequestParam(required = false)String name) {
 
-        List<FacilityDto> result = facilityService.getFacilityList(building);
+        List<FacilityDto> result = facilityService.getFacilityList(name);
 
         return BaseResponse.ok(BaseResponseStatus.SUCCESS, result);
     }
