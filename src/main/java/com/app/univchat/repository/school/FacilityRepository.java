@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface FacilityRepository extends JpaRepository<Facility, Long> {
 
-    List<Facility> findByBuildingContaining(String buildingName);
+    List<Facility> findByNameContaining(String buildingName);
 }
