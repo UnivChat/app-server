@@ -21,7 +21,6 @@ public class FacilityService {
 
     public List<FacilityDto> getFacilityList(String name){
 
-        // 건물 기호로 검색한 경우
         if (name == null) name = "";
 
         return facilityRepository.findByNameContaining(name).stream()
