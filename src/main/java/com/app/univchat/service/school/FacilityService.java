@@ -28,7 +28,7 @@ public class FacilityService {
 
             // 없는 건물 기호를 입려한 경우 에러 반환
             if (!buildingOptional.isPresent()) {
-                new BaseException(BaseResponseStatus.INVALID_BUILDING_SYMBOL);
+                throw new BaseException(BaseResponseStatus.INVALID_BUILDING_SYMBOL);
             }
             building = buildingOptional.get().getBuildingName();
         } else building = "";
