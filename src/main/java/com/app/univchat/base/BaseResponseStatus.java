@@ -63,6 +63,12 @@ public enum  BaseResponseStatus {
     USER_IS_WITHDRAWAL("2018", "탈퇴한 회원입니다.", 400),
 
     /**
+     * 3000: 기타 오류
+     */
+    INVALID_BUILDING_SYMBOL("3001", "옳지 않은 건물 번호입니다.", 400),
+
+
+    /**
      * 5000 : Chatting 오류
      */
 
