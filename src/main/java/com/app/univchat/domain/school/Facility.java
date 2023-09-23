@@ -24,7 +24,9 @@ public class Facility {
 
     private String location; //위치
 
-    private String time; //운영시간
+    private String time1; //운영시간 1
+
+    private String time2; //운영시간 2
 
     private String phone; //전화번호
 
