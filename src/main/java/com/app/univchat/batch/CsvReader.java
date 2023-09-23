@@ -124,7 +124,7 @@ public class CsvReader {
         /* delimitedLineTokenizer : csv 파일에서 구분자 지정하고 구분한 데이터 setNames를 통해 각 이름 설정 */
         DelimitedLineTokenizer delimitedLineTokenizer = new customDelimitedLineTokenizer(); //csv 파일에서 구분자
         delimitedLineTokenizer.setDelimiter(",");
-        delimitedLineTokenizer.setNames("building", "name", "location", "time", "phone"); //행으로 읽은 데이터 매칭할 데이터 각 이름
+        delimitedLineTokenizer.setNames("building", "name", "location", "time1", "time2", "phone"); //행으로 읽은 데이터 매칭할 데이터 각 이름
         defaultLineMapper.setLineTokenizer(delimitedLineTokenizer); //lineTokenizer 설정
 
         /* beanWrapperFieldSetMapper: 매칭할 class 타입 지정 */
