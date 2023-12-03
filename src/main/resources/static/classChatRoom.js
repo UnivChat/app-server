@@ -40,10 +40,13 @@ const enterClassChattingRoom = () => {
             // 최근 채팅 내역을 불러 오는 부분
             // 임의로 페이지를 설정함(가장 최근 10개 -> 페이지 0)
             // 무한 스크롤 등을 구현하여, page 별로 요청하면 됨.
-            const page = 0;
+            const page = -1;
 
 //            const room= $("#class_id").val()
-            fetch(`http://localhost:8080/chatting/class/${room}/${page}`)
+            fetch(`http://localhost:8080/chatting/class/${room}/${page}`,
+                {
+                headers: header // 이미 선언된 header 변수를 헤더로 사용
+                })
                 .then(res => res.json())
                 .then(data => {
                     data.result.classChatList.reverse().forEach((message) => {
